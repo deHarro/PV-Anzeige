@@ -7,3 +7,8 @@ Its drawback is, you are kicked out after several minutes, after a given number 
 To circumvent those restrictions I make my own visualization.
 
 As an addition the power flowing to the wallbox is displayed as well. The information for that comes from Nico Treffkorn's SmartCharger, working together with some KEBA wall boxes.
+
+In the end it should show up similar to this Excel prototype
+
+![grafik](https://user-images.githubusercontent.com/26298406/120485830-c3b6d180-c3b4-11eb-9080-f2ae95a3c6ef.png)
+
