@@ -13,4 +13,4 @@ In the end it should show up similar to this Excel prototype
 ![grafik](https://user-images.githubusercontent.com/26298406/120485830-c3b6d180-c3b4-11eb-9080-f2ae95a3c6ef.png)
 
 
-There will be no statistics and no database, those area handled well by SunnyPortal.
+There will be no statistics and no database, those are handled well by SunnyPortal.
