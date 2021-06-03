@@ -14,3 +14,8 @@ In the end it should show up similar to this Excel prototype
 
 
 There will be no statistics and no database, those are handled well by SunnyPortal.
+
+The basic display shows up as follows:
+
+![grafik](https://user-images.githubusercontent.com/26298406/120642540-5028c900-c475-11eb-8c31-71cda77394ce.png)
+
