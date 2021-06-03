@@ -48,15 +48,6 @@ Window {
             font.bold: true
         }
         
-        Image {
-            id: image3
-            x: 4
-            y: 6
-            width: 83
-            height: 78
-            source: "../../Sonne_weiß_transparent.png"
-            fillMode: Image.PreserveAspectFit
-        }
         
         Text {
             id: text11
@@ -69,6 +60,17 @@ Window {
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
+        }
+
+
+        Image {
+            id: image3
+            x: 4
+            y: 6
+            width: 83
+            height: 78
+            source: "Icons/Sonne_weiss_transparent.png"
+            fillMode: Image.PreserveAspectFit
         }
     }
     
@@ -111,25 +113,7 @@ Window {
             font.bold: true
         }
         
-        Image {
-            id: image4
-            x: 12
-            y: 26
-            width: 64
-            height: 39
-            source: "../../electric-scooter_icon_weiß_transparent_rad.png"
-            fillMode: Image.PreserveAspectFit
-        }
         
-        Image {
-            id: image5
-            x: 229
-            y: 24
-            width: 82
-            height: 55
-            source: "../../electric-car-icon_weiß_transparent.png"
-            fillMode: Image.PreserveAspectFit
-        }
 
         Text {
             id: text15
@@ -146,6 +130,24 @@ Window {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         
+        Image {
+            id: image5
+            x: 229
+            y: 24
+            width: 82
+            height: 55
+            source: "Icons/electric-car-icon_weiss_transparent.png"
+            fillMode: Image.PreserveAspectFit
+        }
+        Image {
+            id: image4
+            x: 12
+            y: 26
+            width: 64
+            height: 39
+            source: "Icons/electric-scooter_icon_weiss_transparent_rad.png"
+            fillMode: Image.PreserveAspectFit
+        }
     }
     
     
@@ -176,15 +178,6 @@ Window {
             font.bold: true
         }
         
-        Image {
-            id: image
-            x: 7
-            y: 119
-            width: 77
-            height: 43
-            source: "../../Akku_weiß_transparent.png"
-            fillMode: Image.PreserveAspectFit
-        }
         
         Text {
             id: text8
@@ -210,6 +203,21 @@ Window {
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
             font.family: "Arial"
+        }
+        Image {
+            id: image
+            x: 7
+            y: 119
+            width: 77
+            height: 43
+            visible: true
+            source: "Icons/Akku_weiss_transparent.png"
+            activeFocusOnTab: false
+            focus: false
+            enabled: false
+            sourceSize.height: 32
+            sourceSize.width: 58
+            fillMode: Image.PreserveAspectFit
         }
     }
     
@@ -243,15 +251,6 @@ Window {
             font.bold: true
         }
         
-        Image {
-            id: image1
-            x: 0
-            y: 98
-            width: 90
-            height: 85
-            source: "../../Haus_weiß_transparent.png"
-            fillMode: Image.PreserveAspectFit
-        }
         
         Text {
             id: text9
@@ -277,6 +276,15 @@ Window {
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
             anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Image {
+            id: image1
+            x: 0
+            y: 98
+            width: 90
+            height: 85
+            source: "Icons/Haus_weiss_transparent.png"
+            fillMode: Image.PreserveAspectFit
         }
     }
     
@@ -311,15 +319,6 @@ Window {
             font.bold: true
         }
         
-        Image {
-            id: image2
-            x: 3
-            y: 103
-            width: 85
-            height: 87
-            source: "../../Mast_weiß_transparent.png"
-            fillMode: Image.PreserveAspectFit
-        }
         
         Text {
             id: text10
@@ -345,6 +344,15 @@ Window {
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
             anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Image {
+            id: image2
+            x: 3
+            y: 103
+            width: 85
+            height: 87
+            source: "Icons/Mast_weiss_transparent.png"
+            fillMode: Image.PreserveAspectFit
         }
     }
     

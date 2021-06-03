@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Icons/Akku_weiss_transparent.png</file>
+        <file>Icons/electric-car-icon_weiss_transparent.png</file>
+        <file>Icons/electric-scooter_icon_weiss_transparent_rad.png</file>
+        <file>Icons/Haus_weiss_transparent.png</file>
+        <file>Icons/Mast_weiss_transparent.png</file>
+        <file>Icons/Sonne_weiss_transparent.png</file>
+        <file>Icons/sources/AC_Icons_rgb_Roller.png</file>
+        <file>Icons/sources/Akku.png</file>
+        <file>Icons/sources/electric-scooter_icon_weiß_transparent.png</file>
+        <file>Icons/sources/Haus.png</file>
+        <file>Icons/sources/Mast.png</file>
+        <file>Icons/sources/Sonne.png</file>
+    </qresource>
+</RCC>
