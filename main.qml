@@ -4,15 +4,17 @@ import QtQuick.Window 2.12
 Window {
     id: window
     width: 400
-    height: 520
+    height: 540
     visible: true
+    color: "whitesmoke"
     title: qsTr("PV-Anzeige")
     
     
+
     Rectangle {
         id: rectangle
         x: 42
-        y: 10
+        y: 20
         width: 320
         height: 90
         opacity: 1
@@ -30,9 +32,10 @@ Window {
             width: 92
             height: 23
             color: "#ffffff"
-            text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600; color:#ffffff;\">PV-Erzeugung</span></p></body></html>"
+            text: "PV-Erzeugung"
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
+            font.bold: true
             textFormat: Text.RichText
         }
         
@@ -56,7 +59,7 @@ Window {
             width: 92
             height: 26
             color: "#ffffff"
-            text: qsTr("11,09")
+            text: qsTr("11,60")
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -72,13 +75,86 @@ Window {
             source: "Icons/Sonne_weiss_transparent.png"
             fillMode: Image.PreserveAspectFit
         }
+
+        Text {
+            id: text22
+            x: 220
+            y: 11
+            color: "#f9bcbc"
+            text: qsTr("Dach")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text23
+            x: 221
+            y: 32
+            color: "#f9bcbc"
+            text: qsTr("Gaube")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text24
+            x: 221
+            y: 55
+            color: "#f9bcbc"
+            text: qsTr("Garage")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text25
+            x: 264
+            y: 11
+            color: "#f9bcbc"
+            text: qsTr("5,00")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text27
+            x: 264
+            y: 32
+            color: "#f9bcbc"
+            text: qsTr("3,60")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text28
+            x: 304
+            y: -359
+            color: "#ffffff"
+            text: qsTr("kW")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text30
+            x: 264
+            y: 55
+            color: "#f9bcbc"
+            text: qsTr("3,00")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text31
+            x: 290
+            y: -350
+            color: "#ffffff"
+            text: qsTr("kW")
+            font.pixelSize: 12
+        }
     }
     
     
+
     Rectangle {
         id: rectangle1
         x: 42
-        y: 411
+        y: 420
         width: 320
         height: 90
         color: "#b3b3b3"
@@ -122,7 +198,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: qsTr("3,18")
+            text: qsTr("3,20")
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenterOffset: -1
@@ -133,7 +209,7 @@ Window {
         Image {
             id: image5
             x: 229
-            y: 24
+            y: 22
             width: 82
             height: 55
             source: "Icons/electric-car-icon_weiss_transparent.png"
@@ -146,7 +222,89 @@ Window {
             width: 64
             height: 39
             source: "Icons/electric-scooter_icon_weiss_transparent_rad.png"
+            rotation: 0
             fillMode: Image.PreserveAspectFit
+        }
+
+        Text {
+            id: text16
+            x: 12
+            y: 71
+            color: "#f9bcbc"
+            text: qsTr("Zuletzt:")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text17
+            x: 64
+            y: 71
+            color: "#f9bcbc"
+            text: qsTr("3,15")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text18
+            x: 95
+            y: 71
+            color: "#f9bcbc"
+            text: qsTr("kW")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text19
+            x: 198
+            y: 71
+            color: "#f9bcbc"
+            text: qsTr("Gesamt:")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text20
+            x: 250
+            y: 71
+            color: "#f9bcbc"
+            text: qsTr("543,15")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text21
+            x: 294
+            y: 71
+            color: "#f9bcbc"
+            text: qsTr("kW")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text26
+            x: 295
+            y: -389
+            color: "#f9bcbc"
+            text: qsTr("kW")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text29
+            x: 294
+            y: -369
+            color: "#f9bcbc"
+            text: qsTr("kW")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text32
+            x: 294
+            y: -344
+            color: "#f9bcbc"
+            text: qsTr("kW")
+            font.pixelSize: 12
         }
     }
     
@@ -154,10 +312,12 @@ Window {
     
     
     
+
+
     Rectangle {
         id: rectangle2
         x: 42
-        y: 120
+        y: 130
         width: 90
         height: 270
         color: "#b3b3b3"
@@ -171,7 +331,7 @@ Window {
             width: 88
             height: 33
             color: "#ffffff"
-            text: qsTr("Batterie- ladung")
+            text: qsTr("Batterie-ladung")
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
@@ -211,13 +371,57 @@ Window {
             width: 77
             height: 43
             visible: true
-            source: "Icons/Akku_weiss_transparent.png"
+            source: "Icons/Akku_weiss_transparent20.png"
             activeFocusOnTab: false
             focus: false
             enabled: false
             sourceSize.height: 32
             sourceSize.width: 58
             fillMode: Image.PreserveAspectFit
+        }
+
+        Text {
+            id: text33
+            x: 16
+            y: 216
+            width: 46
+            height: 26
+            color: "#ffffff"
+            text: qsTr("28")
+            font.pixelSize: 23
+            horizontalAlignment: Text.AlignRight
+            anchors.horizontalCenterOffset: -16
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.family: "Arial"
+        }
+
+        Text {
+            id: text34
+            x: 1
+            y: 177
+            width: 88
+            height: 33
+            color: "#ffffff"
+            text: qsTr("Batterie-ladezustand")
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            font.bold: true
+        }
+
+        Text {
+            id: text35
+            x: -2
+            y: 216
+            width: 26
+            height: 26
+            color: "#ffffff"
+            text: qsTr("%")
+            font.pixelSize: 23
+            horizontalAlignment: Text.AlignLeft
+            anchors.horizontalCenterOffset: 24
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.family: "Arial"
         }
     }
     
@@ -227,10 +431,12 @@ Window {
     
     
     
+
+
     Rectangle {
         id: rectangle3
         x: 157
-        y: 120
+        y: 130
         width: 90
         height: 270
         color: "#b3b3b3"
@@ -286,6 +492,36 @@ Window {
             source: "Icons/Haus_weiss_transparent.png"
             fillMode: Image.PreserveAspectFit
         }
+
+        Text {
+            id: text36
+            x: 28
+            y: 199
+            color: "#f9bcbc"
+            text: qsTr("Zähler")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text37
+            x: 8
+            y: 214
+            width: 74
+            height: 14
+            color: "#f9bcbc"
+            text: qsTr("5547")
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        Text {
+            id: text38
+            x: 33
+            y: 229
+            color: "#f9bcbc"
+            text: qsTr("kWh")
+            font.pixelSize: 12
+        }
     }
     
     
@@ -295,10 +531,12 @@ Window {
     
     
     
+
+
     Rectangle {
         id: rectangle4
         x: 272
-        y: 120
+        y: 130
         width: 90
         height: 270
         color: "#b3b3b3"
@@ -312,7 +550,7 @@ Window {
             width: 88
             height: 33
             color: "#ffffff"
-            text: qsTr("Netzbezug")
+            text: qsTr("Netz-einspeisung")
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
@@ -339,7 +577,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: qsTr("0,16")
+            text: qsTr("3,98")
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -354,7 +592,38 @@ Window {
             source: "Icons/Mast_weiss_transparent.png"
             fillMode: Image.PreserveAspectFit
         }
+
+        Text {
+            id: text39
+            x: 13
+            y: 199
+            color: "#f9bcbc"
+            text: qsTr("Einspeisung")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text40
+            x: 8
+            y: 214
+            width: 74
+            height: 14
+            color: "#f9bcbc"
+            text: qsTr("35543")
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        Text {
+            id: text41
+            x: 33
+            y: 229
+            color: "#f9bcbc"
+            text: qsTr("kWh")
+            font.pixelSize: 12
+        }
     }
+
     
     
     
