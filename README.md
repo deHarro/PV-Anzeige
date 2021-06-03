@@ -17,5 +17,7 @@ There will be no statistics and no database, those are handled well by SunnyPort
 
 The basic display shows up as follows:
 
-![grafik](https://user-images.githubusercontent.com/26298406/120642540-5028c900-c475-11eb-8c31-71cda77394ce.png)
+![grafik](https://user-images.githubusercontent.com/26298406/120663077-01d1f500-c48a-11eb-80dd-7f176e44b3ee.png)
 
+
+The pink values are normally invisible and appear on mouse over (to be defined if mouse over the window or any of the incons or ...)
