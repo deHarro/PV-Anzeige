@@ -20,4 +20,4 @@ Modelled with QT Creator, the basic display shows up as follows:
 ![grafik](https://user-images.githubusercontent.com/26298406/120667906-3b0c6400-c48e-11eb-9db1-e97a7d9adbd8.png)
 
 
-The pink values are normally invisible and appear on mouse over (to be defined if mouse over the window or any of the icons or ...). If visible, the characters are white as all others.
+The pink values are normally invisible and appear on mouse over in white, as all other text.
