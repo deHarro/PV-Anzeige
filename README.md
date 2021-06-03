@@ -1,5 +1,5 @@
 # PV-Anzeige
-Resemblance to the official SunnyPortal + WallBox
+Resemblance to the official SunnyPortal plus additional WallBox information
 
 The official SunnyPortal has a fine live visualization of the power streams in your house.
 Its drawback is, you are kicked out after several minutes, after a given number of accesses to the database of SunnyPortal and some more restrictions.
