@@ -15,7 +15,7 @@ In the end it should show up similar to this Excel prototype
 
 There will be no statistics and no database, those are handled well by SunnyPortal.
 
-The basic display, modelled with QT Creator, shows up as follows:
+Modelled with QT Creator, the basic display shows up as follows:
 
 ![grafik](https://user-images.githubusercontent.com/26298406/120667906-3b0c6400-c48e-11eb-9db1-e97a7d9adbd8.png)
 
