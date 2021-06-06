@@ -9,6 +9,22 @@ Window {
     color: "whitesmoke"     // sehr helles Grau für Fensterhintergrund
     title: qsTr("PV-Anzeige")
 
+
+    
+
+    
+    
+    
+    
+    
+    
+
+
+
+
+    
+
+
     Rectangle {
         id: rectangle
         x: 42
@@ -17,12 +33,13 @@ Window {
         height: 90
         opacity: 1
         visible: true
-//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        //        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
         color: "limegreen"      // Hellgrün
         radius: 15
         border.color: "#00000000"
         border.width: 0
         clip: false
+
 
         Text {
             id: text1
@@ -37,7 +54,7 @@ Window {
             font.bold: true
             textFormat: Text.RichText
         }
-                Text {
+        Text {
             id: text7
             x: 151
             y: 67
@@ -110,14 +127,6 @@ Window {
             font.pixelSize: 12
         }
         Text {
-            id: text28
-            x: 304
-            y: -359
-            color: "#ffffff"
-            text: qsTr("kW")
-            font.pixelSize: 12
-        }
-        Text {
             id: text30
             x: 264
             y: 55
@@ -126,10 +135,29 @@ Window {
             font.pixelSize: 12
         }
         Text {
-            id: text31
-            x: 290
-            y: -350
-            color: "#ffffff"
+            id: text26
+            x: 294
+            y: 11
+            color: "#f9bcbc"
+            text: qsTr("kW")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text29
+            x: 294
+            y: 34
+            width: 17
+            color: "#f9bcbc"
+            text: qsTr("kW")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text32
+            x: 294
+            y: 56
+            color: "#f9bcbc"
             text: qsTr("kW")
             font.pixelSize: 12
         }
@@ -141,8 +169,8 @@ Window {
         y: 420
         width: 320
         height: 90
-//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
-//        color: "dodgerblue"   // #1e90ff
+        //        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        //        color: "dodgerblue"   // #1e90ff
         color: "#0A7CEB"        // um -20 dunkleres "dogerblue"
         radius: 15
         border.width: 0
@@ -158,6 +186,7 @@ Window {
             wrapMode: Text.WordWrap
             font.bold: true
         }
+
         Text {
             id: text6
             x: 149
@@ -250,45 +279,28 @@ Window {
             text: qsTr("kW")
             font.pixelSize: 12
         }
-        Text {
-            id: text26
-            x: 294
-            y: -389
-            color: "#f9bcbc"
-            text: qsTr("kW")
-            font.pixelSize: 12
-        }
-        Text {
-            id: text29
-            x: 294
-            y: -366
-            width: 17
-            color: "#f9bcbc"
-            text: qsTr("kW")
-            font.pixelSize: 12
-        }
-        Text {
-            id: text32
-            x: 294
-            y: -344
-            color: "#f9bcbc"
-            text: qsTr("kW")
-            font.pixelSize: 12
-        }
     }
-    
+
+
+
     Rectangle {
         id: rectangle2
         x: 42
         y: 130
         width: 90
         height: 270
-//        color: "#b3b3b3"          // hellgrau, keine QML Basic/SVG color
+        //        color: "#b3b3b3"          // hellgrau, keine QML Basic/SVG color
         color: "forestgreen"        // Dunkelgrün
-//        color: "limegreen"        // Hellgrün
+        //        color: "limegreen"        // Hellgrün
         radius: 15
         border.width: 0
-        
+
+
+
+
+
+
+
         Text {
             id: text2
             x: 1
@@ -302,8 +314,6 @@ Window {
             wrapMode: Text.WordWrap
             font.bold: true
         }
-        
-        
         Text {
             id: text8
             x: 36
@@ -315,7 +325,6 @@ Window {
             minimumPixelSize: 14
             font.bold: true
         }
-
         Text {
             id: text12
             x: 7
@@ -344,7 +353,6 @@ Window {
             sourceSize.width: 58
             fillMode: Image.PreserveAspectFit
         }
-
         Text {
             id: text33
             x: 16
@@ -359,7 +367,6 @@ Window {
             anchors.horizontalCenter: parent.horizontalCenter
             font.family: "Arial"
         }
-
         Text {
             id: text34
             x: 1
@@ -373,7 +380,6 @@ Window {
             wrapMode: Text.WordWrap
             font.bold: true
         }
-
         Text {
             id: text35
             x: -2
@@ -389,12 +395,6 @@ Window {
             font.family: "Arial"
         }
     }
-    
-    
-    
-    
-    
-    
 
 
 
@@ -404,11 +404,33 @@ Window {
         y: 130
         width: 90
         height: 270
-//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        //        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
         color: "limegreen"      // Hellgrün
         radius: 15
         border.width: 0
-        
+
+
+
+
+        Image {
+            id: image1
+            x: 0
+            y: 98
+            width: 90
+            height: 85
+            source: "Icons/Haus_weiss_transparent.png"
+            fillMode: Image.PreserveAspectFit
+        }
+
+        Text {
+            id: text36
+            x: 28
+            y: 199
+            color: "#f9bcbc"
+            text: qsTr("Zähler")
+            font.pixelSize: 12
+        }
+
         Text {
             id: text3
             x: 2
@@ -422,8 +444,7 @@ Window {
             wrapMode: Text.WordWrap
             font.bold: true
         }
-        
-        
+
         Text {
             id: text9
             x: 36
@@ -449,24 +470,6 @@ Window {
             font.family: "Arial"
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        Image {
-            id: image1
-            x: 0
-            y: 98
-            width: 90
-            height: 85
-            source: "Icons/Haus_weiss_transparent.png"
-            fillMode: Image.PreserveAspectFit
-        }
-
-        Text {
-            id: text36
-            x: 28
-            y: 199
-            color: "#f9bcbc"
-            text: qsTr("Zähler")
-            font.pixelSize: 12
-        }
 
         Text {
             id: text37
@@ -480,6 +483,9 @@ Window {
             horizontalAlignment: Text.AlignHCenter
         }
 
+
+
+
         Text {
             id: text38
             x: 33
@@ -489,7 +495,8 @@ Window {
             font.pixelSize: 12
         }
     }
-    
+
+
 
     Rectangle {
         id: rectangle4
@@ -497,8 +504,8 @@ Window {
         y: 130
         width: 90
         height: 270
-//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
-//        color: "limegreen"    // Hellgrün
+        //        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        //        color: "limegreen"    // Hellgrün
         color: "firebrick"      // Dunkelrot
         radius: 15
         border.width: 0
@@ -510,7 +517,7 @@ Window {
             width: 88
             height: 33
             color: "#ffffff"
-//            text: qsTr("Netz-einspeisung")
+            //            text: qsTr("Netz-einspeisung")
             text: qsTr("Netzbezug")
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
@@ -583,7 +590,20 @@ Window {
             text: qsTr("kWh")
             font.pixelSize: 12
         }
-    }   
+    }
+
+
+
+
+
+
+
 }
 
 
+
+/*##^##
+Designer {
+    D{i:0;formeditorZoom:1.25}
+}
+##^##*/
