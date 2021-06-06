@@ -6,10 +6,8 @@ Window {
     width: 400
     height: 540
     visible: true
-    color: "whitesmoke"
+    color: "whitesmoke"     // sehr helles Grau für Fensterhintergrund
     title: qsTr("PV-Anzeige")
-    
-    
 
     Rectangle {
         id: rectangle
@@ -19,12 +17,13 @@ Window {
         height: 90
         opacity: 1
         visible: true
-        color: "#b3b3b3"
+//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        color: "limegreen"      // Hellgrün
         radius: 15
         border.color: "#00000000"
         border.width: 0
         clip: false
-        
+
         Text {
             id: text1
             x: 114
@@ -38,8 +37,7 @@ Window {
             font.bold: true
             textFormat: Text.RichText
         }
-        
-        Text {
+                Text {
             id: text7
             x: 151
             y: 67
@@ -50,8 +48,6 @@ Window {
             minimumPixelSize: 14
             font.bold: true
         }
-        
-        
         Text {
             id: text11
             x: 114
@@ -64,8 +60,6 @@ Window {
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
         }
-
-
         Image {
             id: image3
             x: 4
@@ -75,7 +69,6 @@ Window {
             source: "Icons/Sonne_weiss_transparent.png"
             fillMode: Image.PreserveAspectFit
         }
-
         Text {
             id: text22
             x: 220
@@ -84,25 +77,22 @@ Window {
             text: qsTr("Dach")
             font.pixelSize: 12
         }
-
         Text {
             id: text23
-            x: 221
-            y: 32
+            x: 220
+            y: 34
             color: "#f9bcbc"
             text: qsTr("Gaube")
             font.pixelSize: 12
         }
-
         Text {
             id: text24
-            x: 221
+            x: 220
             y: 55
             color: "#f9bcbc"
             text: qsTr("Garage")
             font.pixelSize: 12
         }
-
         Text {
             id: text25
             x: 264
@@ -111,16 +101,14 @@ Window {
             text: qsTr("5,00")
             font.pixelSize: 12
         }
-
         Text {
             id: text27
             x: 264
-            y: 32
+            y: 34
             color: "#f9bcbc"
             text: qsTr("3,60")
             font.pixelSize: 12
         }
-
         Text {
             id: text28
             x: 304
@@ -129,7 +117,6 @@ Window {
             text: qsTr("kW")
             font.pixelSize: 12
         }
-
         Text {
             id: text30
             x: 264
@@ -138,7 +125,6 @@ Window {
             text: qsTr("3,00")
             font.pixelSize: 12
         }
-
         Text {
             id: text31
             x: 290
@@ -148,20 +134,18 @@ Window {
             font.pixelSize: 12
         }
     }
-    
-    
 
     Rectangle {
-        id: rectangle1
+        id: rectangle1  // WallBox
         x: 42
         y: 420
         width: 320
         height: 90
-        color: "#b3b3b3"
+//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+//        color: "dodgerblue"   // #1e90ff
+        color: "#0A7CEB"        // um -20 dunkleres "dogerblue"
         radius: 15
         border.width: 0
-        
-        
         Text {
             id: text5
             x: 120
@@ -174,9 +158,6 @@ Window {
             wrapMode: Text.WordWrap
             font.bold: true
         }
-        
-        
-        
         Text {
             id: text6
             x: 149
@@ -188,9 +169,6 @@ Window {
             minimumPixelSize: 14
             font.bold: true
         }
-        
-        
-
         Text {
             id: text15
             x: 7
@@ -205,7 +183,6 @@ Window {
             font.family: "Arial"
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        
         Image {
             id: image5
             x: 229
@@ -225,7 +202,6 @@ Window {
             rotation: 0
             fillMode: Image.PreserveAspectFit
         }
-
         Text {
             id: text16
             x: 12
@@ -234,7 +210,6 @@ Window {
             text: qsTr("Zuletzt:")
             font.pixelSize: 12
         }
-
         Text {
             id: text17
             x: 64
@@ -243,7 +218,6 @@ Window {
             text: qsTr("3,15")
             font.pixelSize: 12
         }
-
         Text {
             id: text18
             x: 95
@@ -252,7 +226,6 @@ Window {
             text: qsTr("kW")
             font.pixelSize: 12
         }
-
         Text {
             id: text19
             x: 198
@@ -261,7 +234,6 @@ Window {
             text: qsTr("Gesamt:")
             font.pixelSize: 12
         }
-
         Text {
             id: text20
             x: 250
@@ -270,7 +242,6 @@ Window {
             text: qsTr("543,15")
             font.pixelSize: 12
         }
-
         Text {
             id: text21
             x: 294
@@ -279,25 +250,23 @@ Window {
             text: qsTr("kW")
             font.pixelSize: 12
         }
-
         Text {
             id: text26
-            x: 295
+            x: 294
             y: -389
             color: "#f9bcbc"
             text: qsTr("kW")
             font.pixelSize: 12
         }
-
         Text {
             id: text29
             x: 294
-            y: -369
+            y: -366
+            width: 17
             color: "#f9bcbc"
             text: qsTr("kW")
             font.pixelSize: 12
         }
-
         Text {
             id: text32
             x: 294
@@ -308,19 +277,15 @@ Window {
         }
     }
     
-    
-    
-    
-    
-
-
     Rectangle {
         id: rectangle2
         x: 42
         y: 130
         width: 90
         height: 270
-        color: "#b3b3b3"
+//        color: "#b3b3b3"          // hellgrau, keine QML Basic/SVG color
+        color: "forestgreen"        // Dunkelgrün
+//        color: "limegreen"        // Hellgrün
         radius: 15
         border.width: 0
         
@@ -430,7 +395,7 @@ Window {
     
     
     
-    
+
 
 
     Rectangle {
@@ -439,7 +404,8 @@ Window {
         y: 130
         width: 90
         height: 270
-        color: "#b3b3b3"
+//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        color: "limegreen"      // Hellgrün
         radius: 15
         border.width: 0
         
@@ -524,14 +490,6 @@ Window {
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
-
 
     Rectangle {
         id: rectangle4
@@ -539,7 +497,9 @@ Window {
         y: 130
         width: 90
         height: 270
-        color: "#b3b3b3"
+//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+//        color: "limegreen"    // Hellgrün
+        color: "firebrick"      // Dunkelrot
         radius: 15
         border.width: 0
         
@@ -550,7 +510,8 @@ Window {
             width: 88
             height: 33
             color: "#ffffff"
-            text: qsTr("Netz-einspeisung")
+//            text: qsTr("Netz-einspeisung")
+            text: qsTr("Netzbezug")
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
@@ -622,29 +583,7 @@ Window {
             text: qsTr("kWh")
             font.pixelSize: 12
         }
-    }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    }   
 }
 
 

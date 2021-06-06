@@ -25,3 +25,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     Icons/Akku_weiß_transparent.png
+
+HEADERS +=
