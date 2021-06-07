@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-//#include <InverterModel.h>
 
+#include <PowerNodeModel.h>
 
 int main(int argc, char *argv[])
 {

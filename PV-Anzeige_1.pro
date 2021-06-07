@@ -1,13 +1,19 @@
-QT += quick
+QT += quick svg
 
 CONFIG += c++11
+CONFIG += QMQTT_NO_SSL
+CONFIG += NO_UNIT_TESTS
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+HEADERS += \
+    PowerNodeModel.h
+
 SOURCES += \
-        main.cpp
+    PowerNodeModel.cpp \
+    main.cpp
 
 RESOURCES += qml.qrc \
     Icons.qrc \
@@ -26,4 +32,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     Icons/Akku_weiß_transparent.png
 
-HEADERS +=
+include(thirdparty/qmqtt/qmqtt.pri)
