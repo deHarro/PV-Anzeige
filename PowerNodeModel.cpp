@@ -14,7 +14,6 @@ PowerNodeModel::~PowerNodeModel() {
 
 void PowerNodeModel::onDataTimer() {
     m_generatorPowerTotal = rand() % 10000;
-
     emit generatorDataChanged();
 
     m_chargingPower = rand() % 10000;
