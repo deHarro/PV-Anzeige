@@ -207,7 +207,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: qsTr("3,20")
+            text: (PowerNodeModel.chargingPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenterOffset: -1
