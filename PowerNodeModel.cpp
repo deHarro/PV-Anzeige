@@ -16,14 +16,38 @@ PowerNodeModel::~PowerNodeModel() {
 void PowerNodeModel::onDataTimer() {
 
     // PV generator handling -----------------------------------------------------
+    generatorHandling();
+    emit generatorDataChanged();
+
+    // battery handling ----------------------------------------------------------
+    batteryHandling();
+    emit batteryDataChanged();
+
+    // grid handling -------------------------------------------------------------
+    gridHandling();
+    emit gridDataChanged();
+
+    // wallbox handling ----------------------------------------------------------
+    wallboxHandling();
+    emit chargingDataChanged();
+
+}
+
+// PV generator handling -----------------------------------------------------
+void PowerNodeModel::generatorHandling(void)
+{
     m_generatorPowerTotal = rand() % 10000;
     m_generatorPowerDach += 10;
     m_generatorPowerGaube += 10;
     m_generatorPowerGarage += 10;
-    emit generatorDataChanged();
+}
 
-    // battery handling ----------------------------------------------------------
+// battery handling ----------------------------------------------------------
+void PowerNodeModel::batteryHandling(void)
+{
     m_batteryPower = (rand() % 10000) - 5000;
+
+    // change text and color depending on power value
     if(m_batteryPower == 0) {
         m_batteryText = "";                     // kein Strom  -> kein Text
         m_batteryColor = VLIGHTGRAY;            // helles Hellgrau, keine QML Basic/SVG color
@@ -65,6 +89,7 @@ void PowerNodeModel::onDataTimer() {
     }
 */
 
+    // change battery icon depending on battery percentage
     if(m_batteryPercentage > 0 && m_batteryPercentage < 19)
     {
         //rectangle2.image = Akku_weiss_transparent00.png;
@@ -89,10 +114,11 @@ void PowerNodeModel::onDataTimer() {
     {
         //rectangle2.image = Akku_weiss_transparent100.png;
     }
+}
 
-    emit batteryDataChanged();
-
-    // grid handling
+// grid handling -------------------------------------------------------------
+void PowerNodeModel::gridHandling(void)
+{
     m_gridPower = (rand() % 10000) - 5000;
     if(m_gridPower == 0) {
         m_gridText = "";                        // kein Strom  -> kein Text
@@ -107,13 +133,12 @@ void PowerNodeModel::onDataTimer() {
         m_gridText = "Netzbezug";
         m_gridColor = FIREBRICK;                // Dunkelrot
     }
-    emit gridDataChanged();
+}
 
-    // wallbox handling ----------------------------------------------------------
+// wallbox handling ----------------------------------------------------------
+void PowerNodeModel::wallboxHandling()
+{
     m_chargingPower = rand() % 10000;
     m_chargedEnergy += 10;
     m_sessionEnergy += 10;
-    emit chargingDataChanged();
-
-
 }

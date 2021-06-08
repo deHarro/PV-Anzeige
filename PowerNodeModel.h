@@ -56,6 +56,12 @@ private:
     void onConnected();
     void onDisconnected();
 
+    void generatorHandling(void);
+    void batteryHandling(void);
+    void gridHandling();
+    void wallboxHandling();
+
+
     // generators
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
     double m_generatorPowerDach = 0.0;      // Momentanleistung String Dach
