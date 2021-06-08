@@ -25,7 +25,7 @@ public:
     Q_PROPERTY(double gridPower MEMBER m_gridPower NOTIFY gridDataChanged)
     Q_PROPERTY(double gridEnergyImport MEMBER m_gridEnergyImport NOTIFY gridDataChanged)
     Q_PROPERTY(double gridEnergyExport MEMBER m_gridEnergyExport NOTIFY gridDataChanged)
-    // wallbox properties
+    // wallbox properties - all wallbox values are updated in one call to "chargingDataChanged"
     Q_PROPERTY(double chargingPower MEMBER m_chargingPower NOTIFY chargingDataChanged)
     Q_PROPERTY(double chargedEnergy MEMBER m_chargedEnergy NOTIFY chargingDataChanged)
     Q_PROPERTY(double sessionEnergy MEMBER m_sessionEnergy NOTIFY chargingDataChanged)

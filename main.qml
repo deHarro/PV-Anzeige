@@ -246,7 +246,7 @@ Window {
             x: 64
             y: 71
             color: "#f9bcbc"
-            text: qsTr("3,15")
+            text: (PowerNodeModel.sessionEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
         }
         Text {
@@ -267,15 +267,15 @@ Window {
         }
         Text {
             id: text20
-            x: 246
+            x: 257
             y: 71
             color: "#f9bcbc"
-            text: qsTr("543,15")
+            text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
         }
         Text {
             id: text21
-            x: 290
+            x: 288
             y: 71
             color: "#f9bcbc"
             text: qsTr("kWh")
@@ -605,3 +605,9 @@ Window {
 
 
 
+
+/*##^##
+Designer {
+    D{i:0;formeditorZoom:0.9}
+}
+##^##*/
