@@ -119,6 +119,7 @@ Window {
             color: "#f9bcbc"
             text: qsTr("5,00")
             font.pixelSize: 12
+            horizontalAlignment: Text.AlignHRight
         }
         Text {
             id: text27
@@ -127,6 +128,7 @@ Window {
             color: "#f9bcbc"
             text: qsTr("3,60")
             font.pixelSize: 12
+            horizontalAlignment: Text.AlignHRight
         }
         Text {
             id: text30
@@ -135,6 +137,7 @@ Window {
             color: "#f9bcbc"
             text: qsTr("3,00")
             font.pixelSize: 12
+            horizontalAlignment: Text.AlignHRight
         }
         Text {
             id: text26
@@ -248,6 +251,7 @@ Window {
             color: "#f9bcbc"
             text: (PowerNodeModel.sessionEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
+            horizontalAlignment: Text.AlignHRight
         }
         Text {
             id: text18
@@ -272,6 +276,7 @@ Window {
             color: "#f9bcbc"
             text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
+            horizontalAlignment: Text.AlignHRight
         }
         Text {
             id: text21
@@ -480,6 +485,7 @@ Window {
             width: 74
             height: 14
             color: "#f9bcbc"
+            // ohne Nachkommastellen
             text: qsTr("5547")
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
@@ -579,6 +585,7 @@ Window {
             width: 74
             height: 14
             color: "#f9bcbc"
+            // ohne Nachkommastellen
             text: qsTr("35543")
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
@@ -608,6 +615,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.9}
+    D{i:0;formeditorZoom:1.1}
 }
 ##^##*/

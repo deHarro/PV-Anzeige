@@ -15,20 +15,24 @@ public:
     Q_PROPERTY(double generatorPowerDach MEMBER m_generatorPowerDach NOTIFY generatorDataChanged)
     Q_PROPERTY(double generatorPowerGaube MEMBER m_generatorPowerGaube NOTIFY generatorDataChanged)
     Q_PROPERTY(double generatorPowerGarage MEMBER m_generatorPowerGarage NOTIFY generatorDataChanged)
-    // battery properties
+
+    // battery properties - all battery values are updated in one call to "batteryDataChanged"
     Q_PROPERTY(double batteryPower MEMBER m_batteryPower NOTIFY batteryDataChanged)
     Q_PROPERTY(double batteryPercentage MEMBER m_batteryPercentage NOTIFY batteryDataChanged)
-    // consumption properties
+
+    // home consumption properties - all home consumption values are updated in one call to "consumptionDataChanged"
     Q_PROPERTY(double consumptionPower MEMBER m_totalPowerConsumption NOTIFY consumptionDataChanged)
     Q_PROPERTY(double consumptionEnergy MEMBER m_totalEnergyConsumption NOTIFY consumptionDataChanged)
-    // grid properties
+
+    // grid properties - all grid values are updated in one call to "gridDataChanged"
     Q_PROPERTY(double gridPower MEMBER m_gridPower NOTIFY gridDataChanged)
-    Q_PROPERTY(double gridEnergyImport MEMBER m_gridEnergyImport NOTIFY gridDataChanged)
-    Q_PROPERTY(double gridEnergyExport MEMBER m_gridEnergyExport NOTIFY gridDataChanged)
+    Q_PROPERTY(double gridEnergyImport MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                    // Zähler [kWh]
+    Q_PROPERTY(double gridEnergyExport MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                    // Einspeisezähler [kWh]
+
     // wallbox properties - all wallbox values are updated in one call to "chargingDataChanged"
-    Q_PROPERTY(double chargingPower MEMBER m_chargingPower NOTIFY chargingDataChanged)
-    Q_PROPERTY(double chargedEnergy MEMBER m_chargedEnergy NOTIFY chargingDataChanged)
-    Q_PROPERTY(double sessionEnergy MEMBER m_sessionEnergy NOTIFY chargingDataChanged)
+    Q_PROPERTY(double chargingPower MEMBER m_chargingPower NOTIFY chargingDataChanged)                      // current power [kW]
+    Q_PROPERTY(double chargedEnergy MEMBER m_chargedEnergy NOTIFY chargingDataChanged)                      // total energy [kWh]
+    Q_PROPERTY(double sessionEnergy MEMBER m_sessionEnergy NOTIFY chargingDataChanged)                      // last session energy [kWh]
 
 Q_SIGNALS:
     void generatorDataChanged();
