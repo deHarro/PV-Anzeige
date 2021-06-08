@@ -63,7 +63,7 @@ private:
     double m_generatorPowerGarage = 0.0;    // Momentanleistung String Garage
     // battery
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]
-    double m_batteryPercentage = 0.0;       // Batterie Ladezustand [%]
+    int m_batteryPercentage = 0;            // Batterie Ladezustand [%]
     int m_batteryColor = 0;
     QString m_batteryText = "";             // Text in der Batterie Box
     // home

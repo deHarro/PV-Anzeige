@@ -38,7 +38,58 @@ void PowerNodeModel::onDataTimer() {
         m_batteryText = "Batterie-entladung";   // ... nur der Text ändert sich
         m_batteryColor = FORESTGREEN;           // Dunkelgrün
     }
+
     m_batteryPercentage = rand() % 100;
+/*    switch (m_batteryPercentage) {            // schade, das geht nicht, klappt nur in GCC
+        case 0 ... 19:
+            //rectangle2.image = Akku_weiss_transparent00.png;
+            break;
+        case 20 ... 39:
+            //rectangle2.image = Akku_weiss_transparent20.png;
+            break;
+        case 40 ... 59:
+            //rectangle2.image = Akku_weiss_transparent40.png;
+            break;
+        case 60 ... 79:
+            //rectangle2.image = Akku_weiss_transparent60.png;
+            break;
+        case 80 ... 96:
+            //rectangle2.image = Akku_weiss_transparent80.png;
+            break;
+        case 97 ... 100:
+            //rectangle2.image = Akku_weiss_transparent100.png;
+            break;
+        default:
+            //rectangle2.image = Akku_weiss_transparent100.png;
+            break;
+    }
+*/
+
+    if(m_batteryPercentage > 0 && m_batteryPercentage < 19)
+    {
+        //rectangle2.image = Akku_weiss_transparent00.png;
+    }
+    else if (m_batteryPercentage > 20 && m_batteryPercentage < 39)
+    {
+        //rectangle2.image = Akku_weiss_transparent20.png;
+    }
+    else if (m_batteryPercentage > 40 && m_batteryPercentage < 59)
+    {
+        //rectangle2.image = Akku_weiss_transparent40.png;
+    }
+    else if (m_batteryPercentage > 60 && m_batteryPercentage < 79)
+    {
+        //rectangle2.image = Akku_weiss_transparent60.png;
+    }
+    else if (m_batteryPercentage > 80 && m_batteryPercentage < 96)
+    {
+        //rectangle2.image = Akku_weiss_transparent80.png;
+    }
+    else
+    {
+        //rectangle2.image = Akku_weiss_transparent100.png;
+    }
+
     emit batteryDataChanged();
 
     // grid handling

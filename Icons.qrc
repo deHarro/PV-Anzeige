@@ -13,5 +13,6 @@
         <file>Icons/sources/Mast.png</file>
         <file>Icons/sources/Sonne.png</file>
         <file>Icons/Akku_weiss_transparent20.png</file>
+        <file>Icons/Akku_weiss_transparent00.png</file>
     </qresource>
 </RCC>
