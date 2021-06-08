@@ -9,7 +9,8 @@
 #define LIMEGREEN       0x32cd32
 #define FORESTGREEN     0x228b22
 #define FIREBRICK       0xb22222
-#define DODGERBLUE      0x1e90ff
+#define DODGERBLUE      0x0A7CEB    // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
+#define DARKBLUE        0x00008b    // EV attached to wallbox
 
 
 class PowerNodeModel : public QObject {
@@ -60,6 +61,7 @@ private:
     void batteryHandling(void);
     void gridHandling();
     void wallboxHandling();
+    void consumptionHandling();
 
 
     // generators
@@ -67,6 +69,7 @@ private:
     double m_generatorPowerDach = 0.0;      // Momentanleistung String Dach
     double m_generatorPowerGaube = 0.0;     // Momentanleistung String Gaube
     double m_generatorPowerGarage = 0.0;    // Momentanleistung String Garage
+    int m_generatorColor = 0;
     // battery
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]
     int m_batteryPercentage = 0;            // Batterie Ladezustand [%]
@@ -75,6 +78,7 @@ private:
     // home
     double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
     double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
+    int m_homeColor = 0;
     // grid
     double m_gridPower = 0.0;               // Netzbezug/Einspeisung [kW]
     double m_gridEnergyImport = 0.0;        // Zähler [kWh]
@@ -82,9 +86,11 @@ private:
     int m_gridColor = 0;
     QString m_gridText = "";                // Text in der grid Box
     // wallbox
+    bool m_evAttached = false;              // wallbox delivers the information whether any vehicle is attached to the outlet
     double m_chargingPower = 0.0;           // current power [kW]
     double m_chargedEnergy = 0.0;           // total energy [kWh]
     double m_sessionEnergy = 0.0;           // last session energy [kWh]
+    int m_wallboxColor = 0;
 
 
     // Members for demo purposes

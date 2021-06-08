@@ -28,15 +28,15 @@ Window {
 
 
     Rectangle {
-        id: rectangle
+        id: rectangle5
         x: 42
         y: 20
         width: 320
         height: 90
         opacity: 1
         visible: true
-        //        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
-        color: "limegreen"      // Hellgrün
+        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        //color: "limegreen"      // Hellgrün
         radius: 15
         border.color: "#00000000"
         border.width: 0
@@ -174,9 +174,9 @@ Window {
         y: 420
         width: 320
         height: 90
-        //        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
         //        color: "dodgerblue"   // #1e90ff
-        color: "#0A7CEB"        // um -20 dunkleres "dogerblue"
+        //        color: "#0A7CEB"        // um -20 dunkleres "dogerblue"
         radius: 15
         border.width: 0
         Text {
@@ -411,8 +411,8 @@ Window {
         y: 130
         width: 90
         height: 270
-        //        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
-        color: "limegreen"      // Hellgrün
+        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        //        color: "limegreen"      // Hellgrün
         radius: 15
         border.width: 0
 
@@ -471,7 +471,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: qsTr("1,24")
+            text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -512,9 +512,9 @@ Window {
         y: 130
         width: 90
         height: 270
-        //        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
         //        color: "limegreen"    // Hellgrün
-        color: "firebrick"      // Dunkelrot
+        //        color: "firebrick"      // Dunkelrot
         radius: 15
         border.width: 0
         

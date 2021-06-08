@@ -31,6 +31,10 @@ void PowerNodeModel::onDataTimer() {
     wallboxHandling();
     emit chargingDataChanged();
 
+    // consumption handling ----------------------------------------------------------
+    consumptionHandling();
+    emit consumptionDataChanged();
+
 }
 
 // PV generator handling -----------------------------------------------------
@@ -40,6 +44,15 @@ void PowerNodeModel::generatorHandling(void)
     m_generatorPowerDach += 10;
     m_generatorPowerGaube += 10;
     m_generatorPowerGarage += 10;
+
+    if(m_generatorPowerTotal == 0) {
+        m_generatorColor = VLIGHTGRAY;               // helles Hellgrau, keine QML Basic/SVG color
+    }
+    else {
+        m_generatorColor = LIMEGREEN;                // Hellgrün
+        //rectangle5.color = LIMEGREEN;         // Hellgrün
+    }
+
 }
 
 // battery handling ----------------------------------------------------------
@@ -122,7 +135,7 @@ void PowerNodeModel::gridHandling(void)
     m_gridPower = (rand() % 10000) - 5000;
     if(m_gridPower == 0) {
         m_gridText = "";                        // kein Strom  -> kein Text
-        m_batteryColor = VLIGHTGRAY;            // helles Hellgrau, keine QML Basic/SVG color
+        m_gridColor = VLIGHTGRAY;               // helles Hellgrau, keine QML Basic/SVG color
     }
     else if (m_gridPower > 0) {
         m_gridText = "Netz-einspeisung";
@@ -141,4 +154,28 @@ void PowerNodeModel::wallboxHandling()
     m_chargingPower = rand() % 10000;
     m_chargedEnergy += 10;
     m_sessionEnergy += 10;
+
+    if(m_evAttached == true) {                  // cable attached to ev (car/bike)
+        m_wallboxColor = DARKBLUE;              // dunkles Blau
+
+        if(m_chargingPower > 0){                // keine Ladung aktiv ->
+            m_wallboxColor = DODGERBLUE;        // schickes Blau
+        }
+    }
+    else {
+        m_wallboxColor =VLIGHTGRAY ;            // helles Hellgrau, keine QML Basic/SVG color
+    }
+}
+
+// consumption handling ----------------------------------------------------------
+void PowerNodeModel::consumptionHandling(void)
+{
+    m_totalPowerConsumption = rand() % 10000;
+    if(m_totalPowerConsumption == 0) {
+        m_homeColor = VLIGHTGRAY;               // helles Hellgrau, keine QML Basic/SVG color
+    }
+    else {
+        m_homeColor = LIMEGREEN;                // Hellgrün
+        //rectangle5.color = LIMEGREEN;         // Hellgrün
+    }
 }
