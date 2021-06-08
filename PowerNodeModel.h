@@ -2,6 +2,15 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QString>
+
+// define colors according https://doc.qt.io/qt-5/qml-color.html
+#define VLIGHTGRAY      0xb3b3b3    // no defined color, hand made ;-)
+#define LIMEGREEN       0x32cd32
+#define FORESTGREEN     0x228b22
+#define FIREBRICK       0xb22222
+#define DODGERBLUE      0x1e90ff
+
 
 class PowerNodeModel : public QObject {
     Q_OBJECT
@@ -19,6 +28,7 @@ public:
     // battery properties - all battery values are updated in one call to "batteryDataChanged"
     Q_PROPERTY(double batteryPower MEMBER m_batteryPower NOTIFY batteryDataChanged)
     Q_PROPERTY(double batteryPercentage MEMBER m_batteryPercentage NOTIFY batteryDataChanged)
+    Q_PROPERTY(QString batteryText MEMBER m_batteryText NOTIFY batteryDataChanged)
 
     // home consumption properties - all home consumption values are updated in one call to "consumptionDataChanged"
     Q_PROPERTY(double consumptionPower MEMBER m_totalPowerConsumption NOTIFY consumptionDataChanged)
@@ -28,6 +38,7 @@ public:
     Q_PROPERTY(double gridPower MEMBER m_gridPower NOTIFY gridDataChanged)
     Q_PROPERTY(double gridEnergyImport MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                    // Zähler [kWh]
     Q_PROPERTY(double gridEnergyExport MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                    // Einspeisezähler [kWh]
+    Q_PROPERTY(QString gridText MEMBER m_gridText NOTIFY batteryDataChanged)
 
     // wallbox properties - all wallbox values are updated in one call to "chargingDataChanged"
     Q_PROPERTY(double chargingPower MEMBER m_chargingPower NOTIFY chargingDataChanged)                      // current power [kW]
@@ -53,12 +64,17 @@ private:
     // battery
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]
     double m_batteryPercentage = 0.0;       // Batterie Ladezustand [%]
+    int m_batteryColor = 0;
+    QString m_batteryText = "";             // Text in der Batterie Box
     // home
     double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
     double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
+    // grid
     double m_gridPower = 0.0;               // Netzbezug/Einspeisung [kW]
     double m_gridEnergyImport = 0.0;        // Zähler [kWh]
     double m_gridEnergyExport = 0.0;        // Einspeisezähler [kWh]
+    int m_gridColor = 0;
+    QString m_gridText = "";                // Text in der grid Box
     // wallbox
     double m_chargingPower = 0.0;           // current power [kW]
     double m_chargedEnergy = 0.0;           // total energy [kWh]

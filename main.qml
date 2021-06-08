@@ -296,8 +296,8 @@ Window {
         y: 130
         width: 90
         height: 270
-        //        color: "#b3b3b3"          // hellgrau, keine QML Basic/SVG color
-        color: "forestgreen"        // Dunkelgrün
+        color: "#b3b3b3"          // hellgrau, keine QML Basic/SVG color
+        //color: "forestgreen"        // Dunkelgrün
         //        color: "limegreen"        // Hellgrün
         radius: 15
         border.width: 0
@@ -315,7 +315,8 @@ Window {
             width: 88
             height: 33
             color: "#ffffff"
-            text: qsTr("Batterie-ladung")
+            //text: qsTr("Batterie-ladung")
+            text: (PowerNodeModel.batteryText)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
@@ -339,7 +340,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: qsTr("3,18")
+            text: (PowerNodeModel.batteryPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
@@ -362,16 +363,15 @@ Window {
         }
         Text {
             id: text33
-            x: 16
+            x: 7
             y: 216
-            width: 46
+            width: 45
             height: 26
             color: "#ffffff"
-            text: qsTr("28")
+            // ohne Nachkommastellen, rechtsbündig
+            text: (PowerNodeModel.batteryPercentage).toFixed(0)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignRight
-            anchors.horizontalCenterOffset: -16
-            anchors.horizontalCenter: parent.horizontalCenter
             font.family: "Arial"
         }
         Text {
@@ -485,7 +485,7 @@ Window {
             width: 74
             height: 14
             color: "#f9bcbc"
-            // ohne Nachkommastellen
+            // ohne Nachkommastellen, zentriert
             text: qsTr("5547")
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
@@ -526,7 +526,8 @@ Window {
             height: 33
             color: "#ffffff"
             //            text: qsTr("Netz-einspeisung")
-            text: qsTr("Netzbezug")
+            //text: qsTr("Netzbezug")
+            text: (PowerNodeModel.gridText)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
@@ -553,7 +554,8 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: qsTr("3,98")
+            //text: qsTr("3,98")
+            text: (PowerNodeModel.gridPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -585,7 +587,7 @@ Window {
             width: 74
             height: 14
             color: "#f9bcbc"
-            // ohne Nachkommastellen
+            // ohne Nachkommastellen, zentriert
             text: qsTr("35543")
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
