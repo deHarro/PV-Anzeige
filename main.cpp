@@ -11,10 +11,13 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+    PowerNodeModel powerNodeModel;
+
     QQmlApplicationEngine engine;
 
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    qmlRegisterSingletonInstance<PowerNodeModel>("Smarf.PowerNodeModel", 1, 0, "PowerNodeModel", &powerNodeModel);
 
+    const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [url](QObject *obj, const QUrl &objUrl)
     {
         if (!obj && url == objUrl)

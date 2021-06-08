@@ -1,6 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 
+import Smarf.PowerNodeModel 1.0
+
 Window {
     id: window
     width: 400
@@ -72,7 +74,7 @@ Window {
             width: 92
             height: 26
             color: "#ffffff"
-            text: qsTr("11,60")
+            text: (PowerNodeModel.generatorPowerTotal / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
