@@ -10,8 +10,11 @@ public:
     PowerNodeModel();
     ~PowerNodeModel();
 
-    // generator properties
+    // generator properties - all generator values are updated in one call to "generatorDataChanged"
     Q_PROPERTY(double generatorPowerTotal MEMBER m_generatorPowerTotal NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorPowerDach MEMBER m_generatorPowerDach NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorPowerGaube MEMBER m_generatorPowerGaube NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorPowerGarage MEMBER m_generatorPowerGarage NOTIFY generatorDataChanged)
     // battery properties
     Q_PROPERTY(double batteryPower MEMBER m_batteryPower NOTIFY batteryDataChanged)
     Q_PROPERTY(double batteryPercentage MEMBER m_batteryPercentage NOTIFY batteryDataChanged)
@@ -22,8 +25,10 @@ public:
     Q_PROPERTY(double gridPower MEMBER m_gridPower NOTIFY gridDataChanged)
     Q_PROPERTY(double gridEnergyImport MEMBER m_gridEnergyImport NOTIFY gridDataChanged)
     Q_PROPERTY(double gridEnergyExport MEMBER m_gridEnergyExport NOTIFY gridDataChanged)
-    // charging properties
+    // wallbox properties
     Q_PROPERTY(double chargingPower MEMBER m_chargingPower NOTIFY chargingDataChanged)
+    Q_PROPERTY(double chargedEnergy MEMBER m_chargedEnergy NOTIFY chargingDataChanged)
+    Q_PROPERTY(double sessionEnergy MEMBER m_sessionEnergy NOTIFY chargingDataChanged)
 
 Q_SIGNALS:
     void generatorDataChanged();
@@ -36,15 +41,25 @@ private:
     void onConnected();
     void onDisconnected();
 
-    double m_generatorPowerTotal = 0.0;
-    double m_batteryPower = 0.0;
-    double m_batteryPercentage = 0.0;
-    double m_totalPowerConsumption = 0.0;
-    double m_totalEnergyConsumption = 0.0;
-    double m_gridPower = 0.0;
-    double m_gridEnergyImport = 0.0;
-    double m_gridEnergyExport = 0.0;
-    double m_chargingPower = 0.0;
+    // generators
+    double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
+    double m_generatorPowerDach = 0.0;      // Momentanleistung String Dach
+    double m_generatorPowerGaube = 0.0;     // Momentanleistung String Gaube
+    double m_generatorPowerGarage = 0.0;    // Momentanleistung String Garage
+    // battery
+    double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]
+    double m_batteryPercentage = 0.0;       // Batterie Ladezustand [%]
+    // home
+    double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
+    double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
+    double m_gridPower = 0.0;               // Netzbezug/Einspeisung [kW]
+    double m_gridEnergyImport = 0.0;        // Zähler [kWh]
+    double m_gridEnergyExport = 0.0;        // Einspeisezähler [kWh]
+    // wallbox
+    double m_chargingPower = 0.0;           // current power [kW]
+    double m_chargedEnergy = 0.0;           // total energy [kWh]
+    double m_sessionEnergy = 0.0;           // last session energy [kWh]
+
 
     // Members for demo purposes
     QTimer m_dataTimer;

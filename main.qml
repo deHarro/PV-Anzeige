@@ -254,12 +254,12 @@ Window {
             x: 95
             y: 71
             color: "#f9bcbc"
-            text: qsTr("kW")
+            text: qsTr("kWh")
             font.pixelSize: 12
         }
         Text {
             id: text19
-            x: 198
+            x: 194
             y: 71
             color: "#f9bcbc"
             text: qsTr("Gesamt:")
@@ -267,7 +267,7 @@ Window {
         }
         Text {
             id: text20
-            x: 250
+            x: 246
             y: 71
             color: "#f9bcbc"
             text: qsTr("543,15")
@@ -275,10 +275,10 @@ Window {
         }
         Text {
             id: text21
-            x: 294
+            x: 290
             y: 71
             color: "#f9bcbc"
-            text: qsTr("kW")
+            text: qsTr("kWh")
             font.pixelSize: 12
         }
     }
@@ -604,8 +604,4 @@ Window {
 
 
 
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:1.25}
-}
-##^##*/
+
