@@ -8,26 +8,18 @@ Window {
     width: 400
     height: 540
     visible: true
-    color: "whitesmoke"     // sehr helles Grau für Fensterhintergrund
+    color: "whitesmoke"
+    property alias rectangle1: rectangle1
+    property alias rectangle4: rectangle4
+    property alias rectangle3: rectangle3
+    property alias rectangle2: rectangle2
+    property alias rectangle5: rectangle5
+    // sehr helles Grau für Fensterhintergrund
     title: qsTr("PV-Anzeige")
 
 
-    
-
-    
-    
-    
-    
-    
-    
-
-
-
-
-    
-
-
     Rectangle {
+        objectName: rectangle5
         id: rectangle5
         x: 42
         y: 20
@@ -114,33 +106,39 @@ Window {
         }
         Text {
             id: text25
-            x: 264
+            x: 256
             y: 11
+            width: 33
+            height: 14
             color: "#f9bcbc"
             //text: qsTr("5,00")
             text: (PowerNodeModel.generatorPowerDach / 1000.0).toFixed(2)
             font.pixelSize: 12
-            horizontalAlignment: Text.AlignHRight
+            horizontalAlignment: Text.AlignRight
         }
         Text {
             id: text27
-            x: 264
+            x: 256
             y: 34
+            width: 33
+            height: 14
             color: "#f9bcbc"
             //text: qsTr("3,60")
             text: (PowerNodeModel.generatorPowerGaube / 1000.0).toFixed(2)
             font.pixelSize: 12
-            horizontalAlignment: Text.AlignHRight
+            horizontalAlignment: Text.AlignRight
         }
         Text {
             id: text30
-            x: 264
+            x: 256
             y: 55
+            width: 33
+            height: 14
             color: "#f9bcbc"
             //text: qsTr("3,00")
             text: (PowerNodeModel.generatorPowerGarage / 1000.0).toFixed(2)
             font.pixelSize: 12
-            horizontalAlignment: Text.AlignHRight
+            horizontalAlignment: Text.AlignRight
         }
         Text {
             id: text26
@@ -249,16 +247,18 @@ Window {
         }
         Text {
             id: text17
-            x: 64
+            x: 51
             y: 71
+            width: 40
+            height: 14
             color: "#f9bcbc"
-            text: (PowerNodeModel.sessionEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
-            horizontalAlignment: Text.AlignHRight
+            horizontalAlignment: Text.AlignRight
+            text: (PowerNodeModel.sessionEnergy / 1000.0).toFixed(2)
         }
         Text {
             id: text18
-            x: 95
+            x: 96
             y: 71
             color: "#f9bcbc"
             text: qsTr("kWh")
@@ -274,12 +274,14 @@ Window {
         }
         Text {
             id: text20
-            x: 257
+            x: 240
             y: 71
+            width: 44
+            height: 14
             color: "#f9bcbc"
             text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
-            horizontalAlignment: Text.AlignHRight
+            horizontalAlignment: Text.AlignRight
         }
         Text {
             id: text21
@@ -619,3 +621,9 @@ Window {
 
 
 
+
+/*##^##
+Designer {
+    D{i:0;formeditorZoom:4}
+}
+##^##*/

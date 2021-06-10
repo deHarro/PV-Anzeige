@@ -34,13 +34,13 @@ void PowerNodeModel::onDataTimer() {
     // consumption handling ----------------------------------------------------------
     consumptionHandling();
     emit consumptionDataChanged();
-
 }
 
+// handling routines, may be called from MQTT routines (comment rand() calls then ;)
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
 {
-    m_generatorPowerDach = rand() % 10000;
+    m_generatorPowerDach = rand() % 15000;
     m_generatorPowerGaube = rand() % 10000;
     m_generatorPowerGarage = rand() % 10000;
     m_generatorPowerTotal = m_generatorPowerDach

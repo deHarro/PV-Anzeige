@@ -75,7 +75,7 @@ private:
     int m_batteryPercentage = 0;            // Batterie Ladezustand [%]
     int m_batteryColor = 0;
     QString m_batteryText = "";             // Text in der Batterie Box, wechselt Ladung/Entladung
-// home, Hausverbrauch
+// consumption, home, Hausverbrauch
     double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
     double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
     int m_homeColor = 0;
