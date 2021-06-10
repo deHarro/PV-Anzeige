@@ -117,7 +117,8 @@ Window {
             x: 264
             y: 11
             color: "#f9bcbc"
-            text: qsTr("5,00")
+            //text: qsTr("5,00")
+            text: (PowerNodeModel.generatorPowerDach / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHRight
         }
@@ -126,7 +127,8 @@ Window {
             x: 264
             y: 34
             color: "#f9bcbc"
-            text: qsTr("3,60")
+            //text: qsTr("3,60")
+            text: (PowerNodeModel.generatorPowerGaube / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHRight
         }
@@ -135,7 +137,8 @@ Window {
             x: 264
             y: 55
             color: "#f9bcbc"
-            text: qsTr("3,00")
+            //text: qsTr("3,00")
+            text: (PowerNodeModel.generatorPowerGarage / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHRight
         }
@@ -486,7 +489,7 @@ Window {
             height: 14
             color: "#f9bcbc"
             // ohne Nachkommastellen, zentriert
-            text: qsTr("5547")
+            text: (PowerNodeModel.gridEnergyImport)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
         }
@@ -588,7 +591,7 @@ Window {
             height: 14
             color: "#f9bcbc"
             // ohne Nachkommastellen, zentriert
-            text: qsTr("35543")
+            text: (PowerNodeModel.gridEnergyExport)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
         }
@@ -615,8 +618,4 @@ Window {
 
 
 
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:1.1}
-}
-##^##*/
+

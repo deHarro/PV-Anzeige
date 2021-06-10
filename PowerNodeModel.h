@@ -37,7 +37,7 @@ public:
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
     Q_PROPERTY(double gridPower MEMBER m_gridPower NOTIFY gridDataChanged)
-    Q_PROPERTY(double gridEnergyImport MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                    // Zähler [kWh]
+    Q_PROPERTY(double gridEnergyImport MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                    // Verbrauchszähler [kWh]
     Q_PROPERTY(double gridEnergyExport MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                    // Einspeisezähler [kWh]
     Q_PROPERTY(QString gridText MEMBER m_gridText NOTIFY batteryDataChanged)
 
@@ -64,28 +64,28 @@ private:
     void consumptionHandling();
 
 
-    // generators
+// generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
     double m_generatorPowerDach = 0.0;      // Momentanleistung String Dach
     double m_generatorPowerGaube = 0.0;     // Momentanleistung String Gaube
     double m_generatorPowerGarage = 0.0;    // Momentanleistung String Garage
     int m_generatorColor = 0;
-    // battery
+// battery, Akku
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]
     int m_batteryPercentage = 0;            // Batterie Ladezustand [%]
     int m_batteryColor = 0;
-    QString m_batteryText = "";             // Text in der Batterie Box
-    // home
+    QString m_batteryText = "";             // Text in der Batterie Box, wechselt Ladung/Entladung
+// home, Hausverbrauch
     double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
     double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
     int m_homeColor = 0;
-    // grid
+// grid, Netz
     double m_gridPower = 0.0;               // Netzbezug/Einspeisung [kW]
     double m_gridEnergyImport = 0.0;        // Zähler [kWh]
     double m_gridEnergyExport = 0.0;        // Einspeisezähler [kWh]
     int m_gridColor = 0;
-    QString m_gridText = "";                // Text in der grid Box
-    // wallbox
+    QString m_gridText = "";                // Text in der grid Box, wechselt Einspeisung/Bezug
+// Wallbox
     bool m_evAttached = false;              // wallbox delivers the information whether any vehicle is attached to the outlet
     double m_chargingPower = 0.0;           // current power [kW]
     double m_chargedEnergy = 0.0;           // total energy [kWh]

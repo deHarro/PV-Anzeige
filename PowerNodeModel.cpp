@@ -40,11 +40,12 @@ void PowerNodeModel::onDataTimer() {
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
 {
-    m_generatorPowerTotal = rand() % 10000;
-    m_generatorPowerDach += 10;
-    m_generatorPowerGaube += 10;
-    m_generatorPowerGarage += 10;
-
+    m_generatorPowerDach = rand() % 10000;
+    m_generatorPowerGaube = rand() % 10000;
+    m_generatorPowerGarage = rand() % 10000;
+    m_generatorPowerTotal = m_generatorPowerDach
+                          + m_generatorPowerGaube
+                          + m_generatorPowerGarage;
     if(m_generatorPowerTotal == 0) {
         m_generatorColor = VLIGHTGRAY;               // helles Hellgrau, keine QML Basic/SVG color
     }
@@ -132,6 +133,9 @@ void PowerNodeModel::batteryHandling(void)
 // grid handling -------------------------------------------------------------
 void PowerNodeModel::gridHandling(void)
 {
+    m_gridEnergyImport += (10 + (rand() % 100));    // das ist der Verbrauchszähler Richtung Netz
+    m_gridEnergyExport += (100 + (rand() % 100));   // das ist der Einspeisezähler Richtung Netz
+
     m_gridPower = (rand() % 10000) - 5000;
     if(m_gridPower == 0) {
         m_gridText = "";                        // kein Strom  -> kein Text
