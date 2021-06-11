@@ -30,6 +30,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    Icons/Akku_weiß_transparent.png
+//    Icons/Akku_weiß_transparent.png
 
 include(thirdparty/qmqtt/qmqtt.pri)

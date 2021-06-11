@@ -19,7 +19,7 @@ Window {
 
 
     Rectangle {
-        objectName: rectangle5
+        objectName: "rectangle5"
         id: rectangle5
         x: 42
         y: 20
@@ -358,7 +358,7 @@ Window {
             width: 77
             height: 43
             visible: true
-            source: "Icons/Akku_weiss_transparent20.png"
+            source: "Icons/Akku_weiss_transparent40.png"
             activeFocusOnTab: false
             focus: false
             enabled: false
