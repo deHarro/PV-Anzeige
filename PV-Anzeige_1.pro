@@ -1,4 +1,5 @@
-QT += quick svg
+QT += quick svg \
+        gui
 
 CONFIG += c++14
 CONFIG += QMQTT_NO_SSL
@@ -16,7 +17,7 @@ SOURCES += \
     main.cpp
 
 RESOURCES += qml.qrc \
-    Icons.qrc \
+    Icons.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

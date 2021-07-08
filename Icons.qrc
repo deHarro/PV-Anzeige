@@ -11,5 +11,6 @@
         <file>Icons/Akku_weiss_transparent60.png</file>
         <file>Icons/Akku_weiss_transparent80.png</file>
         <file>Icons/Akku_weiss_transparent100.png</file>
+        <file>Icons/FF.png</file>
     </qresource>
 </RCC>

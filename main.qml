@@ -3,10 +3,11 @@ import QtQuick.Window 2.12
 
 import Smarf.PowerNodeModel 1.0
 
+
 Window {
     id: window
     width: 400
-    height: 540
+    height: 560
     visible: true
     color: "whitesmoke"
     property alias rectangle1: rectangle1
@@ -22,7 +23,7 @@ Window {
         objectName: "rectangle5"
         id: rectangle5
         x: 42
-        y: 20
+        y: 25
         width: 320
         height: 90
         opacity: 1
@@ -167,12 +168,48 @@ Window {
             text: qsTr("kW")
             font.pixelSize: 12
         }
+
+        Image {
+            id: image8
+            x: 33
+            y: 90
+            width: 25
+            height: 25
+            opacity: 0.5
+            source: "Icons/FF.png"
+            rotation: 90
+            fillMode: Image.PreserveAspectFit
+        }
+
+        Image {
+            id: image9
+            x: 146
+            y: 90
+            width: 25
+            height: 25
+            opacity: 0.5
+            source: "Icons/FF.png"
+            fillMode: Image.PreserveAspectFit
+            rotation: 90
+        }
+
+        Image {
+            id: image10
+            x: 263
+            y: 90
+            width: 25
+            height: 25
+            opacity: 0.5
+            source: "Icons/FF.png"
+            fillMode: Image.PreserveAspectFit
+            rotation: 90
+        }
     }
 
     Rectangle {
         id: rectangle1  // WallBox
         x: 42
-        y: 420
+        y: 435
         width: 320
         height: 90
         color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
@@ -291,6 +328,18 @@ Window {
             text: qsTr("kWh")
             font.pixelSize: 12
         }
+
+        Image {
+            id: image11
+            x: 148
+            y: -25
+            width: 25
+            height: 25
+            opacity: 0.5
+            source: "Icons/FF.png"
+            fillMode: Image.PreserveAspectFit
+            rotation: 90
+        }
     }
 
 
@@ -298,7 +347,7 @@ Window {
     Rectangle {
         id: rectangle2
         x: 42
-        y: 130
+        y: 140
         width: 90
         height: 270
         color: "#b3b3b3"          // hellgrau, keine QML Basic/SVG color
@@ -306,6 +355,7 @@ Window {
         //        color: "limegreen"        // Hellgrün
         radius: 15
         border.width: 0
+
 
 
 
@@ -406,6 +456,7 @@ Window {
             anchors.horizontalCenter: parent.horizontalCenter
             font.family: "Arial"
         }
+
     }
 
 
@@ -413,7 +464,7 @@ Window {
     Rectangle {
         id: rectangle3
         x: 157
-        y: 130
+        y: 140
         width: 90
         height: 270
         color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
@@ -507,6 +558,34 @@ Window {
             text: qsTr("kWh")
             font.pixelSize: 12
         }
+
+        Image {
+            id: image6
+            x: -25
+            y: 123
+            width: 25
+            height: 25
+            opacity: 0.5
+            visible: true
+            source: "Icons/FF.png"
+            clip: false
+            antialiasing: false
+            smooth: true
+            fillMode: Image.PreserveAspectFit
+        }
+
+        Image {
+            id: image7
+            x: 90
+            y: 123
+            width: 25
+            height: 25
+            opacity: 0.5
+            source: "Icons/FF.png"
+            antialiasing: false
+            rotation: 180
+            fillMode: Image.PreserveAspectFit
+        }
     }
 
 
@@ -514,7 +593,7 @@ Window {
     Rectangle {
         id: rectangle4
         x: 272
-        y: 130
+        y: 140
         width: 90
         height: 270
         color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
@@ -614,9 +693,8 @@ Window {
 
 
 
+
 }
-
-
 
 
 
@@ -624,6 +702,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:4}
+    D{i:0;formeditorZoom:1.33}D{i:15}D{i:16}D{i:17}D{i:30}D{i:48}
 }
 ##^##*/
