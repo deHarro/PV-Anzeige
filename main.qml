@@ -566,7 +566,7 @@ Window {
             width: 25
             height: 25
             opacity: 0.5
-            visible: true
+            visible: PowerNodeModel.m_batt2house
             source: "Icons/FF.png"
             clip: false
             antialiasing: false
@@ -585,6 +585,7 @@ Window {
             antialiasing: false
             rotation: 180
             fillMode: Image.PreserveAspectFit
+            visible: PowerNodeModel.m_grid2house
         }
     }
 

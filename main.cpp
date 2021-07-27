@@ -1,6 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickView>
+#include <QLabel>
+#include <QApplication>
 
 /*
 #include <QCoreApplication>
@@ -21,7 +23,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
-    QGuiApplication app(argc, argv);
+    //QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     PowerNodeModel powerNodeModel;
 
@@ -31,10 +34,15 @@ int main(int argc, char *argv[])
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
 
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [url](QObject *obj, const QUrl &objUrl) {
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [url](QObject *obj, const QUrl &objUrl)
+    {
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
+
+// test
+//    QLabel label("<img src=':/Icons/FF.png' />");
+//    label.show();
 
 //    QQuickView view;
 //    QQmlEngine *engine1 = view.engine();
