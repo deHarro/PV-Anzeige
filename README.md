@@ -18,4 +18,5 @@ Modelled with QT Creator, the basic display shows up as follows:
 The pink texts and values are normally invisible and appear on mouse over in white, as all other text.
 
 The arrows indicate current flow. Only those arrows show up where current is actually flowing.
+
 Depending on the current direction, some texts change, e.g. "Batterie-landung" / Batterie-entladung" or "Netzbezug" / "Netz-einspeisung".
