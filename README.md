@@ -15,7 +15,7 @@ Modelled with QT Creator, the basic display shows up as follows:
 ![Darstellung_PV-Anzeige](https://user-images.githubusercontent.com/26298406/124920880-17da5480-dff8-11eb-824f-2bed3e3577b1.png)
 
 
-The pink texts and values are normally invisible and appear on mouse over in white, as all other text.
+The pink texts and values are normally invisible and appear in white as all other text on mouse over.
 
 The arrows indicate current flow. Only those arrows show up where current is actually flowing.
 
