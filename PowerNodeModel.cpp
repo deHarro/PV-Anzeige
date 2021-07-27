@@ -34,6 +34,10 @@ void PowerNodeModel::onDataTimer() {
     // consumption handling ----------------------------------------------------------
     consumptionHandling();
     emit consumptionDataChanged();
+
+    // arrows handling
+    arrowsHandling();
+    //emit arrowsDataChanged();
 }
 
 // handling routines, may be called from MQTT routines (comment rand() calls then ;)
@@ -182,4 +186,68 @@ void PowerNodeModel::consumptionHandling(void)
         m_homeColor = LIMEGREEN;                // Hellgrün
         //rectangle5.color = LIMEGREEN;         // Hellgrün
     }
+}
+
+// arrows handling ----------------------------------------------------------
+void PowerNodeModel::arrowsHandling(void)
+{
+    // PV to battery
+    if((m_batteryPower > 0) && (m_generatorPowerTotal > 0))
+    {
+        m_pv2batt = true;
+    }
+    else
+    {
+        m_pv2batt = false;
+    }
+
+    // PV to house
+    if((m_totalPowerConsumption > 0) && (m_generatorPowerTotal > 0))
+    {
+        m_pv2house = true;
+    }
+    else
+    {
+        m_pv2house = false;
+    }
+
+    // PV to grid
+    if((m_gridPower > 0) && (m_generatorPowerTotal > 0))
+    {
+        m_pv2grid = true;
+        //image10.visible = true;
+    }
+    else
+    {
+        m_pv2grid = false;
+    }
+
+    // battery to house
+    if((m_batteryPower < 0) && (m_generatorPowerTotal = 0))
+    {
+        m_batt2house = true;
+    }
+
+    // house to battery (battery conditioining when PV is off for long time)
+    if((m_batteryPower > 0) && (m_generatorPowerTotal = 0))
+    {
+        m_house2batt = true;
+    }
+
+    // grid to house
+    if((m_gridPower < 0) && (m_totalPowerConsumption > 0))
+    {
+        m_grid2house = true;
+    }
+    else
+    {
+        m_grid2house = false;
+    }
+
+    // house to wallbox (charging of elctric vehicle)
+    if((m_chargingPower > 0))
+    {
+        m_house2charger = true;
+    }
+
 }

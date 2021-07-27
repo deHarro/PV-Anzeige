@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQuickView>
 
 /*
 #include <QCoreApplication>
@@ -34,6 +35,12 @@ int main(int argc, char *argv[])
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
+
+//    QQuickView view;
+//    QQmlEngine *engine1 = view.engine();
+//    engine1->addImageProvider(QLatin1String("colors"), new FFImageProvider);
+//    view.setSource(QUrl::fromLocalFile(QStringLiteral("main.qml")));
+//    view.show();
 
     engine.load(url);
 

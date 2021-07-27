@@ -3,7 +3,6 @@ import QtQuick.Window 2.12
 
 import Smarf.PowerNodeModel 1.0
 
-
 Window {
     id: window
     width: 400
@@ -200,21 +199,23 @@ Window {
             width: 25
             height: 25
             opacity: 0.5
+            //Image { fillMode: Image.PreserveAspectCrop; source: "Icons/FF.png" }
             source: "Icons/FF.png"
             fillMode: Image.PreserveAspectFit
             rotation: 90
+            visible: true
         }
     }
 
     Rectangle {
-        id: rectangle1  // WallBox
+        id: rectangle1              // WallBox
         x: 42
         y: 435
         width: 320
         height: 90
-        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
-        //        color: "dodgerblue"   // #1e90ff
-        //        color: "#0A7CEB"        // um -20 dunkleres "dogerblue"
+        color: "#b3b3b3"            // hellgrau, keine QML Basic/SVG color
+        //color: "dodgerblue"       // #1e90ff
+        //color: "#0A7CEB"          // um -20 dunkleres "dogerblue"
         radius: 15
         border.width: 0
         Text {
@@ -350,9 +351,9 @@ Window {
         y: 140
         width: 90
         height: 270
-        color: "#b3b3b3"          // hellgrau, keine QML Basic/SVG color
-        //color: "forestgreen"        // Dunkelgrün
-        //        color: "limegreen"        // Hellgrün
+        color: "#b3b3b3"            // hellgrau, keine QML Basic/SVG color
+        //color: "forestgreen"      // Dunkelgrün
+        //color: "limegreen"        // Hellgrün
         radius: 15
         border.width: 0
 
@@ -370,7 +371,6 @@ Window {
             width: 88
             height: 33
             color: "#ffffff"
-            //text: qsTr("Batterie-ladung")
             text: (PowerNodeModel.batteryText)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter

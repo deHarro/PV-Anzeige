@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QString>
+#include <QQuickImageProvider>
 
 // define colors according https://doc.qt.io/qt-5/qml-color.html
 #define VLIGHTGRAY      0xb3b3b3    // no defined color, hand made ;-)
@@ -52,6 +53,7 @@ Q_SIGNALS:
     void consumptionDataChanged();
     void gridDataChanged();
     void chargingDataChanged();
+    void arrowsDataChanged();
 
 private:
     void onConnected();
@@ -59,9 +61,10 @@ private:
 
     void generatorHandling(void);
     void batteryHandling(void);
-    void gridHandling();
-    void wallboxHandling();
-    void consumptionHandling();
+    void gridHandling(void);
+    void wallboxHandling(void);
+    void consumptionHandling(void);
+    void arrowsHandling(void);
 
 
 // generators, PV-Paneele
@@ -93,8 +96,40 @@ private:
     double m_sessionEnergy = 0.0;           // last session energy [kWh]
     int m_wallboxColor = 0;
 
+// arrow handling
+    bool m_pv2batt = false;
+    bool m_pv2house = false;
+    bool m_pv2grid = false;
+    bool m_batt2house = false;
+    bool m_house2batt = false;
+    bool m_grid2house = false;
+    bool m_house2charger = false;
 
     // Members for demo purposes
     QTimer m_dataTimer;
     void onDataTimer();
 };
+
+// test --------------------------------------------------------------------
+
+class FFImageProvider : public QQuickImageProvider {
+public:
+    FFImageProvider()
+               : QQuickImageProvider(QQuickImageProvider::Pixmap)
+    {
+    }
+
+    QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override
+    {
+       int width = 37;
+       int height = 36;
+
+       if (size)
+          *size = QSize(width, height);
+       QPixmap pixmap(requestedSize.width() > 0 ? requestedSize.width() : width,
+                      requestedSize.height() > 0 ? requestedSize.height() : height);
+       //pixmap.fill(QColor(id).rgba());
+       return pixmap;
+    }
+};
+
