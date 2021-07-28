@@ -6,7 +6,7 @@ using namespace std::chrono_literals;
 
 PowerNodeModel::PowerNodeModel() {
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
-    m_dataTimer.start(1000);
+    m_dataTimer.start(2000);
 }
 
 PowerNodeModel::~PowerNodeModel() {
@@ -44,9 +44,9 @@ void PowerNodeModel::onDataTimer() {
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
 {
-    m_generatorPowerDach = rand() % 9000;
-    m_generatorPowerGaube = rand() % 3600;
-    m_generatorPowerGarage = rand() % 3000;
+    m_generatorPowerDach = rand() % 9000;               // auskommentieren, wenn echte Daten vorhadnen sind
+    m_generatorPowerGaube = rand() % 3600;              // auskommentieren, wenn echte Daten vorhadnen sind
+    m_generatorPowerGarage = rand() % 3000;             // auskommentieren, wenn echte Daten vorhadnen sind
 
     m_generatorPowerTotal = m_generatorPowerDach
                           + m_generatorPowerGaube
@@ -55,11 +55,11 @@ void PowerNodeModel::generatorHandling(void)
 //    m_generatorPowerTotal = 0;                // test
 
     if(m_generatorPowerTotal == 0) {
-        m_generatorColor = VLIGHTGRAY;               // helles Hellgrau, keine QML Basic/SVG color
+        m_generatorColor = VLIGHTGRAY;                  // helles Hellgrau, keine QML Basic/SVG color
         m_pv2batt = false;
     }
     else {
-        m_generatorColor = LIMEGREEN;                // Hellgrün
+        m_generatorColor = LIMEGREEN;                   // Hellgrün
         if(m_batteryPower > 0){
             m_pv2batt = true;
         }
@@ -69,25 +69,25 @@ void PowerNodeModel::generatorHandling(void)
 // battery handling ----------------------------------------------------------
 void PowerNodeModel::batteryHandling(void)
 {
-    m_batteryPower = (rand() % 10000) - 5000;
+    m_batteryPower = (rand() % 10000) - 5000;           // auskommentieren, wenn echte Daten vorhadnen sind
 
 //    m_batteryPower = 0;               // test
 
     // change text and color depending on power value
     if(m_batteryPower == 0) {
-        m_batteryText = "";                     // kein Strom  -> kein Text
-        m_batteryColor = VLIGHTGRAY;            // helles Hellgrau, keine QML Basic/SVG color
+        m_batteryText = "";                             // kein Strom  -> kein Text
+        m_batteryColor = VLIGHTGRAY;                    // helles Hellgrau, keine QML Basic/SVG color
         m_batt2house = false;
     }
     else if(m_batteryPower > 0) {
-        m_batteryText = "Batterie-ladung";      // Batterie wird geladen
-        m_batteryColor = LIMEGREEN;             // Hellgrün
+        m_batteryText = "Batterie-ladung";              // Batterie wird geladen
+        m_batteryColor = LIMEGREEN;                     // Hellgrün
         m_batt2house = false;
     }
-    else {                                      // Batterie wird entladen
-        m_batteryPower = abs(m_batteryPower);   // auch negative Werte (bei Entladung) werden positiv dargestellt...
-        m_batteryText = "Batterie-entladung";   // ... nur der Text ändert sich
-        m_batteryColor = FORESTGREEN;           // Dunkelgrün
+    else {                                              // Batterie wird entladen
+        m_batteryPower = abs(m_batteryPower);           // auch negative Werte (bei Entladung) werden positiv dargestellt...
+        m_batteryText = "Batterie-entladung";           // ... nur der Text ändert sich
+        m_batteryColor = FORESTGREEN;                   // Dunkelgrün
         m_batt2house = true;
     }
 
@@ -96,7 +96,7 @@ void PowerNodeModel::batteryHandling(void)
     // change battery icon depending on battery percentage
     if( m_batteryPercentage <= 5)
     {
-        m_batteryImage = "//Icons//Akku_weiss_transparent00.png";
+        m_batteryImage = "/Icons/Akku_weiss_transparent00.png";
     }
     else if (m_batteryPercentage > 5 && m_batteryPercentage < 39)
     {
@@ -123,39 +123,41 @@ void PowerNodeModel::batteryHandling(void)
 // grid handling -------------------------------------------------------------
 void PowerNodeModel::gridHandling(void)
 {
-    m_gridEnergyImport += (10 + (rand() % 100));    // das ist der Verbrauchszähler Richtung Netz
-    m_gridEnergyExport += (100 + (rand() % 100));   // das ist der Einspeisezähler Richtung Netz
+    m_gridEnergyImport += (10 + (rand() % 100));    // Verbrauchszähler Richtung Netz, auskommentieren, wenn echte Daten vorhadnen sind
+    m_gridEnergyExport += (100 + (rand() % 100));   // Einspeisezähler Richtung Netz, auskommentieren, wenn echte Daten vorhadnen sind
 
-    m_gridPower = (rand() % 10000) - 5000;
+    m_gridPower = (rand() % 10000) - 5000;          // auskommentieren, wenn echte Daten vorhadnen sind
+
     if(m_gridPower == 0) {
-        m_gridText = "";                        // kein Strom  -> kein Text
-        m_gridColor = VLIGHTGRAY;               // helles Hellgrau, keine QML Basic/SVG color
+        m_gridText = "";                            // kein Strom  -> kein Text
+        m_gridColor = VLIGHTGRAY;                   // helles Hellgrau, keine QML Basic/SVG color
     }
-    else if (m_gridPower > 0) {
+    if (m_gridPower > 0) {
+        m_gridColor = LIMEGREEN;                    // Hellgrün
         m_gridText = "Netz-einspeisung";
-        m_gridColor = LIMEGREEN;                // Hellgrün
     }
     else {
-        m_gridPower = abs(m_gridPower);
+        m_gridPower = abs(m_gridPower);             // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
+
+        m_gridColor = FIREBRICK;                    // Dunkelrot
         m_gridText = "Netzbezug";
-        m_gridColor = FIREBRICK;                // Dunkelrot
     }
 }
 
 // wallbox handling ----------------------------------------------------------
 void PowerNodeModel::wallboxHandling()
 {
-    m_chargingPower = rand() % 4000;
-    m_chargedEnergy += 10;
-    m_sessionEnergy += 10;
+    m_chargingPower = rand() % 4000;                // auskommentieren, wenn echte Daten vorhadnen sind
+    m_chargedEnergy += 10;                          // auskommentieren, wenn echte Daten vorhadnen sind
+    m_sessionEnergy += 10;                          // auskommentieren, wenn echte Daten vorhadnen sind
 
 //    m_chargingPower = 0;                   // test
-//    m_evAttached = true;                   // test
+    m_evAttached = true;                   // test
 
-    if(m_evAttached == true) {                  // cable attached to ev (car/bike)
+    if(m_evAttached == true) {                      // cable attached to ev (car/bike)
 
-        if(m_chargingPower > 0){                // keine Ladung aktiv ->
-            m_wallboxColor = DODGERBLUE;        // schickes Blau
+        if(m_chargingPower > 0){                    // keine Ladung aktiv ->
+            m_wallboxColor = DODGERBLUE;            // schickes Blau
         }
         else
         {
@@ -163,20 +165,21 @@ void PowerNodeModel::wallboxHandling()
         }
     }
     else {
-        m_wallboxColor =VLIGHTGRAY ;            // helles Hellgrau, keine QML Basic/SVG color
+        m_wallboxColor =VLIGHTGRAY ;                // helles Hellgrau, keine QML Basic/SVG color
     }
 }
 
 // consumption handling ----------------------------------------------------------
 void PowerNodeModel::consumptionHandling(void)
 {
-    m_totalPowerConsumption = rand() % 10000;
+    m_totalPowerConsumption = rand() % 10000;       // auskommentieren, wenn echte Daten vorhadnen sind
+
     if(m_totalPowerConsumption == 0) {
-        m_homeColor = VLIGHTGRAY;               // helles Hellgrau, keine QML Basic/SVG color
+        m_homeColor = VLIGHTGRAY;                   // helles Hellgrau, keine QML Basic/SVG color
     }
     else {
-        m_homeColor = LIMEGREEN;                // Hellgrün
-        //rectangle5.color = LIMEGREEN;         // Hellgrün
+        m_homeColor = LIMEGREEN;                    // Hellgrün
+        //rectangle5.color = LIMEGREEN;             // Hellgrün
     }
 }
 

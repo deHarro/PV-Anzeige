@@ -8,14 +8,14 @@ Window {
     width: 400
     height: 560
     visible: true
-    color: "whitesmoke"
+    color: "whitesmoke"                     // sehr helles Grau für Fensterhintergrund
+    title: qsTr("PV-Anzeige")
+
     property alias rectangle1: rectangle1
     property alias rectangle4: rectangle4
     property alias rectangle3: rectangle3
     property alias rectangle2: rectangle2
     property alias rectangle5: rectangle5
-    // sehr helles Grau für Fensterhintergrund
-    title: qsTr("PV-Anzeige")
 
 
     Rectangle {
@@ -28,8 +28,8 @@ Window {
         opacity: 1
         visible: true
         color: PowerNodeModel.generatorColor
-//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
-        //color: "limegreen"      // Hellgrün
+        //color: "#b3b3b3"                  // hellgrau, keine QML Basic/SVG color
+        //color: "limegreen"                // Hellgrün
         radius: 15
         border.color: "#00000000"
         border.width: 0
@@ -112,7 +112,6 @@ Window {
             width: 33
             height: 14
             color: "#f9bcbc"
-            //text: qsTr("5,00")
             text: (PowerNodeModel.generatorPowerDach / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -124,7 +123,6 @@ Window {
             width: 33
             height: 14
             color: "#f9bcbc"
-            //text: qsTr("3,60")
             text: (PowerNodeModel.generatorPowerGaube / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -136,7 +134,6 @@ Window {
             width: 33
             height: 14
             color: "#f9bcbc"
-            //text: qsTr("3,00")
             text: (PowerNodeModel.generatorPowerGarage / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -205,7 +202,6 @@ Window {
             source: "Icons/FF.png"
             fillMode: Image.PreserveAspectFit
             rotation: 90
-//            visible: true
             visible: PowerNodeModel.pv2grid
         }
     }
@@ -217,8 +213,8 @@ Window {
         width: 320
         height: 90
         color: PowerNodeModel.wallboxColor
-        //color: "#b3b3b3"            // hellgrau, keine QML Basic/SVG color
-//        color: "dodgerblue"       // #1e90ff
+        //color: "#b3b3b3"          // hellgrau, keine QML Basic/SVG color
+        //color: "dodgerblue"       // #1e90ff
         //color: "#0A7CEB"          // um -20 dunkleres "dogerblue"
         radius: 15
         border.width: 0
@@ -356,19 +352,12 @@ Window {
         y: 140
         width: 90
         height: 270
-        color: (PowerNodeModel.batteryColor)
-//        color: "#b3b3b3"            // hellgrau, keine QML Basic/SVG color
+        color: PowerNodeModel.batteryColor
+        //color: "#b3b3b3"          // hellgrau, keine QML Basic/SVG color
         //color: "forestgreen"      // Dunkelgrün
         //color: "limegreen"        // Hellgrün
         radius: 15
         border.width: 0
-
-
-
-
-
-
-
 
         Text {
             id: text2
@@ -377,7 +366,7 @@ Window {
             width: 88
             height: 33
             color: "#ffffff"
-            text: (PowerNodeModel.batteryText)
+            text: PowerNodeModel.batteryText
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
@@ -414,8 +403,7 @@ Window {
             width: 77
             height: 43
             visible: true
-//            source: PowerNodeModel.batteryImage
-            source: "Icons/Akku_weiss_transparent40.png"
+            source: PowerNodeModel.batteryImage
             activeFocusOnTab: false
             focus: false
             enabled: false
@@ -475,8 +463,8 @@ Window {
         width: 90
         height: 270
         color: PowerNodeModel.homeColor
-//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
-        //        color: "limegreen"      // Hellgrün
+        //color: "#b3b3b3"                  // hellgrau, keine QML Basic/SVG color
+        //color: "limegreen"                // Hellgrün
         radius: 15
         border.width: 0
 
@@ -606,9 +594,9 @@ Window {
         width: 90
         height: 270
         color: PowerNodeModel.gridColor
-//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
-        //        color: "limegreen"    // Hellgrün
-        //        color: "firebrick"      // Dunkelrot
+        //color: "#b3b3b3"                  // hellgrau, keine QML Basic/SVG color
+        //        color: "limegreen"        // Hellgrün
+        //        color: "firebrick"        // Dunkelrot
         radius: 15
         border.width: 0
         
@@ -619,9 +607,9 @@ Window {
             width: 88
             height: 33
             color: "#ffffff"
-            //            text: qsTr("Netz-einspeisung")
+            //text: qsTr("Netz-einspeisung")
             //text: qsTr("Netzbezug")
-            text: (PowerNodeModel.gridText)
+            text: PowerNodeModel.gridText
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
@@ -648,7 +636,6 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            //text: qsTr("3,98")
             text: (PowerNodeModel.gridPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter

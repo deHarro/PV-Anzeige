@@ -53,6 +53,7 @@ public:
     Q_PROPERTY(double sessionEnergy MEMBER m_sessionEnergy NOTIFY chargingDataChanged)                      // last session energy [kWh]
     Q_PROPERTY(QString wallboxColor MEMBER m_wallboxColor NOTIFY chargingDataChanged)
 
+    // arrow properties - all arrows are updated in one call to "arrowsDataChanged"
     Q_PROPERTY(bool batt2house MEMBER m_batt2house  NOTIFY arrowsDataChanged)
     Q_PROPERTY(bool house2batt MEMBER m_house2batt  NOTIFY arrowsDataChanged)
     Q_PROPERTY(bool grid2house MEMBER m_grid2house  NOTIFY arrowsDataChanged)
