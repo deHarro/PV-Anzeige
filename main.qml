@@ -27,7 +27,8 @@ Window {
         height: 90
         opacity: 1
         visible: true
-        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        color: PowerNodeModel.generatorColor
+//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
         //color: "limegreen"      // Hellgrün
         radius: 15
         border.color: "#00000000"
@@ -178,6 +179,7 @@ Window {
             source: "Icons/FF.png"
             rotation: 90
             fillMode: Image.PreserveAspectFit
+            visible: PowerNodeModel.pv2batt
         }
 
         Image {
@@ -190,6 +192,7 @@ Window {
             source: "Icons/FF.png"
             fillMode: Image.PreserveAspectFit
             rotation: 90
+            visible: PowerNodeModel.pv2house
         }
 
         Image {
@@ -199,11 +202,11 @@ Window {
             width: 25
             height: 25
             opacity: 0.5
-            //Image { fillMode: Image.PreserveAspectCrop; source: "Icons/FF.png" }
             source: "Icons/FF.png"
             fillMode: Image.PreserveAspectFit
             rotation: 90
-            visible: true
+//            visible: true
+            visible: PowerNodeModel.pv2grid
         }
     }
 
@@ -213,8 +216,9 @@ Window {
         y: 435
         width: 320
         height: 90
-        color: "#b3b3b3"            // hellgrau, keine QML Basic/SVG color
-        //color: "dodgerblue"       // #1e90ff
+        color: PowerNodeModel.wallboxColor
+        //color: "#b3b3b3"            // hellgrau, keine QML Basic/SVG color
+//        color: "dodgerblue"       // #1e90ff
         //color: "#0A7CEB"          // um -20 dunkleres "dogerblue"
         radius: 15
         border.width: 0
@@ -340,6 +344,7 @@ Window {
             source: "Icons/FF.png"
             fillMode: Image.PreserveAspectFit
             rotation: 90
+            visible: PowerNodeModel.house2charger
         }
     }
 
@@ -351,7 +356,8 @@ Window {
         y: 140
         width: 90
         height: 270
-        color: "#b3b3b3"            // hellgrau, keine QML Basic/SVG color
+        color: (PowerNodeModel.batteryColor)
+//        color: "#b3b3b3"            // hellgrau, keine QML Basic/SVG color
         //color: "forestgreen"      // Dunkelgrün
         //color: "limegreen"        // Hellgrün
         radius: 15
@@ -408,6 +414,7 @@ Window {
             width: 77
             height: 43
             visible: true
+//            source: PowerNodeModel.batteryImage
             source: "Icons/Akku_weiss_transparent40.png"
             activeFocusOnTab: false
             focus: false
@@ -467,7 +474,8 @@ Window {
         y: 140
         width: 90
         height: 270
-        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        color: PowerNodeModel.homeColor
+//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
         //        color: "limegreen"      // Hellgrün
         radius: 15
         border.width: 0
@@ -566,7 +574,7 @@ Window {
             width: 25
             height: 25
             opacity: 0.5
-            visible: PowerNodeModel.m_batt2house
+            visible: PowerNodeModel.batt2house
             source: "Icons/FF.png"
             clip: false
             antialiasing: false
@@ -585,7 +593,7 @@ Window {
             antialiasing: false
             rotation: 180
             fillMode: Image.PreserveAspectFit
-            visible: PowerNodeModel.m_grid2house
+            visible: PowerNodeModel.grid2house
         }
     }
 
@@ -597,7 +605,8 @@ Window {
         y: 140
         width: 90
         height: 270
-        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
+        color: PowerNodeModel.gridColor
+//        color: "#b3b3b3"      // hellgrau, keine QML Basic/SVG color
         //        color: "limegreen"    // Hellgrün
         //        color: "firebrick"      // Dunkelrot
         radius: 15
@@ -703,6 +712,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:1.33}D{i:15}D{i:16}D{i:17}D{i:30}D{i:48}
+    D{i:0;formeditorZoom:1.33}
 }
 ##^##*/
