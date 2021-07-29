@@ -571,6 +571,22 @@ Window {
         }
 
         Image {
+            id: image12
+            x: -25
+            y: 123
+            width: 25
+            height: 25
+            opacity: 0.5
+            visible: PowerNodeModel.house2batt
+            source: "Icons/FF.png"
+            clip: false
+            antialiasing: false
+            smooth: true
+            fillMode: Image.PreserveAspectFit
+            rotation: 180
+        }
+
+        Image {
             id: image7
             x: 90
             y: 123
