@@ -44,9 +44,11 @@ void PowerNodeModel::onDataTimer() {
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
 {
+#if defined DEMOMODE
     m_generatorPowerDach = rand() % 9000;               // auskommentieren, wenn echte Daten vorhadnen sind
     m_generatorPowerGaube = rand() % 3600;              // auskommentieren, wenn echte Daten vorhadnen sind
     m_generatorPowerGarage = rand() % 3000;             // auskommentieren, wenn echte Daten vorhadnen sind
+#endif
 
     m_generatorPowerTotal = m_generatorPowerDach
                           + m_generatorPowerGaube
@@ -69,23 +71,25 @@ void PowerNodeModel::generatorHandling(void)
 // battery handling ----------------------------------------------------------
 void PowerNodeModel::batteryHandling(void)
 {
+#if defined DEMOMODE
     m_batteryPower = (rand() % 10000) - 5000;           // auskommentieren, wenn echte Daten vorhadnen sind
+    //    m_batteryPower = 0;               // test
+#endif
 
-//    m_batteryPower = 0;               // test
-
+    m_battPowerAnzeige = m_batteryPower;
     // change text and color depending on power value
-    if(m_batteryPower == 0) {
+    if(m_battPowerAnzeige == 0) {
         m_batteryText = "";                             // kein Strom  -> kein Text
         m_batteryColor = VLIGHTGRAY;                    // helles Hellgrau, keine QML Basic/SVG color
         m_batt2house = false;
     }
-    else if(m_batteryPower > 0) {
+    else if(m_battPowerAnzeige > 0) {
         m_batteryText = "Batterie-ladung";              // Batterie wird geladen
         m_batteryColor = LIMEGREEN;                     // Hellgrün
         m_batt2house = false;
     }
     else {                                              // Batterie wird entladen
-        m_batteryPower = abs(m_batteryPower);           // auch negative Werte (bei Entladung) werden positiv dargestellt...
+        m_battPowerAnzeige = abs(m_battPowerAnzeige);           // auch negative Werte (bei Entladung) werden positiv dargestellt...
         m_batteryText = "Batterie-entladung";           // ... nur der Text ändert sich
         m_batteryColor = FORESTGREEN;                   // Dunkelgrün
         m_batt2house = true;
@@ -123,21 +127,24 @@ void PowerNodeModel::batteryHandling(void)
 // grid handling -------------------------------------------------------------
 void PowerNodeModel::gridHandling(void)
 {
+#if defined DEMOMODE
     m_gridEnergyImport += (10 + (rand() % 100));    // Verbrauchszähler Richtung Netz, auskommentieren, wenn echte Daten vorhadnen sind
     m_gridEnergyExport += (100 + (rand() % 100));   // Einspeisezähler Richtung Netz, auskommentieren, wenn echte Daten vorhadnen sind
 
     m_gridPower = (rand() % 10000) - 5000;          // auskommentieren, wenn echte Daten vorhadnen sind
+#endif
 
-    if(m_gridPower == 0) {
+    m_gridPowerAnzeige = m_gridPower;               // für die Anzeige eine extra Var benutzen wegen abs()
+    if(m_gridPowerAnzeige == 0) {
         m_gridText = "";                            // kein Strom  -> kein Text
         m_gridColor = VLIGHTGRAY;                   // helles Hellgrau, keine QML Basic/SVG color
     }
-    if (m_gridPower > 0) {
+    else if (m_gridPowerAnzeige > 0) {
         m_gridColor = LIMEGREEN;                    // Hellgrün
         m_gridText = "Netz-einspeisung";
     }
     else {
-        m_gridPower = abs(m_gridPower);             // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
+        m_gridPowerAnzeige = abs(m_gridPowerAnzeige);             // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
 
         m_gridColor = FIREBRICK;                    // Dunkelrot
         m_gridText = "Netzbezug";
@@ -147,12 +154,16 @@ void PowerNodeModel::gridHandling(void)
 // wallbox handling ----------------------------------------------------------
 void PowerNodeModel::wallboxHandling()
 {
+#if defined DEMOMODE
     m_chargingPower = rand() % 4000;                // auskommentieren, wenn echte Daten vorhadnen sind
     m_chargedEnergy += 10;                          // auskommentieren, wenn echte Daten vorhadnen sind
     m_sessionEnergy += 10;                          // auskommentieren, wenn echte Daten vorhadnen sind
 
-//    m_chargingPower = 0;                   // test
-    m_evAttached = true;                   // test
+    bool test = rand() % 2;                      // test
+    test == 1 ? m_chargingPower = m_chargingPower : m_chargingPower = 0;    // test
+    m_evAttached = rand() % 2;                  // test
+    m_evAttached == 1 ? m_evAttached = true : m_evAttached = false;    // test
+#endif
 
     if(m_evAttached == true) {                      // cable attached to ev (car/bike)
 
@@ -172,7 +183,9 @@ void PowerNodeModel::wallboxHandling()
 // consumption handling ----------------------------------------------------------
 void PowerNodeModel::consumptionHandling(void)
 {
+#if defined DEMOMODE
     m_totalPowerConsumption = rand() % 10000;       // auskommentieren, wenn echte Daten vorhadnen sind
+#endif
 
     if(m_totalPowerConsumption == 0) {
         m_homeColor = VLIGHTGRAY;                   // helles Hellgrau, keine QML Basic/SVG color
@@ -210,7 +223,6 @@ void PowerNodeModel::arrowsHandling(void)
     if((m_gridPower > 0) && (m_generatorPowerTotal > 0))
     {
         m_pv2grid = true;
-        //image10.visible = true;
     }
     else
     {
@@ -230,7 +242,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // grid to house
-    if((m_gridPower < 0) && (m_totalPowerConsumption > 0))
+    if((m_gridPower < 0) /*&& (m_totalPowerConsumption > 0)*/)
     {
         m_grid2house = true;
     }

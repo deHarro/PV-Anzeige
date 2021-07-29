@@ -1,8 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickView>
-//#include <QLabel>
 #include <QApplication>
+
 
 /*
 #include <QCoreApplication>
