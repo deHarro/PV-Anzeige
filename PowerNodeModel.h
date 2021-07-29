@@ -98,7 +98,7 @@ private:
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]
     double m_battPowerAnzeige = 0.0;        // Batterieladung/-Entladung zur Anzeige [kW]
     int m_batteryPercentage = 0;            // Batterie Ladezustand [%]
-    QString m_batteryColor = "";
+    QString m_batteryColor = VLIGHTGRAY;
     QString m_batteryText = "";             // Text in der Batterie Box, wechselt Ladung/Entladung
     QString m_batteryImage = "/Icons/Akku_weiss_transparent00.png";
 // consumption, home, Hausverbrauch
