@@ -123,7 +123,7 @@ private:
     bool m_pv2batt = false;
     bool m_pv2house = false;
     bool m_pv2grid = false;
-    bool m_batt2house /*= false*/;
+    bool m_batt2house = false;
     bool m_house2batt = false;
     bool m_grid2house = false;
     bool m_house2charger = false;
