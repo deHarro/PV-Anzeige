@@ -45,9 +45,9 @@ void PowerNodeModel::onDataTimer() {
 void PowerNodeModel::generatorHandling(void)
 {
 #if defined DEMOMODE
-    m_generatorPowerDach = rand() % 9000;               // auskommentieren, wenn echte Daten vorhadnen sind
-    m_generatorPowerGaube = rand() % 3600;              // auskommentieren, wenn echte Daten vorhadnen sind
-    m_generatorPowerGarage = rand() % 3000;             // auskommentieren, wenn echte Daten vorhadnen sind
+    m_generatorPowerDach = rand() % 9000;
+    m_generatorPowerGaube = rand() % 3600;
+    m_generatorPowerGarage = rand() % 3000;
 #endif
 
     m_generatorPowerTotal = m_generatorPowerDach
@@ -72,8 +72,9 @@ void PowerNodeModel::generatorHandling(void)
 void PowerNodeModel::batteryHandling(void)
 {
 #if defined DEMOMODE
-    m_batteryPower = (rand() % 10000) - 5000;           // auskommentieren, wenn echte Daten vorhadnen sind
+    m_batteryPower = (rand() % 10000) - 5000;
     //    m_batteryPower = 0;               // test
+    m_batteryPercentage = rand() % 100;
 #endif
 
     m_battPowerAnzeige = m_batteryPower;
@@ -95,7 +96,6 @@ void PowerNodeModel::batteryHandling(void)
         m_batt2house = true;
     }
 
-    m_batteryPercentage = rand() % 100;
 
     // change battery icon depending on battery percentage
     if( m_batteryPercentage <= 5)
@@ -128,10 +128,10 @@ void PowerNodeModel::batteryHandling(void)
 void PowerNodeModel::gridHandling(void)
 {
 #if defined DEMOMODE
-    m_gridEnergyImport += (10 + (rand() % 100));    // Verbrauchszähler Richtung Netz, auskommentieren, wenn echte Daten vorhadnen sind
-    m_gridEnergyExport += (100 + (rand() % 100));   // Einspeisezähler Richtung Netz, auskommentieren, wenn echte Daten vorhadnen sind
+    m_gridEnergyImport += (10 + (rand() % 100));    // Verbrauchszähler Richtung Netz
+    m_gridEnergyExport += (100 + (rand() % 100));   // Einspeisezähler Richtung Netz
 
-    m_gridPower = (rand() % 10000) - 5000;          // auskommentieren, wenn echte Daten vorhadnen sind
+    m_gridPower = (rand() % 10000) - 5000;
 #endif
 
     m_gridPowerAnzeige = m_gridPower;               // für die Anzeige eine extra Var benutzen wegen abs()
@@ -144,7 +144,7 @@ void PowerNodeModel::gridHandling(void)
         m_gridText = "Netz-einspeisung";
     }
     else {
-        m_gridPowerAnzeige = abs(m_gridPowerAnzeige);             // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
+        m_gridPowerAnzeige = abs(m_gridPowerAnzeige); // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
 
         m_gridColor = FIREBRICK;                    // Dunkelrot
         m_gridText = "Netzbezug";
@@ -155,9 +155,9 @@ void PowerNodeModel::gridHandling(void)
 void PowerNodeModel::wallboxHandling()
 {
 #if defined DEMOMODE
-    m_chargingPower = rand() % 4000;                // auskommentieren, wenn echte Daten vorhadnen sind
-    m_chargedEnergy += 10;                          // auskommentieren, wenn echte Daten vorhadnen sind
-    m_sessionEnergy += 10;                          // auskommentieren, wenn echte Daten vorhadnen sind
+    m_chargingPower = rand() % 4000;
+    m_chargedEnergy += 10;
+    m_sessionEnergy += 10;
 
     bool test = rand() % 2;                      // test
     test == 1 ? m_chargingPower = m_chargingPower : m_chargingPower = 0;    // test
@@ -184,7 +184,7 @@ void PowerNodeModel::wallboxHandling()
 void PowerNodeModel::consumptionHandling(void)
 {
 #if defined DEMOMODE
-    m_totalPowerConsumption = rand() % 10000;       // auskommentieren, wenn echte Daten vorhadnen sind
+    m_totalPowerConsumption = rand() % 10000;
 #endif
 
     if(m_totalPowerConsumption == 0) {
