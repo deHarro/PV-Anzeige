@@ -82,18 +82,15 @@ void PowerNodeModel::batteryHandling(void)
     if(m_battPowerAnzeige == 0) {
         m_batteryText = "";                             // kein Strom  -> kein Text
         m_batteryColor = VLIGHTGRAY;                    // helles Hellgrau, keine QML Basic/SVG color
-        m_batt2house = false;
     }
     else if(m_battPowerAnzeige > 0) {
         m_batteryText = "Batterie-ladung";              // Batterie wird geladen
         m_batteryColor = LIMEGREEN;                     // Hellgrün
-        m_batt2house = false;
     }
     else {                                              // Batterie wird entladen
         m_battPowerAnzeige = abs(m_battPowerAnzeige);           // auch negative Werte (bei Entladung) werden positiv dargestellt...
         m_batteryText = "Batterie-entladung";           // ... nur der Text ändert sich
         m_batteryColor = FORESTGREEN;                   // Dunkelgrün
-        m_batt2house = true;
     }
 
 
@@ -185,6 +182,7 @@ void PowerNodeModel::consumptionHandling(void)
 {
 #if defined DEMOMODE
     m_totalPowerConsumption = rand() % 10000;
+    //m_totalPowerConsumption = 0;
 #endif
 
     if(m_totalPowerConsumption == 0) {
@@ -230,19 +228,28 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // battery to house
-    if((m_batteryPower < 0) && (m_generatorPowerTotal = 0))
+    if(((m_batteryPower < 0) && (m_generatorPowerTotal = 0)) ||     // PV keine Leistung
+       ((m_batteryPower < 0) && (m_totalPowerConsumption > 0)))     // Haus braucht Energie
     {
         m_batt2house = true;
     }
+    else
+    {
+        m_batt2house = false;
+    }
 
     // house to battery (battery conditioning when PV is off for long time)
-    if((m_batteryPower > 0) && (m_generatorPowerTotal = 0))
+    if((m_batteryPower > 0) && (m_generatorPowerTotal = 0) && (m_totalPowerConsumption > 0) && (m_gridPower < 0))
     {
         m_house2batt = true;
     }
+    else
+    {
+        m_house2batt = false;
+    }
 
     // grid to house
-    if((m_gridPower < 0) /*&& (m_totalPowerConsumption > 0)*/)
+    if((m_gridPower < 0) && (m_totalPowerConsumption > 0))
     {
         m_grid2house = true;
     }
