@@ -51,6 +51,10 @@ void PowerNodeModel::onDataTimer() {
     // arrows handling
     arrowsHandling();
     emit arrowsDataChanged();
+
+    // handle shades for home with fractional grid power and battery power
+    shadeHandling();
+    emit shadeDataChanged();
 }
 
 // handling routines, may be called from MQTT routines (comment rand() calls then ;)
@@ -283,6 +287,27 @@ void PowerNodeModel::arrowsHandling(void)
 
 }
 
+// shade handling  ----------------------------------------------------------
+void PowerNodeModel::shadeHandling(void)
+{
+    // Anteil Netzbezug in ROT von oben kommend einblenden
+    if(m_gridPower < 0){                            // Netzbezug
+        m_homeTopRedH = fmin((abs(m_gridPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270
+    }
+    else
+    {
+        m_homeTopRedH = 0;
+    }
+
+    // Anteil Akkubezug in GRÜN von unten kommend einblenden
+    if(m_gridPower < 0){                            // Netzbezug
+        m_homeBotGreenH = fmin((abs(m_batteryPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270
+    }
+    else
+    {
+        m_homeBotGreenH = 0;
+    }
+    
 void PowerNodeModel::onConnected() {
     m_client.subscribe("sbfspot_1234567890/live");
 }
