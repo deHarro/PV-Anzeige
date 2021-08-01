@@ -2,11 +2,24 @@
 
 #include <chrono>
 
+#include <msgpack.h>
+
+#include "Types.h"
+
 using namespace std::chrono_literals;
 
-PowerNodeModel::PowerNodeModel() {
+PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
+    : m_client(mqttClient) {
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
     m_dataTimer.start(2000);
+
+    connect(&m_client, &QMQTT::Client::connected, this, &PowerNodeModel::onConnected);
+    connect(&m_client, &QMQTT::Client::disconnected, this, &PowerNodeModel::onDisconnected);
+    connect(&m_client, &QMQTT::Client::error, this, &PowerNodeModel::onError);
+    connect(&m_client, &QMQTT::Client::subscribed, this, &PowerNodeModel::onSubscribed);
+    connect(&m_client, &QMQTT::Client::received, this, &PowerNodeModel::onReceived);
+
+    m_client.connectToHost();
 }
 
 PowerNodeModel::~PowerNodeModel() {
@@ -51,10 +64,10 @@ void PowerNodeModel::generatorHandling(void)
 #endif
 
     m_generatorPowerTotal = m_generatorPowerDach
-                          + m_generatorPowerGaube
-                          + m_generatorPowerGarage;
+            + m_generatorPowerGaube
+            + m_generatorPowerGarage;
 
-//    m_generatorPowerTotal = 0;                // test
+    //    m_generatorPowerTotal = 0;                // test
 
     if(m_generatorPowerTotal == 0) {
         m_generatorColor = VLIGHTGRAY;                  // helles Hellgrau, keine QML Basic/SVG color
@@ -101,7 +114,7 @@ void PowerNodeModel::batteryHandling(void)
     }
     else if (m_batteryPercentage > 5 && m_batteryPercentage < 39)
     {
-       m_batteryImage = "/Icons/Akku_weiss_transparent20.png";
+        m_batteryImage = "/Icons/Akku_weiss_transparent20.png";
     }
     else if (m_batteryPercentage > 40 && m_batteryPercentage < 59)
     {
@@ -229,7 +242,7 @@ void PowerNodeModel::arrowsHandling(void)
 
     // battery to house
     if(((m_batteryPower < 0) && (m_generatorPowerTotal = 0)) ||     // PV keine Leistung
-       ((m_batteryPower < 0) && (m_totalPowerConsumption > 0)))     // Haus braucht Energie
+            ((m_batteryPower < 0) && (m_totalPowerConsumption > 0)))     // Haus braucht Energie
     {
         m_batt2house = true;
     }
@@ -268,4 +281,42 @@ void PowerNodeModel::arrowsHandling(void)
         m_house2charger = false;
     }
 
+}
+
+void PowerNodeModel::onConnected() {
+    m_client.subscribe("sbfspot_1234567890/live");
+}
+
+void PowerNodeModel::onDisconnected() {
+
+}
+
+void PowerNodeModel::onError(const QMQTT::ClientError error) {
+
+}
+
+void PowerNodeModel::onSubscribed(const QString& topic) {
+
+}
+
+void PowerNodeModel::onReceived(const QMQTT::Message& message) {
+    auto topic = message.topic();
+    qDebug() << topic;
+
+    // Inverter live data
+    auto variant = MsgPack::unpack(message.payload()).toMap();
+    //m_lastUpdate = variant.value(toIntString(InverterProperty::Timestamp)).toDateTime();
+    //m_yieldTotal = variant.value(toIntString(InverterProperty::YieldTotal)).toDouble();
+    //m_yieldToday = variant.value(toIntString(InverterProperty::YieldToday)).toDouble();
+    m_generatorPowerTotal = variant.value(toIntString(InverterProperty::Power)).toDouble();
+
+    // String live data
+    // auto strings = variant.value(toIntString(InverterProperty::Strings)).toList();
+    // int i = 0;
+    // int j = 0;
+    // m_powerDcTotal = 0.0;
+    // for (; (i < strings.size()) && (j < m_stringLiveData.size()); ++i, ++j) {
+    //     m_stringLiveData[i]->power = strings.value(i).toMap().value(toIntString(InverterProperty::StringPower)).toReal();
+    //     m_powerDcTotal += m_stringLiveData[i]->power;
+    // }
 }

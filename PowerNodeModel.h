@@ -5,6 +5,8 @@
 #include <QString>
 #include <QQuickImageProvider>
 
+#include <qmqtt.h>
+
 #define DEMOMODE                // generate random power values for coloring and arrows
 
 // define colors according https://doc.qt.io/qt-5/qml-color.html
@@ -24,7 +26,7 @@ class PowerNodeModel : public QObject {
     Q_OBJECT
 
 public:
-    PowerNodeModel();
+    PowerNodeModel(QMQTT::Client& mqttClient);
     ~PowerNodeModel();
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
@@ -77,16 +79,12 @@ Q_SIGNALS:
     void arrowsDataChanged();
 
 private:
-    void onConnected();
-    void onDisconnected();
-
     void generatorHandling(void);
     void batteryHandling(void);
     void gridHandling(void);
     void wallboxHandling(void);
     void consumptionHandling(void);
     void arrowsHandling(void);
-
 
 // generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
@@ -131,6 +129,15 @@ private:
     // Members for demo purposes
     QTimer m_dataTimer;
     void onDataTimer();
+
+    // MQTT members
+    void onConnected();
+    void onDisconnected();
+    void onError(const QMQTT::ClientError error);
+    void onSubscribed(const QString& topic);
+    void onReceived(const QMQTT::Message& message);
+
+    QMQTT::Client& m_client;
 };
 
 // test --------------------------------------------------------------------
