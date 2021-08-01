@@ -69,10 +69,10 @@ void PowerNodeModel::generatorHandling(void)
 #endif
 
     m_generatorPowerTotal = m_generatorPowerDach
-                          + m_generatorPowerGaube
-                          + m_generatorPowerGarage;
+            + m_generatorPowerGaube
+            + m_generatorPowerGarage;
 
-//    m_generatorPowerTotal = 0;                // test
+    //    m_generatorPowerTotal = 0;                // test
 
     if(m_generatorPowerTotal == 0) {
         m_generatorColor = VLIGHTGRAY;                  // helles Hellgrau, keine QML Basic/SVG color
@@ -119,7 +119,7 @@ void PowerNodeModel::batteryHandling(void)
     }
     else if (m_batteryPercentage > 5 && m_batteryPercentage < 39)
     {
-       m_batteryImage = "/Icons/Akku_weiss_transparent20.png";
+        m_batteryImage = "/Icons/Akku_weiss_transparent20.png";
     }
     else if (m_batteryPercentage > 40 && m_batteryPercentage < 59)
     {
@@ -247,7 +247,7 @@ void PowerNodeModel::arrowsHandling(void)
 
     // battery to house
     if(((m_batteryPower < 0) && (m_generatorPowerTotal = 0)) ||     // PV keine Leistung
-       ((m_batteryPower < 0) && (m_totalPowerConsumption > 0)))     // Haus braucht Energie
+            ((m_batteryPower < 0) && (m_totalPowerConsumption > 0)))     // Haus braucht Energie
     {
         m_batt2house = true;
     }
@@ -308,6 +308,8 @@ void PowerNodeModel::shadeHandling(void)
     {
         m_homeBotGreenH = 0;
     }
+}
+
 void PowerNodeModel::onConnected() {
     m_client.subscribe("sbfspot_1234567890/live");
 }
@@ -344,5 +346,4 @@ void PowerNodeModel::onReceived(const QMQTT::Message& message) {
     //     m_stringLiveData[i]->power = strings.value(i).toMap().value(toIntString(InverterProperty::StringPower)).toReal();
     //     m_powerDcTotal += m_stringLiveData[i]->power;
     // }
-}
 }

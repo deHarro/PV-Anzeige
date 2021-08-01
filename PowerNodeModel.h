@@ -92,7 +92,6 @@ private:
     void arrowsHandling(void);
     void shadeHandling(void);
 
-
 // generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
     double m_generatorPowerDach = 0.0;      // Momentanleistung String Dach
