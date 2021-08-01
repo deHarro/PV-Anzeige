@@ -170,12 +170,12 @@ void PowerNodeModel::gridHandling(void)
 void PowerNodeModel::wallboxHandling()
 {
 #if defined DEMOMODE
-    m_chargingPower = rand() % 4000;
+//    m_chargingPower = rand() % 4000;
     m_chargedEnergy += 10;
     m_sessionEnergy += 10;
 
     bool test = rand() % 2;                      // test
-    test == 1 ? m_chargingPower = m_chargingPower : m_chargingPower = 0;    // test
+    test == 1 ? m_chargingPower = rand() % 4000 : m_chargingPower = 0;    // test
     m_evAttached = rand() % 2;                  // test
     m_evAttached == 1 ? m_evAttached = true : m_evAttached = false;    // test
 #endif
