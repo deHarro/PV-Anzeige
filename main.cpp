@@ -3,18 +3,9 @@
 #include <QQuickView>
 #include <QApplication>
 
+#include <qmqtt.h>
 
-/*
-#include <QCoreApplication>
-#include <QApplication>
-#include <QQmlEngine>
-#include <QQmlComponent>
-#include <QQmlProperty>
-#include <QQuickWindow>
-#include <QObject>
-*/
-
-#include <PowerNodeModel.h>
+#include "PowerNodeModel.h"
 
 
 int main(int argc, char *argv[])
@@ -26,7 +17,8 @@ int main(int argc, char *argv[])
     //QGuiApplication app(argc, argv);
     QApplication app(argc, argv);
 
-    PowerNodeModel powerNodeModel;
+    QMQTT::Client mqttClient;
+    PowerNodeModel powerNodeModel(mqttClient);
 
     QQmlApplicationEngine engine;
 

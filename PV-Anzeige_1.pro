@@ -10,10 +10,12 @@ CONFIG += NO_UNIT_TESTS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    PowerNodeModel.h
+    PowerNodeModel.h \
+    Types.h
 
 SOURCES += \
     PowerNodeModel.cpp \
+    Types.cpp \
     main.cpp
 
 RESOURCES += qml.qrc \
@@ -34,3 +36,4 @@ DISTFILES += \
 //    Icons/Akku_weiß_transparent.png
 
 include(thirdparty/qmqtt/qmqtt.pri)
+include(thirdparty/qmsgpack/qmsgpack.pri)

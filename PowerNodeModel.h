@@ -5,6 +5,8 @@
 #include <QString>
 #include <QQuickImageProvider>
 
+#include <qmqtt.h>
+
 #define DEMOMODE                // generate random power values for coloring and arrows
 
 // define colors according https://doc.qt.io/qt-5/qml-color.html
@@ -24,7 +26,7 @@ class PowerNodeModel : public QObject {
     Q_OBJECT
 
 public:
-    PowerNodeModel();
+    PowerNodeModel(QMQTT::Client& mqttClient);
     ~PowerNodeModel();
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
@@ -37,7 +39,7 @@ public:
     // battery properties - all battery values are updated in one call to "batteryDataChanged"
     Q_PROPERTY(double batteryPower MEMBER m_battPowerAnzeige NOTIFY batteryDataChanged)
     Q_PROPERTY(double batteryPercentage MEMBER m_batteryPercentage NOTIFY batteryDataChanged)
-    Q_PROPERTY(QString batteryText MEMBER m_batteryText NOTIFY batteryDataChanged)    
+    Q_PROPERTY(QString batteryText MEMBER m_batteryText NOTIFY batteryDataChanged)
     Q_PROPERTY(QString batteryColor MEMBER m_batteryColor NOTIFY batteryDataChanged)
     Q_PROPERTY(QString batteryImage MEMBER m_batteryImage NOTIFY batteryDataChanged)
 
@@ -45,6 +47,10 @@ public:
     Q_PROPERTY(double consumptionPower MEMBER m_totalPowerConsumption NOTIFY consumptionDataChanged)
     Q_PROPERTY(double consumptionEnergy MEMBER m_totalEnergyConsumption NOTIFY consumptionDataChanged)
     Q_PROPERTY(QString homeColor MEMBER m_homeColor NOTIFY consumptionDataChanged)
+
+    // shade properties
+    Q_PROPERTY(int homeTopRedH MEMBER m_homeTopRedH NOTIFY shadeDataChanged)
+    Q_PROPERTY(int homeBotGreenH MEMBER m_homeBotGreenH NOTIFY shadeDataChanged)
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
     Q_PROPERTY(double gridPower MEMBER m_gridPowerAnzeige NOTIFY gridDataChanged)
@@ -75,17 +81,16 @@ Q_SIGNALS:
     void gridDataChanged();
     void chargingDataChanged();
     void arrowsDataChanged();
+    void shadeDataChanged();
 
 private:
-    void onConnected();
-    void onDisconnected();
-
     void generatorHandling(void);
     void batteryHandling(void);
     void gridHandling(void);
     void wallboxHandling(void);
     void consumptionHandling(void);
     void arrowsHandling(void);
+    void shadeHandling(void);
 
 
 // generators, PV-Paneele
@@ -105,6 +110,8 @@ private:
     double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
     double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
     QString m_homeColor = VLIGHTGRAY;
+    int m_homeTopRedH = 1;                  // anteilige Energie aus Netzbezug (roter Balken von oben wachsend)
+    int m_homeBotGreenH = 1;                // anteilige Energie aus Akku (dunkelgrüner Balken von unten wachsend)
 // grid, Netz
     double m_gridPower = 0.0;               // Netzbezug/Einspeisung [kW]
     double m_gridPowerAnzeige = 0.0;        // Netzbezug für die Anzeige
@@ -131,6 +138,15 @@ private:
     // Members for demo purposes
     QTimer m_dataTimer;
     void onDataTimer();
+
+    // MQTT members
+    void onConnected();
+    void onDisconnected();
+    void onError(const QMQTT::ClientError error);
+    void onSubscribed(const QString& topic);
+    void onReceived(const QMQTT::Message& message);
+
+    QMQTT::Client& m_client;
 };
 
 // test --------------------------------------------------------------------
