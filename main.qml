@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 
-import /*Smarf.*/PowerNodeModel 1.0
+import Smarf.PowerNodeModel 1.0
 
 Window {
     id: window
@@ -19,7 +19,6 @@ Window {
     property alias rectangle5: rectangle5
 
 
-
     Rectangle {
         id: rectangle3
         x: 157
@@ -31,80 +30,147 @@ Window {
         //color: "limegreen"                // Hellgrün
         radius: 15
         border.width: 0
+        //clip: true
+
+        // Überlagerte Farben in der Haus-Box mit Texten und Bild
+            /*
+                id: rectangleRed
+                x: 237
+                y: 140
+                width: 10
+                height: PowerNodeModel.homeTopRedH
+                opacity: 1
+                visible: true
+                color: "FIREBRICK"
+                radius: 0
+                border.width: 0
+            */
+
+            /*
+                id: rectangleGreen
+                x: 157
+                y: 410 - PowerNodeModel.homeBotGreenH
+                width: 10
+                height: PowerNodeModel.homeBotGreenH
+                opacity: 1
+                visible: true
+                color: "FORESTGREEN"
+                radius: 0
+                border.width: 0
+          */
+
+            Rectangle {
+                id: rectangleRed
+                layer.enabled: true
+                x: 0
+                y: 0
+                width: 90
+                height: PowerNodeModel.homeTopRedH
+                visible: true
+                color: "FIREBRICK"
+                opacity: 1
+                radius: 0
+                border.width: 0
+            }
+
+            Rectangle {
+                id: rectangleGreen
+                layer.enabled: true
+                x: 0
+                y: 270 - PowerNodeModel.homeBotGreenH
+                width: 90
+                height: PowerNodeModel.homeBotGreenH
+                visible: true
+                color: "FORESTGREEN"
+                opacity: 1
+                radius: 0
+                border.width: 0
+            }
+
+            Text {
+                id: text3
+                x: 1
+                y: 6
+                width: 88
+                height: 33
+                color: "#ffffff"
+                text: qsTr("Gesamt-verbrauch")
+                font.pixelSize: 12
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                font.bold: true
+            }
 
 
 
+            Image {
+                id: image1
+                x: 0
+                y: 95
+                width: 90
+                height: 85
+                source: "Icons/Haus_weiss_transparent.png"
+                fillMode: Image.PreserveAspectFit
+            }
 
-        Image {
-            id: image1
-            x: 0
-            y: 98
-            width: 90
-            height: 85
-            source: "Icons/Haus_weiss_transparent.png"
-            fillMode: Image.PreserveAspectFit
-        }
-
-        Text {
-            id: text36
-            x: 28
-            y: 199
-            color: "#f9bcbc"
-            text: qsTr("Zähler")
-            font.pixelSize: 12
-        }
-
-
-        Text {
-            id: text9
-            x: 36
-            y: 78
-            color: "#ffffff"
-            text: qsTr("kW")
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-            minimumPixelSize: 14
-            font.bold: true
-        }
-
-        Text {
-            id: text13
-            x: 7
-            y: 46
-            width: 77
-            height: 26
-            color: "#ffffff"
-            text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
-            font.pixelSize: 23
-            horizontalAlignment: Text.AlignHCenter
-            font.family: "Arial"
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Text {
-            id: text37
-            x: 8
-            y: 214
-            width: 74
-            height: 14
-            color: "#f9bcbc"
-            // ohne Nachkommastellen, zentriert
-            text: (PowerNodeModel.gridEnergyImport)
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-        }
+            Text {
+                id: text36
+                x: 29
+                y: 198
+                color: "#f9bcbc"
+                text: qsTr("Zähler")
+                font.pixelSize: 12
+            }
 
 
+            Text {
+                id: text9
+                x: 36
+                y: 78
+                color: "#ffffff"
+                text: qsTr("kW")
+                font.pixelSize: 12
+                horizontalAlignment: Text.AlignHCenter
+                minimumPixelSize: 14
+                font.bold: true
+            }
 
+            Text {
+                id: text13
+                x: 7
+                y: 46
+                width: 77
+                height: 26
+                color: "#ffffff"
+                text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
+                font.pixelSize: 23
+                horizontalAlignment: Text.AlignHCenter
+                anchors.horizontalCenterOffset: 1
+                font.family: "Arial"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
 
-        Text {
-            id: text38
-            x: 33
-            y: 229
-            color: "#f9bcbc"
-            text: qsTr("kWh")
-            font.pixelSize: 12
-        }
+            Text {
+                id: text37
+                x: 8
+                y: 214
+                width: 74
+                height: 14
+                color: "#f9bcbc"
+                // ohne Nachkommastellen, zentriert
+                text: (PowerNodeModel.gridEnergyImport)
+                font.pixelSize: 12
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: text38
+                x: 33
+                y: 229
+                color: "#f9bcbc"
+                text: qsTr("kWh")
+                font.pixelSize: 12
+            }
 
         Image {
             id: image6
@@ -145,26 +211,13 @@ Window {
             height: 25
             opacity: 0.5
             source: "Icons/FF.png"
+            clip: false
             antialiasing: false
+            smooth: true
             rotation: 180
             fillMode: Image.PreserveAspectFit
             visible: PowerNodeModel.grid2house
         }
-        Text {
-            id: text3
-            x: 2
-            y: 6
-            width: 87
-            height: 33
-            color: "#ffffff"
-            text: qsTr("Gesamt-verbrauch")
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.WordWrap
-            font.bold: true
-        }
-
-
     }
 
 
@@ -324,6 +377,9 @@ Window {
             height: 25
             opacity: 0.5
             source: "Icons/FF.png"
+            clip: false
+            antialiasing: false
+            smooth: true
             rotation: 90
             fillMode: Image.PreserveAspectFit
             visible: PowerNodeModel.pv2batt
@@ -338,6 +394,9 @@ Window {
             opacity: 0.5
             source: "Icons/FF.png"
             fillMode: Image.PreserveAspectFit
+            clip: false
+            antialiasing: false
+            smooth: true
             rotation: 90
             visible: PowerNodeModel.pv2house
         }
@@ -351,6 +410,9 @@ Window {
             opacity: 0.5
             source: "Icons/FF.png"
             fillMode: Image.PreserveAspectFit
+            clip: false
+            antialiasing: false
+            smooth: true
             rotation: 90
             visible: PowerNodeModel.pv2grid
         }
@@ -491,6 +553,9 @@ Window {
             opacity: 0.5
             source: "Icons/FF.png"
             fillMode: Image.PreserveAspectFit
+            clip: false
+            antialiasing: false
+            smooth: true
             rotation: 90
             visible: PowerNodeModel.house2charger
         }
@@ -501,7 +566,7 @@ Window {
 
 
     Rectangle {
-        id: rectangle2
+        id: rectangle2              // Battery
         x: 42
         y: 140
         width: 90
@@ -608,16 +673,8 @@ Window {
 
     }
 
-
-
-
-
-
-
-
-
     Rectangle {
-        id: rectangle4
+        id: rectangle4                      // Grid
         x: 272
         y: 140
         width: 90
@@ -712,62 +769,10 @@ Window {
             font.pixelSize: 12
         }
     }
-
-
-    /*
-        id: rectangleRed
-        x: 237
-        y: 140
-        width: 10
-        height: homeTopRedH
-        opacity: 1
-        visible: true
-        color: "FIREBRICK"
-        radius: 0
-        border.width: 0
-    */
-
-    /*
-        id: rectangleGreen
-        x: 157
-        y: 410 - homeBotGreenH
-        width: 10
-        height: homeBotGreenH
-        opacity: 1
-        visible: true
-        color: "FORESTGREEN"
-        radius: 0
-        border.width: 0
-  */
-
-    Rectangle {
-        id: rectangleRed
-        x: 247
-        y: 140
-        width: 10
-        height: homeTopRedH +1
-        opacity: 0.506
-        visible: true
-        color: "FIREBRICK"
-        radius: 0
-        border.width: 0
-    }
-    Rectangle {
-        id: rectangleGreen
-        x: 147
-        y: 410
-        width: 10
-        height: homeBotGreenH +1
-        opacity: 0.518
-        visible: true
-        color: "FORESTGREEN"
-        radius: 0
-        border.width: 0
-    }
 }
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}
+    D{i:0;formeditorZoom:1.33}
 }
 ##^##*/

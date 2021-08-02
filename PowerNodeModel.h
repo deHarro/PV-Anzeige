@@ -5,9 +5,11 @@
 #include <QString>
 #include <QQuickImageProvider>
 
-#include <qmqtt.h>
+#if defined USEMQTT
+    #include <qmqtt.h>
+#endif
 
-//#define DEMOMODE                // generate random power values for coloring and arrows
+#define DEMOMODE                // generate random power values for coloring and arrows
 
 // define colors according https://doc.qt.io/qt-5/qml-color.html
 // use #RRGGBB notation for QML instead of 0xRRGGBB
@@ -26,7 +28,10 @@ class PowerNodeModel : public QObject {
     Q_OBJECT
 
 public:
+    PowerNodeModel();
+#if defined USEMQTT
     PowerNodeModel(QMQTT::Client& mqttClient);
+#endif
     ~PowerNodeModel();
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
@@ -49,8 +54,10 @@ public:
     Q_PROPERTY(QString homeColor MEMBER m_homeColor NOTIFY consumptionDataChanged)
 
     // shade properties
-    Q_PROPERTY(int homeTopRedH MEMBER m_homeTopRedH NOTIFY shadeDataChanged)
     Q_PROPERTY(int homeBotGreenH MEMBER m_homeBotGreenH NOTIFY shadeDataChanged)
+    Q_PROPERTY(int homeTopRedH MEMBER m_homeTopRedH NOTIFY consumptionDataChanged)
+    //    Q_PROPERTY(int homeTopRedH MEMBER m_homeTopRedH NOTIFY shadeDataChanged)
+    //    Q_PROPERTY(int homeBotGreenH MEMBER m_homeBotGreenH NOTIFY consumptionDataChanged)
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
     Q_PROPERTY(double gridPower MEMBER m_gridPowerAnzeige NOTIFY gridDataChanged)
@@ -66,13 +73,13 @@ public:
     Q_PROPERTY(QString wallboxColor MEMBER m_wallboxColor NOTIFY chargingDataChanged)
 
     // arrow properties - all arrows are updated in one call to "arrowsDataChanged"
-    Q_PROPERTY(bool batt2house MEMBER m_batt2house  NOTIFY arrowsDataChanged)
-    Q_PROPERTY(bool house2batt MEMBER m_house2batt  NOTIFY arrowsDataChanged)
-    Q_PROPERTY(bool grid2house MEMBER m_grid2house  NOTIFY arrowsDataChanged)
-    Q_PROPERTY(bool pv2house MEMBER m_pv2house  NOTIFY arrowsDataChanged)
-    Q_PROPERTY(bool pv2batt MEMBER m_pv2batt  NOTIFY arrowsDataChanged)
-    Q_PROPERTY(bool pv2grid MEMBER m_pv2grid  NOTIFY arrowsDataChanged)
-    Q_PROPERTY(bool house2charger MEMBER m_house2charger NOTIFY arrowsDataChanged)
+    Q_PROPERTY(bool batt2house MEMBER m_batt2house  NOTIFY arrowsChanged)
+    Q_PROPERTY(bool house2batt MEMBER m_house2batt  NOTIFY arrowsChanged)
+    Q_PROPERTY(bool grid2house MEMBER m_grid2house  NOTIFY arrowsChanged)
+    Q_PROPERTY(bool pv2house MEMBER m_pv2house  NOTIFY arrowsChanged)
+    Q_PROPERTY(bool pv2batt MEMBER m_pv2batt  NOTIFY arrowsChanged)
+    Q_PROPERTY(bool pv2grid MEMBER m_pv2grid  NOTIFY arrowsChanged)
+    Q_PROPERTY(bool house2charger MEMBER m_house2charger NOTIFY arrowsChanged)
 
 Q_SIGNALS:
     void generatorDataChanged();
@@ -80,7 +87,7 @@ Q_SIGNALS:
     void consumptionDataChanged();
     void gridDataChanged();
     void chargingDataChanged();
-    void arrowsDataChanged();
+    void arrowsChanged();
     void shadeDataChanged();
 
 private:
@@ -109,8 +116,8 @@ private:
     double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
     double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
     QString m_homeColor = VLIGHTGRAY;
-    int m_homeTopRedH = 1;                  // anteilige Energie aus Netzbezug (roter Balken von oben wachsend)
-    int m_homeBotGreenH = 1;                // anteilige Energie aus Akku (dunkelgrüner Balken von unten wachsend)
+    int m_homeTopRedH = 0;                  // anteilige Energie aus Netzbezug (roter Balken von oben wachsend)
+    int m_homeBotGreenH = 0;                // anteilige Energie aus Akku (dunkelgrüner Balken von unten wachsend)
 // grid, Netz
     double m_gridPower = 0.0;               // Netzbezug/Einspeisung [kW]
     double m_gridPowerAnzeige = 0.0;        // Netzbezug für die Anzeige
@@ -138,6 +145,7 @@ private:
     QTimer m_dataTimer;
     void onDataTimer();
 
+#if defined USEMQTT
     // MQTT members
     void onConnected();
     void onDisconnected();
@@ -146,28 +154,5 @@ private:
     void onReceived(const QMQTT::Message& message);
 
     QMQTT::Client& m_client;
+#endif
 };
-
-// test --------------------------------------------------------------------
-
-//class FFImageProvider : public QQuickImageProvider {
-//public:
-//    FFImageProvider()
-//               : QQuickImageProvider(QQuickImageProvider::Pixmap)
-//    {
-//    }
-
-//    QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override
-//    {
-//       int width = 37;
-//       int height = 36;
-
-//       if (size)
-//          *size = QSize(width, height);
-//       QPixmap pixmap(requestedSize.width() > 0 ? requestedSize.width() : width,
-//                      requestedSize.height() > 0 ? requestedSize.height() : height);
-//       //pixmap.fill(QColor(id).rgba());
-//       return pixmap;
-//    }
-//};
-

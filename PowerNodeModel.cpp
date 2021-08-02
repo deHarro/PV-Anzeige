@@ -3,12 +3,14 @@
 
 #include <chrono>
 
-#include <msgpack.h>
-
-#include "Types.h"
+#if defined USEMQTT
+    #include "Types.h"
+    #include <msgpack.h>
+#endif
 
 using namespace std::chrono_literals;
 
+#if defined USEMQTT
 PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
     : m_client(mqttClient) {
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
@@ -22,6 +24,12 @@ PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
 
     m_client.connectToHost();
 }
+#else
+PowerNodeModel::PowerNodeModel() {
+    connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
+    m_dataTimer.start(2000);
+}
+#endif
 
 PowerNodeModel::~PowerNodeModel() {
 }
@@ -29,32 +37,22 @@ PowerNodeModel::~PowerNodeModel() {
 // demo - change / increment values
 void PowerNodeModel::onDataTimer() {
 
-    // PV generator handling -----------------------------------------------------
-    generatorHandling();
+// Update the different values in C++
+    generatorHandling();    // PV generator handling
+    batteryHandling();      // battery handling
+    gridHandling();         // grid handling
+    wallboxHandling();      // wallbox handling
+    consumptionHandling();  // consumption handling
+    arrowsHandling();       // arrows handling
+    shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
+
+// Update the different values in QML
     emit generatorDataChanged();
-
-    // battery handling ----------------------------------------------------------
-    batteryHandling();
     emit batteryDataChanged();
-
-    // grid handling -------------------------------------------------------------
-    gridHandling();
     emit gridDataChanged();
-
-    // wallbox handling ----------------------------------------------------------
-    wallboxHandling();
     emit chargingDataChanged();
-
-    // consumption handling ----------------------------------------------------------
-    consumptionHandling();
     emit consumptionDataChanged();
-
-    // arrows handling
-    arrowsHandling();
-    emit arrowsDataChanged();
-
-    // handle shades for home with fractional grid power and battery power
-    shadeHandling();
+    emit arrowsChanged();
     emit shadeDataChanged();
 }
 
@@ -147,6 +145,7 @@ void PowerNodeModel::gridHandling(void)
     m_gridEnergyExport += (100 + (rand() % 100));   // Einspeisezähler Richtung Netz
 
     m_gridPower = (rand() % 10000) - 5000;
+//    m_gridPower = 0;
 #endif
 
     m_gridPowerAnzeige = m_gridPower;               // für die Anzeige eine extra Var benutzen wegen abs()
@@ -209,7 +208,6 @@ void PowerNodeModel::consumptionHandling(void)
     else {
         m_homeColor = LIMEGREEN;                    // Hellgrün
     }
-
 }
 
 // arrows handling ----------------------------------------------------------
@@ -310,6 +308,7 @@ void PowerNodeModel::shadeHandling(void)
     }
 }
 
+#if defined USEMQTT
 void PowerNodeModel::onConnected() {
     m_client.subscribe("sbfspot_1234567890/live");
 }
@@ -347,3 +346,4 @@ void PowerNodeModel::onReceived(const QMQTT::Message& message) {
     //     m_powerDcTotal += m_stringLiveData[i]->power;
     // }
 }
+#endif

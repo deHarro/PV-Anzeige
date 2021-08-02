@@ -36,4 +36,4 @@ DISTFILES += \
 //    Icons/Akku_weiß_transparent.png
 
 include(thirdparty/qmqtt/qmqtt.pri)
-include(thirdparty/qmsgpack/qmsgpack.pri)
+#include(thirdparty/qmsgpack/qmsgpack.pri)
