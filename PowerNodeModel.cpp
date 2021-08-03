@@ -291,7 +291,7 @@ void PowerNodeModel::shadeHandling(void)
 {
     // Anteil Netzbezug in ROT von oben kommend einblenden
     if(m_gridPower < 0){                            // Netzbezug
-        m_homeTopRedH = fmin((abs(m_gridPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270
+        m_homeTopRedH = fmin((abs(m_gridPower) / m_totalPowerConsumption), (double).5) * 270;    // Höhe Home rectangle = 270
     }
     else
     {
@@ -299,8 +299,8 @@ void PowerNodeModel::shadeHandling(void)
     }
 
     // Anteil Akkubezug in GRÜN von unten kommend einblenden
-    if(m_gridPower < 0){                            // Netzbezug
-        m_homeBotGreenH = fmin((abs(m_batteryPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270
+    if(m_batteryPower < 0){                            // Netzbezug
+        m_homeBotGreenH = fmin((abs(m_batteryPower) / m_totalPowerConsumption), (double).5) * 270;    // Höhe Home rectangle = 270
     }
     else
     {
