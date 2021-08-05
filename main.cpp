@@ -3,6 +3,8 @@
 #include <QQuickView>
 #include <QApplication>
 
+//#define USEMQTT
+
 #if defined USEMQTT
     #include <qmqtt.h>
 #endif
