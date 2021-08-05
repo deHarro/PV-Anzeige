@@ -13,15 +13,12 @@
 
 // define colors according https://doc.qt.io/qt-5/qml-color.html
 // use #RRGGBB notation for QML instead of 0xRRGGBB
-#define VLIGHTGRAY      "#b3b3b3"     // "LIGHTGREY"    //  no defined color, hand tuned ;-)
-//#define LIMEGREEN       "LIMEGREEN"   // "0x32cd32"     // -> "#32cd32" replace 0x by # for QColor in QML file
-#define LIMEGREEN       "#00ac00"   // "0x32cd32"     // -> "#32cd32" replace 0x by # for QColor in QML file
-#define FORESTGREEN     "FORESTGREEN" // "0x228b22"     // "0x228b22"
-#define FIREBRICK       "FIREBRICK"   // "0xb22222"
-//#define DODGERBLUE      "#0A7CEB"     // "DODGERBLUE"   // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
-#define DODGERBLUE      "#02a4f5"     // "DODGERBLUE"   // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
-//#define DARKBLUE        "DARKBLUE"    // "0x00008b"     // EV attached to wallbox
-#define DARKBLUE        "#0371da"    // "0x00008b"     // EV attached to wallbox
+#define VLIGHTGRAY      "#b3b3b3"       // "LIGHTGREY"    //  no defined color, hand tuned ;-)
+#define LIMEGREEN       "#00ac00"       // "0x32cd32"     // -> "#32cd32" replace 0x by # for QColor in QML file
+#define FORESTGREEN     "FORESTGREEN"   // "0x228b22"
+#define FIREBRICK       "FIREBRICK"     // "0xb22222"
+#define DODGERBLUE      "#02a4f5"       // "DODGERBLUE"   // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
+#define DARKBLUE        "#0371da"       // "0x00008b"     // EV attached to wallbox
 
 
 class PowerNodeModel : public QObject {
@@ -56,8 +53,6 @@ public:
     // shade properties
     Q_PROPERTY(int homeBotGreenH MEMBER m_homeBotGreenH NOTIFY shadeDataChanged)
     Q_PROPERTY(int homeTopRedH MEMBER m_homeTopRedH NOTIFY consumptionDataChanged)
-    //    Q_PROPERTY(int homeTopRedH MEMBER m_homeTopRedH NOTIFY shadeDataChanged)
-    //    Q_PROPERTY(int homeBotGreenH MEMBER m_homeBotGreenH NOTIFY consumptionDataChanged)
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
     Q_PROPERTY(double gridPower MEMBER m_gridPowerAnzeige NOTIFY gridDataChanged)
