@@ -1,7 +1,5 @@
 #pragma once
 
-//#define USEMQTT
-
 #include <QObject>
 #include <QTimer>
 #include <QString>
