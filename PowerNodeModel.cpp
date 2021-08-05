@@ -70,17 +70,13 @@ void PowerNodeModel::generatorHandling(void)
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
 
-//        m_generatorPowerTotal = 1000;                    // test
+//        m_generatorPowerTotal = 0;                    // test
 
     if(m_generatorPowerTotal == 0) {
         m_generatorColor = VLIGHTGRAY;                  // helles Hellgrau, keine QML Basic/SVG color
-//        m_pv2batt = false;
     }
     else {
         m_generatorColor = LIMEGREEN;                   // Hellgrün
-//        if(m_batteryPower > 0){
-//            m_pv2batt = true;
-//        }
     }
 }
 
@@ -244,7 +240,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // battery to house
-    if(((m_batteryPower < 0) && (m_generatorPowerTotal = 0)) ||     // PV keine Leistung
+    if(((m_batteryPower < 0) && (m_generatorPowerTotal == 0)) ||     // PV keine Leistung
             ((m_batteryPower < 0) && (m_totalPowerConsumption > 0)))     // Haus braucht Energie
     {
         m_batt2house = true;
@@ -255,7 +251,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // house to battery (battery conditioning when PV is off for long time)
-    if((m_batteryPower > 0) && (m_generatorPowerTotal = 0) && (m_totalPowerConsumption > 0) && (m_gridPower < 0))
+    if((m_batteryPower > 0) && (m_generatorPowerTotal == 0) && (m_totalPowerConsumption > 0) && (m_gridPower < 0))
     {
         m_house2batt = true;
     }
