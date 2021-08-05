@@ -12,7 +12,7 @@ There will be no statistics and no database, those are handled well by SunnyPort
 
 Modelled with QT Creator, the basic display shows up as follows:
 
-![Darstellung_PV-Anzeige](https://user-images.githubusercontent.com/26298406/124920880-17da5480-dff8-11eb-824f-2bed3e3577b1.png)
+![Darstellung_PV-Anzeige_2](https://user-images.githubusercontent.com/26298406/128376094-a307fa3e-ea3f-4d41-ae8e-a2b85a8494f0.png)
 
 
 The pink texts and values are normally invisible and appear in white as all other text on mouse over.
@@ -20,3 +20,5 @@ The pink texts and values are normally invisible and appear in white as all othe
 The arrows indicate current flow. Only those arrows show up where current is actually flowing.
 
 Depending on the current direction, some texts change, e.g. "Batterie-landung" / Batterie-entladung" or "Netzbezug" / "Netz-einspeisung".
+
+If power from PV generator is insufficient to satisfy power consumption in the house, additional power is delivered by the battery or/and by the grid. This is shown as colored patches according to the percentage of power from both sources.
