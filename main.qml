@@ -20,213 +20,192 @@ Window {
     property alias rectangle2: rectangle2
     property alias rectangle5: rectangle5
 
-    Rectangle {
-        id: rectangle3
-        x: 157
-        y: 140
-        width: 90
-        height: 270
-        color: PowerNodeModel.homeColor
-        //color: "#b3b3b3"                  // hellgrau, keine QML Basic/SVG color
-        //color: "limegreen"                // Hellgrün
-        radius: 15
-        border.width: 0
-        //        anchors.fill: parent
-        //clip: true
+    property real coordHouseX: 157
+    property real coordHouseY: 140
+    property real coordHouseW: 90
+    property real coordHouseH: 270
 
 
-        // Überlagerte Farben in der Haus-Box mit Texten und Bild
-        /*
-                id: rectangleRed
-                x: 237
-                y: 140
-                width: 10
-                height: PowerNodeModel.homeTopRedH
-                opacity: 1
-                visible: true
-                color: "FIREBRICK"
-                radius: 0
-                border.width: 0
-            */
+    // Überlagerte Farben in der Haus-Box mit Texten und Bild
+    Item {
+        id: root
+        x: coordHouseX
+        y: coordHouseY
+        width: coordHouseW
+        height: coordHouseH
 
-        /*
-                id: rectangleGreen
-                x: 157
-                y: 410 - PowerNodeModel.homeBotGreenH
-                width: 10
-                height: PowerNodeModel.homeBotGreenH
-                opacity: 1
-                visible: true
-                color: "FORESTGREEN"
-                radius: 0
-                border.width: 0
-          */
-
-        Canvas {
-            id: mycanvas
-            x: -13
-            y: -8
-            width: 90
-            height: 270
-            clip: true
-            opacity: 0
-            onPaint: {
-                var ctx = getContext("2d");
-                ctx.beginPath();
-                ctx.moveTo(15,0);
-                ctx.lineTo(75,0);
-                ctx.arcTo(75,0,15,15,-90);
-                ctx.lineTo(90,255);
-                ctx.arcTo(90,255,-15,15,-90);
-                ctx.lineTo(15,270);
-                ctx.arcTo(15,270,15,-15,-90);
-                ctx.lineTo(15,15);
-                ctx.arcTo(15,-15,15,0,-90);
-                ctx.closePath();
-                //            ctx.clip();
-                ctx.fillStyle = Qt.rgba(1, 0, 0, 1);
-            }
+        Rectangle {
+            id: outerBackground
+            anchors.fill: parent
+            radius: 15
+            color: "Whitesmoke"
 
             Rectangle {
-                id: rectangleRed
-                x: 13
-                y: 8
-                width: 90
-                height: PowerNodeModel.homeTopRedH
-                visible: true
-                color: "FIREBRICK"
-                opacity: 1
-                radius: 0
-                border.width: 0
-                anchors.margins: 1
-                clip: true
-                layer.enabled: true
-                //            layer.effect: OpacityMask {
-                //                maskSource: mycanvas
-                //            }
+                id: innerFillArea
+                anchors.fill: parent
+                anchors.margins: 0
+                radius:  15
+                color: "Yellow"           // wird nie angezeigt
+                Item {
+                    id: innerMaskSource
+                    anchors.fill: parent
+                    layer.enabled: true
+                }
             }
         }
 
         Rectangle {
-            id: rectangleGreen
-            layer.enabled: false
+            id: rectangle3
             x: 0
-            y: 270 - PowerNodeModel.homeBotGreenH
+            y: 0
             width: 90
-            height: PowerNodeModel.homeBotGreenH
-            visible: true
-            color: "FORESTGREEN"
-            opacity: 1
-            radius: 0
+            height: 270
+            color: PowerNodeModel.homeColor
+            //color: "#b3b3b3"                  // hellgrau, keine QML Basic/SVG color
+            //color: "limegreen"                // Hellgrün
+            radius: 15
             border.width: 0
+            opacity: 1
+            clip: false
+
         }
 
-        Text {
-            id: text3
-            x: 1
-            y: 6
-            width: 88
-            height: 33
-            color: "#ffffff"
-            text: qsTr("Gesamt-verbrauch")
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.WordWrap
-            font.bold: true
+        Item {
+            id: indicatorContainer
+            anchors.fill: parent
+            anchors.margins: 0
+
+            layer.enabled: true
+            layer.effect: OpacityMask {
+                maskSource: innerFillArea
+            }
+
+            Item {
+                anchors.fill: parent
+
+                Rectangle {
+                    id: rectangleGreen
+                    anchors.left: parent.left
+                    y:  270 - PowerNodeModel.homeBotGreenH
+                    width: 90
+                    height: PowerNodeModel.homeBotGreenH
+                    anchors.margins: 0
+                    visible: true
+                    color: "FORESTGREEN"
+                    opacity: 1
+                    radius: 0
+                    clip: true
+                }
+
+
+                Rectangle {
+                    id: rectangleRed
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.margins: 0
+                    height: PowerNodeModel.homeTopRedH
+                    x: coordHouseX
+                    y: coordHouseY
+                    width: coordHouseW
+                    visible: true
+                    color: "FIREBRICK"
+                    opacity: 1
+                    radius: 0
+                    border.width: 0
+                    clip: true
+                }
+
+                Item {
+                    id: textimage
+                    x: 0
+                    y: 0
+                    Text {
+                        id: text3
+                        x: 1
+                        y: 6
+                        width: 88
+                        height: 33
+                        color: "#ffffff"
+                        text: qsTr("Gesamt-verbrauch")
+                        font.pixelSize: 12
+                        horizontalAlignment: Text.AlignHCenter
+                        wrapMode: Text.WordWrap
+                        font.bold: true
+                    }
+
+                    Image {
+                        id: image1
+                        x: 0
+                        y: 95
+                        width: 90
+                        height: 85
+                        source: "Icons/Haus_weiss_transparent.png"
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Text {
+                        id: text36
+                        x: 29
+                        y: 198
+                        color: "#f9bcbc"
+                        text: qsTr("Zähler")
+                        font.pixelSize: 12
+                    }
+
+                    Text {
+                        id: text9
+                        x: 36
+                        y: 78
+                        color: "#ffffff"
+                        text: qsTr("kW")
+                        font.pixelSize: 12
+                        horizontalAlignment: Text.AlignHCenter
+                        minimumPixelSize: 14
+                        font.bold: true
+                    }
+
+                    Text {
+                        id: text13
+                        x: 7
+                        y: 46
+                        width: 77
+                        height: 26
+                        color: "#ffffff"
+                        text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
+                        font.pixelSize: 23
+                        horizontalAlignment: Text.AlignHCenter
+                        font.family: "Arial"
+                    }
+
+                    Text {
+                        id: text37
+                        x: 8
+                        y: 214
+                        width: 74
+                        height: 14
+                        color: "#f9bcbc"
+                        // ohne Nachkommastellen, zentriert
+                        text: (PowerNodeModel.gridEnergyImport)
+                        font.pixelSize: 12
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+
+                    Text {
+                        id: text38
+                        x: 33
+                        y: 229
+                        color: "#f9bcbc"
+                        text: qsTr("kWh")
+                        font.pixelSize: 12
+                    }
+                }
+
+            }
+
         }
-
-
-
-
-
-
-        Image {
-            id: image1
-            x: 0
-            y: 95
-            width: 90
-            height: 85
-            source: "Icons/Haus_weiss_transparent.png"
-            fillMode: Image.PreserveAspectFit
-        }
-
-
-
-
-        Text {
-            id: text36
-            x: 29
-            y: 198
-            color: "#f9bcbc"
-            text: qsTr("Zähler")
-            font.pixelSize: 12
-        }
-
-
-
-
-
-        Text {
-            id: text9
-            x: 36
-            y: 78
-            color: "#ffffff"
-            text: qsTr("kW")
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-            minimumPixelSize: 14
-            font.bold: true
-        }
-
-
-
-
-        Text {
-            id: text13
-            x: 7
-            y: 46
-            width: 77
-            height: 26
-            color: "#ffffff"
-            text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
-            font.pixelSize: 23
-            horizontalAlignment: Text.AlignHCenter
-            anchors.horizontalCenterOffset: 1
-            font.family: "Arial"
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-
-
-
-        Text {
-            id: text37
-            x: 8
-            y: 214
-            width: 74
-            height: 14
-            color: "#f9bcbc"
-            // ohne Nachkommastellen, zentriert
-            text: (PowerNodeModel.gridEnergyImport)
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-        }
-
-
-
-
-        Text {
-            id: text38
-            x: 33
-            y: 229
-            color: "#f9bcbc"
-            text: qsTr("kWh")
-            font.pixelSize: 12
-        }
-
-
 
     }
+
 
 
     Rectangle {
@@ -837,12 +816,7 @@ Window {
             visible: PowerNodeModel.house2charger
         }
     }
-
-
 }
 
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:1.33}
-}
-##^##*/
+
+

@@ -66,21 +66,21 @@ void PowerNodeModel::generatorHandling(void)
     m_generatorPowerGarage = rand() % 3000;
 #endif
 
-    m_generatorPowerTotal = m_generatorPowerDach
-            + m_generatorPowerGaube
-            + m_generatorPowerGarage;
+    m_generatorPowerTotal   =   m_generatorPowerDach
+                            +   m_generatorPowerGaube
+                            +   m_generatorPowerGarage;
 
-    //    m_generatorPowerTotal = 0;                // test
+//        m_generatorPowerTotal = 1000;                    // test
 
     if(m_generatorPowerTotal == 0) {
         m_generatorColor = VLIGHTGRAY;                  // helles Hellgrau, keine QML Basic/SVG color
-        m_pv2batt = false;
+//        m_pv2batt = false;
     }
     else {
         m_generatorColor = LIMEGREEN;                   // Hellgrün
-        if(m_batteryPower > 0){
-            m_pv2batt = true;
-        }
+//        if(m_batteryPower > 0){
+//            m_pv2batt = true;
+//        }
     }
 }
 

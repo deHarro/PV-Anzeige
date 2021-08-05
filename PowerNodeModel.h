@@ -155,4 +155,5 @@ private:
 
     QMQTT::Client& m_client;
 #endif
+
 };
