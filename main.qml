@@ -543,20 +543,30 @@ Window {
             font.family: "Arial"
         }
         Image {
-            id: image
+            id: batteryOutline
             x: 7
             y: 119
             width: 77
             height: 43
             visible: true
-            source: PowerNodeModel.batteryImage
+            source: "qrc:/Icons/Akku_weiss_transparent00.png"
             activeFocusOnTab: false
             focus: false
             enabled: false
             sourceSize.height: 32
             sourceSize.width: 58
             fillMode: Image.PreserveAspectFit
+
+            Rectangle {
+                id: batteryFill
+                x: 12.5
+                y: 11
+                width: (PowerNodeModel.batteryFill / 100) * 45.5
+                height: 19
+                color: "White"
+            }
         }
+
         Text {
             id: text33
             x: 7
@@ -570,6 +580,7 @@ Window {
             horizontalAlignment: Text.AlignRight
             font.family: "Arial"
         }
+
         Text {
             id: text34
             x: 1
@@ -583,6 +594,7 @@ Window {
             wrapMode: Text.WordWrap
             font.bold: true
         }
+
         Text {
             id: text35
             x: -2
@@ -597,6 +609,7 @@ Window {
             anchors.horizontalCenter: parent.horizontalCenter
             font.family: "Arial"
         }
+
 
     }
 
@@ -698,6 +711,7 @@ Window {
             font.pixelSize: 12
         }
     }
+
 
 
 
@@ -816,7 +830,14 @@ Window {
             visible: PowerNodeModel.house2charger
         }
     }
+
 }
 
 
 
+
+/*##^##
+Designer {
+    D{i:0;formeditorZoom:1.1}
+}
+##^##*/

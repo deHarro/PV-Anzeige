@@ -106,7 +106,7 @@ void PowerNodeModel::batteryHandling(void)
     }
 
 
-    // change battery icon depending on battery percentage
+/*    // change battery icon depending on battery percentage (Sunny Portal style)
     if( m_batteryPercentage <= 5)
     {
         m_batteryImage = "/Icons/Akku_weiss_transparent00.png";
@@ -131,6 +131,9 @@ void PowerNodeModel::batteryHandling(void)
     {
         m_batteryImage = "/Icons/Akku_weiss_transparent100.png";
     }
+*/
+    // change battery icon depending on battery percentage (quasi Analog)
+    m_batteryFill = m_batteryPercentage;
 }
 
 // grid handling -------------------------------------------------------------

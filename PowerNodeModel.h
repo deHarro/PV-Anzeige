@@ -44,6 +44,7 @@ public:
     Q_PROPERTY(QString batteryText MEMBER m_batteryText NOTIFY batteryDataChanged)
     Q_PROPERTY(QString batteryColor MEMBER m_batteryColor NOTIFY batteryDataChanged)
     Q_PROPERTY(QString batteryImage MEMBER m_batteryImage NOTIFY batteryDataChanged)
+    Q_PROPERTY(int batteryFill MEMBER m_batteryFill NOTIFY batteryDataChanged)
 
     // home consumption properties - all home consumption values are updated in one call to "consumptionDataChanged"
     Q_PROPERTY(double consumptionPower MEMBER m_totalPowerConsumption NOTIFY consumptionDataChanged)
@@ -107,6 +108,7 @@ private:
     QString m_batteryColor = VLIGHTGRAY;
     QString m_batteryText = "";             // Text in der Batterie Box, wechselt Ladung/Entladung
     QString m_batteryImage = "/Icons/Akku_weiss_transparent00.png";
+    int m_batteryFill = 0;                  // analoge Balkenanzeige des Betteriefüllstands
 // consumption, home, Hausverbrauch
     double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
     double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
