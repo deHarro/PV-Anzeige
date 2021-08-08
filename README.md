@@ -21,3 +21,17 @@ The arrows indicate current flow. Only those arrows show up where current is act
 Depending on the current direction, some texts change, e.g. "Batterie-landung" / Batterie-entladung" or "Netzbezug" / "Netz-einspeisung".
 
 If power from PV generator is insufficient to satisfy power consumption in the house, additional power is delivered by the battery or/and by the grid. This is shown as colored patches according to the percentage of power from both sources.
+
+----
+
+Below are shown some different power situations:
+
+![grafik](https://user-images.githubusercontent.com/26298406/128636065-2350fa99-9545-4a0b-a25e-809d85646bc3.png)
+
+Left: EV attached, not charging, house is supplied from PV, battery and grid.
+
+Middle: No EV attached (0.04 kW is false display), house is supplied from PV, grid and battery.
+
+Right: EV attached and charging, house gets power from PV and battery, power is delivered to the grid, too.
+
+The displayed power levels do not depend from each other in this examples, the values are generated at random.
