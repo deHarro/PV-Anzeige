@@ -12,8 +12,7 @@ There will be no statistics and no database, those are handled well by SunnyPort
 
 Modelled with QT Creator, the basic display shows up as follows:
 
-![Darstellung_PV-Anzeige_2](https://user-images.githubusercontent.com/26298406/128376094-a307fa3e-ea3f-4d41-ae8e-a2b85a8494f0.png)
-
+![grafik](https://user-images.githubusercontent.com/26298406/128635477-f4f7ed47-aaed-43f9-93fd-ab3bc7f4b9b8.png)
 
 The pink texts and values are normally invisible and appear in white as all other text on mouse over.
 
