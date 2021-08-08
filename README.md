@@ -34,4 +34,4 @@ Middle: EV attached and charging (light blue), PV generator delivers power to ho
 
 Right: No EV attached, house is supplied from PV, grid and battery.
 
-The displayed power levels do not depend from each other in this examples, the values are generated at random.
+The displayed power levels do not depend from each other in this examples, the values are generated randomly.
