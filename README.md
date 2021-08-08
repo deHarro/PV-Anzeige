@@ -26,12 +26,12 @@ If power from PV generator is insufficient to satisfy power consumption in the h
 
 Below are shown some different power situations:
 
-![grafik](https://user-images.githubusercontent.com/26298406/128637714-dd740b0e-3db9-4730-8c9d-7abb9ded6813.png)
+![grafik](https://user-images.githubusercontent.com/26298406/128638561-4f10fbc1-89bf-4901-b629-d7d414df77b6.png)
 
-Left: EV attached, not charging (dark blue), house gets power from PV, battery and grid.
+Left: EV attached, not charging (dark blue), PV generator delivers power to house, battery and grid.
 
-Middle: EV attached and charging (light blue), house gets power from PV and battery, power is delivered to the grid, too.
+Middle: EV attached and charging (light blue), PV generator delivers power to house, battery, grid and wall box.
 
-Right: No EV attached (0.04 kW and arrows are false displays), house is supplied from PV, grid and battery.
+Right: No EV attached, house is supplied from PV, grid and battery.
 
 The displayed power levels do not depend from each other in this examples, the values are generated at random.
