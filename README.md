@@ -30,7 +30,7 @@ Below are shown some possible power situations:
 
 Left: EV attached, not charging (dark blue), PV generator delivers power to house, battery and grid.
 
-Middle: EV attached and charging (light blue), PV generator delivers power to house, battery, grid and wall box.
+Middle: EV attached and charging (light blue), PV generator delivers power to house, battery, grid and wallbox.
 
 Right: No EV attached, house is supplied from PV, grid and battery.
 
