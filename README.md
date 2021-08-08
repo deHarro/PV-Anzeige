@@ -24,7 +24,7 @@ If power from PV generator is insufficient to satisfy power consumption in the h
 
 ----
 
-Below are shown some different power situations:
+Below are shown some possible power situations:
 
 ![grafik](https://user-images.githubusercontent.com/26298406/128638561-4f10fbc1-89bf-4901-b629-d7d414df77b6.png)
 
