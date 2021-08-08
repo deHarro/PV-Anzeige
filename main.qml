@@ -135,11 +135,11 @@ Window {
 
                     Image {
                         id: image1
-                        x: 0
-                        y: 95
-                        width: 90
-                        height: 85
-                        source: "Icons/Haus_weiss_transparent.png"
+                        x: 2
+                        y: 96
+                        width: 86
+                        height: 83
+                        source: "Icons/Haus2_weiss_transparent.png"
                         fillMode: Image.PreserveAspectFit
                     }
 
@@ -672,11 +672,11 @@ Window {
         }
         Image {
             id: image2
-            x: 3
-            y: 103
-            width: 85
-            height: 87
-            source: "Icons/Mast_weiss_transparent.png"
+            x: 1
+            y: 98
+            width: 88
+            height: 85
+            source: "Icons/Mast_vec_weiss_transparent.png"
             fillMode: Image.PreserveAspectFit
         }
 
@@ -838,6 +838,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:1.1}
+    D{i:0;formeditorZoom:4}
 }
 ##^##*/
