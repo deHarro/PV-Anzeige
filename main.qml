@@ -136,7 +136,7 @@ Window {
                     Image {
                         id: image1
                         x: 2
-                        y: 96
+                        y: 99
                         width: 86
                         height: 83
                         source: "Icons/Haus2_weiss_transparent.png"
@@ -838,6 +838,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:4}
+    D{i:0;formeditorZoom:1.25}
 }
 ##^##*/
