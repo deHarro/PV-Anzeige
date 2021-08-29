@@ -1,16 +1,15 @@
-#include <algorithm>    // std::max
 #include "PowerNodeModel.h"
 
+#include <algorithm>
 #include <chrono>
 
-#if defined USEMQTT
-    #include "Types.h"
-    #include <msgpack.h>
-#endif
+#include <msgpack.h>
+#include <qmqtt.h>
+
+#include "Types.h"
 
 using namespace std::chrono_literals;
 
-#if defined USEMQTT
 PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
     : m_client(mqttClient) {
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
@@ -24,12 +23,13 @@ PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
 
     m_client.connectToHost();
 }
-#else
+
+/*
 PowerNodeModel::PowerNodeModel() {
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
     m_dataTimer.start(2000);
 }
-#endif
+*/
 
 PowerNodeModel::~PowerNodeModel() {
 }
@@ -290,7 +290,7 @@ void PowerNodeModel::shadeHandling(void)
 {
     // Anteil Netzbezug in ROT von oben kommend einblenden
     if(m_gridPower < 0){                            // Netzbezug
-        m_homeTopRedH = fmin((abs(m_gridPower) / m_totalPowerConsumption), (double).5) * 270;    // Höhe Home rectangle = 270
+        m_homeTopRedH = std::min((abs(m_gridPower) / m_totalPowerConsumption), (double).5) * 270;    // Höhe Home rectangle = 270
     }
     else
     {
@@ -299,7 +299,7 @@ void PowerNodeModel::shadeHandling(void)
 
     // Anteil Akkubezug in GRÜN von unten kommend einblenden
     if(m_batteryPower < 0){                            // Netzbezug
-        m_homeBotGreenH = fmin((abs(m_batteryPower) / m_totalPowerConsumption), (double).5) * 270;    // Höhe Home rectangle = 270
+        m_homeBotGreenH = std::min((abs(m_batteryPower) / m_totalPowerConsumption), (double).5) * 270;    // Höhe Home rectangle = 270
     }
     else
     {
@@ -307,7 +307,6 @@ void PowerNodeModel::shadeHandling(void)
     }
 }
 
-#if defined USEMQTT
 void PowerNodeModel::onConnected() {
     m_client.subscribe("sbfspot_1234567890/live");
 }
@@ -345,4 +344,3 @@ void PowerNodeModel::onReceived(const QMQTT::Message& message) {
     //     m_powerDcTotal += m_stringLiveData[i]->power;
     // }
 }
-#endif

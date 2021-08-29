@@ -4,6 +4,7 @@ QT += quick svg \
 CONFIG += c++14
 CONFIG += QMQTT_NO_SSL
 CONFIG += NO_UNIT_TESTS
+DEFINES += MSGPACK_STATIC
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -32,8 +33,8 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
-//    Icons/Akku_weiß_transparent.png
+# DISTFILES += \
+#    Icons/Akku_weiß_transparent.png
 
 include(thirdparty/qmqtt/qmqtt.pri)
-#include(thirdparty/qmsgpack/qmsgpack.pri)
+include(thirdparty/qmsgpack/qmsgpack.pri)

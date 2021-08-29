@@ -3,11 +3,7 @@
 #include <QQuickView>
 #include <QApplication>
 
-//#define USEMQTT
-
-#if defined USEMQTT
-    #include <qmqtt.h>
-#endif
+#include <qmqtt.h>
 
 #include "PowerNodeModel.h"
 
@@ -20,12 +16,8 @@ int main(int argc, char *argv[])
     //QGuiApplication app(argc, argv);
     QApplication app(argc, argv);
 
-#if defined USEMQTT
     QMQTT::Client mqttClient;
     PowerNodeModel powerNodeModel(mqttClient);
-#else
-    PowerNodeModel powerNodeModel;
-#endif
 
     QQmlApplicationEngine engine;
 

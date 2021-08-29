@@ -5,9 +5,7 @@
 #include <QString>
 #include <QQuickImageProvider>
 
-#if defined USEMQTT
-    #include <qmqtt.h>
-#endif
+#include <qmqtt.h>
 
 #define DEMOMODE                // generate random power values for coloring and arrows
 
@@ -25,10 +23,7 @@ class PowerNodeModel : public QObject {
     Q_OBJECT
 
 public:
-    PowerNodeModel();
-#if defined USEMQTT
     PowerNodeModel(QMQTT::Client& mqttClient);
-#endif
     ~PowerNodeModel();
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
@@ -142,7 +137,6 @@ private:
     QTimer m_dataTimer;
     void onDataTimer();
 
-#if defined USEMQTT
     // MQTT members
     void onConnected();
     void onDisconnected();
@@ -151,6 +145,4 @@ private:
     void onReceived(const QMQTT::Message& message);
 
     QMQTT::Client& m_client;
-#endif
-
 };
