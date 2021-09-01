@@ -64,11 +64,11 @@ void PowerNodeModel::generatorHandling(void)
     m_generatorPowerDach = rand() % 9000;
     m_generatorPowerGaube = rand() % 3600;
     m_generatorPowerGarage = rand() % 3000;
-#endif
 
     m_generatorPowerTotal   =   m_generatorPowerDach
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
+#endif
 
 //        m_generatorPowerTotal = 0;                    // test
 
@@ -132,6 +132,7 @@ void PowerNodeModel::batteryHandling(void)
         m_batteryImage = "/Icons/Akku_weiss_transparent100.png";
     }
 */
+
     // change battery icon depending on battery percentage (quasi Analog)
     m_batteryFill = m_batteryPercentage;
 }
