@@ -20,7 +20,7 @@ The arrows indicate current flow. Only those arrows show up where current is act
 
 Depending on the current direction, some texts change, e.g. "Batterie-ladung" / Batterie-entladung" or "Netzbezug" / "Netz-einspeisung".
 
-If power from PV generator is insufficient to satisfy power consumption in the house, additional power is delivered by the battery or/and by the grid. This is shown as colored patches according to the percentage of power from both sources.
+If power from PV generator is insufficient to satisfy power consumption in the house, additional power is delivered by the battery or/and by the grid. This is shown as colored patches according to the percentage of power from both sources. The third picture below visualizes this situation.
 
 ----
 
