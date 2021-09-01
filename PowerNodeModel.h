@@ -7,7 +7,7 @@
 
 #include <qmqtt.h>
 
-//#define DEMOMODE                // generate random power values for coloring and arrows
+#define DEMOMODE                // generate random power values for coloring and arrows
 
 // define colors according https://doc.qt.io/qt-5/qml-color.html
 // use #RRGGBB notation for QML instead of 0xRRGGBB
