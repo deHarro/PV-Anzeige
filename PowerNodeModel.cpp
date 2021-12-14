@@ -12,8 +12,8 @@ using namespace std::chrono_literals;
 
 PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
     : m_client(mqttClient) {
-    connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
-    m_dataTimer.start(2000);
+//    connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
+//    m_dataTimer.start(2000);
 
     connect(&m_client, &QMQTT::Client::connected, this, &PowerNodeModel::onConnected);
     connect(&m_client, &QMQTT::Client::disconnected, this, &PowerNodeModel::onDisconnected);
@@ -330,18 +330,18 @@ void PowerNodeModel::onReceived(const QMQTT::Message& message) {
 
     // Inverter live data
     auto variant = MsgPack::unpack(message.payload()).toMap();
-    //m_lastUpdate = variant.value(toIntString(InverterProperty::Timestamp)).toDateTime();
-    //m_yieldTotal = variant.value(toIntString(InverterProperty::YieldTotal)).toDouble();
-    //m_yieldToday = variant.value(toIntString(InverterProperty::YieldToday)).toDouble();
+    m_lastUpdate = variant.value(toIntString(InverterProperty::Timestamp)).toDateTime();
+    m_yieldTotal = variant.value(toIntString(InverterProperty::YieldTotal)).toDouble();
+    m_yieldToday = variant.value(toIntString(InverterProperty::YieldToday)).toDouble();
     m_generatorPowerTotal = variant.value(toIntString(InverterProperty::Power)).toDouble();
 
-    // String live data
-    // auto strings = variant.value(toIntString(InverterProperty::Strings)).toList();
-    // int i = 0;
-    // int j = 0;
-    // m_powerDcTotal = 0.0;
-    // for (; (i < strings.size()) && (j < m_stringLiveData.size()); ++i, ++j) {
-    //     m_stringLiveData[i]->power = strings.value(i).toMap().value(toIntString(InverterProperty::StringPower)).toReal();
-    //     m_powerDcTotal += m_stringLiveData[i]->power;
-    // }
+     // String live data;
+     auto strings = variant.value(toIntString(InverterProperty::Strings)).toList();
+     int i = 0;
+     int j = 0;
+     m_generatorPowerTotal = 0.0;
+     for (; (i < strings.size()) && (j < m_stringLiveData.size()); ++i, ++j) {
+         m_stringLiveData[i]->power = strings.value(i).toMap().value(toIntString(InverterProperty::StringPower)).toReal();
+         m_generatorPowerTotal += m_stringLiveData[i]->power;
+     }
 }

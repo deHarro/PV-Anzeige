@@ -9,6 +9,9 @@
 
 #define DEMOMODE                // generate random power values for coloring and arrows
 
+class StringData;
+
+
 // define colors according https://doc.qt.io/qt-5/qml-color.html
 // use #RRGGBB notation for QML instead of 0xRRGGBB
 #define VLIGHTGRAY      "#b3b3b3"       // "LIGHTGREY"    //  no defined color, hand tuned ;-)
@@ -96,6 +99,13 @@ private:
     double m_generatorPowerGaube = 0.0;     // Momentanleistung String Gaube
     double m_generatorPowerGarage = 0.0;    // Momentanleistung String Garage
     QString m_generatorColor = VLIGHTGRAY;
+
+// Manuels Daten
+    QList<StringData*> m_stringLiveData;
+    QDateTime m_lastUpdate;
+    double m_yieldTotal = 0.0;
+    double m_yieldToday = 0.0;
+
 // battery, Akku
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]
     double m_battPowerAnzeige = 0.0;        // Batterieladung/-Entladung zur Anzeige [kW]

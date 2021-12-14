@@ -51,7 +51,7 @@ struct InverterConfig
 {
     QString     manufacturer;
     QString     name;
-    uint32_t    serial = 0;
+    uint32_t    serial = 2130420670;
     QString     mqttHost;
     uint16_t    mqttPort;
 
