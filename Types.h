@@ -47,10 +47,16 @@ struct StringConfig
 };
 
 
+// Seriennummern der Wechselrichter
+// Gerätetyp SB 5000TL-21    Seriennummer    2130420670
+// Gerätetyp SB 3600TL-21    Seriennummer    2130421987
+// Gerätetyp SB 3000TL-21    Seriennummer    2130421189
+
+
 struct InverterConfig
 {
-    QString     manufacturer;
-    QString     name;
+    QString     manufacturer = "SMA";
+    QString     name = "Dach";
     uint32_t    serial = 2130420670;
     QString     mqttHost;
     uint16_t    mqttPort;
