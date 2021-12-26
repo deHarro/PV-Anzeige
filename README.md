@@ -14,7 +14,7 @@ Modelled with QT Creator, the basic display shows up as follows:
 
 ![grafik](https://user-images.githubusercontent.com/26298406/128635477-f4f7ed47-aaed-43f9-93fd-ab3bc7f4b9b8.png)
 
-The pink texts and values are normally invisible and on mouse over appear in white as all other text.
+In the final version the pink texts and values will become white as all other text.
 
 The arrows indicate current flow. Only those arrows show up where current is actually flowing.
 
