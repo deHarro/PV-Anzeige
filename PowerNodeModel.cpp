@@ -12,8 +12,11 @@ using namespace std::chrono_literals;
 
 PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
     : m_client(mqttClient) {
-//    connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
-//    m_dataTimer.start(2000);
+
+#if defined DEMOMODE
+    connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
+    m_dataTimer.start(2000);
+#endif
 
     connect(&m_client, &QMQTT::Client::connected, this, &PowerNodeModel::onConnected);
     connect(&m_client, &QMQTT::Client::disconnected, this, &PowerNodeModel::onDisconnected);
@@ -64,6 +67,7 @@ void PowerNodeModel::generatorHandling(void)
     m_generatorPowerDach = rand() % 9000;
     m_generatorPowerGaube = rand() % 3600;
     m_generatorPowerGarage = rand() % 3000;
+    m_generatorTotalEnergy = (rand() % 66000) + 30000;  // im Bereich ab 66 MWh
 
     m_generatorPowerTotal   =   m_generatorPowerDach
                             +   m_generatorPowerGaube

@@ -34,6 +34,7 @@ public:
     Q_PROPERTY(double generatorPowerDach MEMBER m_generatorPowerDach NOTIFY generatorDataChanged)
     Q_PROPERTY(double generatorPowerGaube MEMBER m_generatorPowerGaube NOTIFY generatorDataChanged)
     Q_PROPERTY(double generatorPowerGarage MEMBER m_generatorPowerGarage NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorTotalEnergy MEMBER m_generatorTotalEnergy NOTIFY generatorDataChanged)
     Q_PROPERTY(QString generatorColor MEMBER m_generatorColor NOTIFY generatorDataChanged)
 
     // battery properties - all battery values are updated in one call to "batteryDataChanged"
@@ -98,6 +99,7 @@ private:
     double m_generatorPowerDach = 0.0;      // Momentanleistung String Dach
     double m_generatorPowerGaube = 0.0;     // Momentanleistung String Gaube
     double m_generatorPowerGarage = 0.0;    // Momentanleistung String Garage
+    double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
     QString m_generatorColor = VLIGHTGRAY;
 
 // Manuels Daten
