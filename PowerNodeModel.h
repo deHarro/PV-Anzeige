@@ -5,10 +5,12 @@
 #include <QString>
 #include <QQuickImageProvider>
 
-#include <qmqtt.h>
-
 #define DEMOMODE                // generate random power values for coloring and arrows
 //#define USE_MQTT              // enable to use MQTT connection
+
+#ifdef USE_MQTT
+#include <qmqtt.h>
+#endif
 
 class StringData;
 
@@ -107,11 +109,13 @@ private:
     double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
     QString m_generatorColor = VLIGHTGRAY;
 
+#ifdef USE_MQTT
 // Manuels Daten
     QList<StringData*> m_stringLiveData;
     QDateTime m_lastUpdate;
     double m_yieldTotal = 0.0;
     double m_yieldToday = 0.0;
+#endif
 
 // battery, Akku
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]

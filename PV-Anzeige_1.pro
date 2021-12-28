@@ -36,5 +36,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 # DISTFILES += \
 #    Icons/Akku_weiß_transparent.png
 
-include(thirdparty/qmqtt/qmqtt.pri)
-include(thirdparty/qmsgpack/qmsgpack.pri)
+#include(thirdparty/qmqtt/qmqtt.pri)
+#include(thirdparty/qmsgpack/qmsgpack.pri)

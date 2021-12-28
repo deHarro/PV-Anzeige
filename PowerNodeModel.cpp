@@ -3,8 +3,10 @@
 #include <algorithm>
 #include <chrono>
 
+#ifdef USE_MQTT
 #include <msgpack.h>
 #include <qmqtt.h>
+#endif
 
 #include "Types.h"
 
