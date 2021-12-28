@@ -8,6 +8,7 @@
 #include <qmqtt.h>
 
 #define DEMOMODE                // generate random power values for coloring and arrows
+//#define USE_MQTT              // enable to use MQTT connection
 
 class StringData;
 
@@ -26,7 +27,11 @@ class PowerNodeModel : public QObject {
     Q_OBJECT
 
 public:
+#ifndef USE_MQTT
+    PowerNodeModel();
+#else
     PowerNodeModel(QMQTT::Client& mqttClient);
+#endif
     ~PowerNodeModel();
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
@@ -149,6 +154,7 @@ private:
     QTimer m_dataTimer;
     void onDataTimer();
 
+#ifdef USE_MQTT
     // MQTT members
     void onConnected();
     void onDisconnected();
@@ -157,4 +163,5 @@ private:
     void onReceived(const QMQTT::Message& message);
 
     QMQTT::Client& m_client;
+#endif
 };

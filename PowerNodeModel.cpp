@@ -10,14 +10,19 @@
 
 using namespace std::chrono_literals;
 
+#ifndef USE_MQTT
+PowerNodeModel::PowerNodeModel() {
+#else
 PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
     : m_client(mqttClient) {
+#endif
 
 #if defined DEMOMODE
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
     m_dataTimer.start(2000);
 #endif
 
+#ifdef USE_MQTT
     connect(&m_client, &QMQTT::Client::connected, this, &PowerNodeModel::onConnected);
     connect(&m_client, &QMQTT::Client::disconnected, this, &PowerNodeModel::onDisconnected);
     connect(&m_client, &QMQTT::Client::error, this, &PowerNodeModel::onError);
@@ -25,14 +30,8 @@ PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
     connect(&m_client, &QMQTT::Client::received, this, &PowerNodeModel::onReceived);
 
     m_client.connectToHost();
+#endif
 }
-
-/*
-PowerNodeModel::PowerNodeModel() {
-    connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
-    m_dataTimer.start(2000);
-}
-*/
 
 PowerNodeModel::~PowerNodeModel() {
 }
@@ -312,6 +311,7 @@ void PowerNodeModel::shadeHandling(void)
     }
 }
 
+#ifdef USE_MQTT
 void PowerNodeModel::onConnected() {
     m_client.subscribe("sbfspot_1234567890/live");
 }
@@ -349,3 +349,4 @@ void PowerNodeModel::onReceived(const QMQTT::Message& message) {
          m_generatorPowerTotal += m_stringLiveData[i]->power;
      }
 }
+#endif

@@ -3,9 +3,11 @@
 #include <QQuickView>
 #include <QApplication>
 
-#include <qmqtt.h>
-
 #include "PowerNodeModel.h"
+
+#ifdef USE_MQTT
+#include <qmqtt.h>
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -16,9 +18,12 @@ int main(int argc, char *argv[])
     //QGuiApplication app(argc, argv);
     QApplication app(argc, argv);
 
+#ifndef USE_MQTT
+     PowerNodeModel powerNodeModel;
+#else
     QMQTT::Client mqttClient;
     PowerNodeModel powerNodeModel(mqttClient);
-
+#endif
     QQmlApplicationEngine engine;
 
     qmlRegisterSingletonInstance<PowerNodeModel>("Smarf.PowerNodeModel", 1, 0, "PowerNodeModel", &powerNodeModel);
