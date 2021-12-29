@@ -175,7 +175,7 @@ void PowerNodeModel::wallboxHandling()
 {
 #if defined DEMOMODE
 //    m_chargingPower = rand() % 4000;
-    m_chargedEnergy += 10;
+    m_chargedEnergy += rand() % 100000;
     m_sessionEnergy += 10;
 
     bool test = rand() % 2;                      // test

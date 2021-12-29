@@ -505,7 +505,7 @@ Window {
             width: 44
             height: 14
             color: "#ffffff"   // "#f9bbcbc"
-            text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(2)
+            text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(1)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
@@ -871,6 +871,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:2}
+    D{i:0;formeditorZoom:1.66}
 }
 ##^##*/
