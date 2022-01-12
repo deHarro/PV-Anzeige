@@ -171,7 +171,7 @@ Window {
                         width: 77
                         height: 26
                         color: "#ffffff"
-                        text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(3)
+                        text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
                         font.pixelSize: 23
                         horizontalAlignment: Text.AlignHCenter
                         font.family: "Arial"
@@ -257,7 +257,7 @@ Window {
             width: 92
             height: 26
             color: "#ffffff"
-            text: (PowerNodeModel.generatorPowerTotal / 1000.0).toFixed(3)
+            text: (PowerNodeModel.generatorPowerTotal / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -270,6 +270,7 @@ Window {
             height: 78
             source: "Icons/Sonne_weiss_transparent.png"
             fillMode: Image.PreserveAspectFit
+            rotation: 22.5
         }
         Text {
             id: text22
@@ -586,7 +587,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: (PowerNodeModel.batteryPower / 1000.0).toFixed(3)
+            text: (PowerNodeModel.batteryPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
@@ -747,7 +748,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: (PowerNodeModel.gridPower / 1000.0).toFixed(3)
+            text: (PowerNodeModel.gridPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -823,12 +824,11 @@ Window {
             height: 25
             opacity: 0.5
             source: "Icons/FF.png"
-            layer.enabled: true
+            fillMode: Image.PreserveAspectFit
             clip: false
             antialiasing: false
             smooth: true
             rotation: 180
-            fillMode: Image.PreserveAspectFit
             visible: PowerNodeModel.grid2house
         }
 
