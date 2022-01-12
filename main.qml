@@ -171,7 +171,7 @@ Window {
                         width: 77
                         height: 26
                         color: "#ffffff"
-                        text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
+                        text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(3)
                         font.pixelSize: 23
                         horizontalAlignment: Text.AlignHCenter
                         font.family: "Arial"
@@ -257,7 +257,7 @@ Window {
             width: 92
             height: 26
             color: "#ffffff"
-            text: (PowerNodeModel.generatorPowerTotal / 1000.0).toFixed(2)
+            text: (PowerNodeModel.generatorPowerTotal / 1000.0).toFixed(3)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -437,7 +437,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: (PowerNodeModel.chargingPower / 1000.0).toFixed(2)
+            text: (PowerNodeModel.chargingPower / 1000.0).toFixed(3)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenterOffset: -1
@@ -452,6 +452,7 @@ Window {
             height: 55
             source: "Icons/electric-car-icon_weiss_transparent.png"
             fillMode: Image.PreserveAspectFit
+            mirror: true
         }
         Image {
             id: image4
@@ -480,7 +481,7 @@ Window {
             color: "#ffffff"   // "#f9bbcbc"
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
-            text: (PowerNodeModel.sessionEnergy / 1000.0).toFixed(2)
+            text: (PowerNodeModel.sessionEnergy / 1000.0).toFixed(3)
         }
         Text {
             id: text18
@@ -585,7 +586,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: (PowerNodeModel.batteryPower / 1000.0).toFixed(2)
+            text: (PowerNodeModel.batteryPower / 1000.0).toFixed(3)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
@@ -746,7 +747,7 @@ Window {
             width: 77
             height: 26
             color: "#ffffff"
-            text: (PowerNodeModel.gridPower / 1000.0).toFixed(2)
+            text: (PowerNodeModel.gridPower / 1000.0).toFixed(3)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -920,6 +921,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:1.66}
+    D{i:0;formeditorZoom:1.1}
 }
 ##^##*/
