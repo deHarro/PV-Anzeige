@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Icons/electric-car-icon_steckt_weiss_transparent.png</file>
+        <file>Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png</file>
     </qresource>
 </RCC>

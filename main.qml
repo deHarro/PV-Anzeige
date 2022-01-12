@@ -450,18 +450,20 @@ Window {
             x: 229
             y: 22
             width: 82
-            height: 55
-            source: "Icons/electric-car-icon_weiss_transparent.png"
+            height: 48
+//            source: "Icons/electric-car-icon_steckt_weiss_transparent.png"
+            source: PowerNodeModel.wallboxCar
             fillMode: Image.PreserveAspectFit
             mirror: true
         }
         Image {
             id: image4
-            x: 12
+            x: 8
             y: 26
-            width: 64
+            width: 68
             height: 39
-            source: "Icons/electric-scooter_icon_weiss_transparent_rad.png"
+//            source: "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png"
+            source: PowerNodeModel.wallboxScoot
             rotation: 0
             fillMode: Image.PreserveAspectFit
         }
