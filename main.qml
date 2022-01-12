@@ -184,8 +184,8 @@ Window {
                         width: 74
                         height: 14
                         color: "#ffffff"   // "#f9bbcbc"
-                        // ohne Nachkommastellen, zentriert
-                        text: (PowerNodeModel.gridEnergyImport)
+                        // eine Nachkommastellen, zentriert
+                        text: (PowerNodeModel.gridEnergyImport).toFixed(1)
                         font.pixelSize: 12
                         horizontalAlignment: Text.AlignHCenter
                     }
@@ -517,13 +517,29 @@ Window {
             text: qsTr("kWh")
             font.pixelSize: 12
         }
+
+        Text {
+            id: text43
+            x: 12
+            y: 6
+            color: "#ffffff"   // "#f9bbcbc"
+            text: qsTr("Eval.Pts:")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text44
+            x: 60
+            y: 6
+            width: 16
+            height: 14
+            color: "#ffffff"   // "#f9bbcbc"
+            text: PowerNodeModel.evalPoints.toFixed(0)
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignRight
+        }
+
     }
-
-
-
-
-
-
 
     Rectangle {
         id: rectangle2              // Battery
@@ -578,7 +594,7 @@ Window {
         Image {
             id: batteryOutline
             x: 7
-            y: 119
+            y: 115
             width: 77
             height: 43
             visible: true
@@ -643,6 +659,39 @@ Window {
             font.family: "Arial"
         }
 
+
+        Text {
+            id: text45
+            x: 11
+            y: 153
+            width: 33
+            color: "#ffffff"   // "#f9bbcbc"
+            text: qsTr("Temp.")
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: text46
+            x: 56
+            y: 153
+            width: 16
+            height: 14
+            color: "#ffffff"   // "#f9bbcbc"
+            text: PowerNodeModel.battTemp.toFixed(1)
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignRight
+        }
+
+        Text {
+            id: text47
+            x: 73
+            y: 152
+            width: 6
+            height: 14
+            color: "#ffffff"   // "#f9bbcbc"
+            text: qsTr("°")
+            font.pixelSize: 12
+        }
 
     }
 
@@ -729,8 +778,8 @@ Window {
             width: 74
             height: 14
             color: "#ffffff"   // "#f9bbcbc"
-            // ohne Nachkommastellen, zentriert
-            text: (PowerNodeModel.gridEnergyExport)
+            // eine Nachkommastellen, zentriert
+            text: (PowerNodeModel.gridEnergyExport).toFixed(1)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
         }
