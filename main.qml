@@ -496,7 +496,7 @@ Window {
         }
         Text {
             id: text19
-            x: 194
+            x: 190
             y: 71
             color: "#ffffff"   // "#f9bbcbc"
             text: qsTr("Gesamt:")
@@ -504,12 +504,12 @@ Window {
         }
         Text {
             id: text20
-            x: 240
+            x: 236
             y: 71
-            width: 44
+            width: 50
             height: 14
             color: "#ffffff"   // "#f9bbcbc"
-            text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(1)
+            text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
@@ -796,6 +796,32 @@ Window {
             text: qsTr("kWh")
             font.pixelSize: 12
         }
+
+        Text {
+            id: text48
+            x: -28
+            y: 276
+            width: 117
+            height: 14
+            color: "#ff0000"
+//            text: qsTr("EDLD hat Probleme!")
+            text: PowerNodeModel.EDLDProblemText
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignRight
+        }
+
+        Text {
+            id: text49
+            x: -230
+            y: 276
+            width: 117
+            height: 14
+            color: "#ff0000"
+//            text: qsTr("MBMD hat Probleme!")
+            text: PowerNodeModel.MBMDProblemText
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignLeft
+        }
     }
 
 
@@ -914,6 +940,22 @@ Window {
             rotation: 90
             visible: PowerNodeModel.house2charger
         }
+
+        Image {
+            id: image13
+            x: 247
+            y: 263
+            width: 25
+            height: 25
+            opacity: 0.5
+            visible: PowerNodeModel.house2grid
+            source: "Icons/FF.png"
+            fillMode: Image.PreserveAspectFit
+            rotation: 0
+            smooth: true
+            clip: false
+            antialiasing: false
+        }
     }
 
 }
@@ -921,8 +963,4 @@ Window {
 
 
 
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:1.1}
-}
-##^##*/
+
