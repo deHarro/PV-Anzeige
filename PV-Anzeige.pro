@@ -16,14 +16,12 @@ HEADERS += \
     Downloader.h \
     PowerNodeModel.h \
     SmartChargerXML.h \
-    Types.h \
     WechselrichterJSON.h
 
 SOURCES += \
     Downloader.cpp \
     PowerNodeModel.cpp \
     SmartChargerXML.cpp \
-    Types.cpp \
     WechselrichterJSON.cpp \
     main.cpp
 
