@@ -20,7 +20,7 @@ This is, how the current implementation looks like:
 
 ![grafik](https://user-images.githubusercontent.com/26298406/150100975-b410f042-3a54-4f92-8d6e-6fdaa3609e60.png)
 
-This is a screen shot of the live view, the system is running and data are actual values. I added some more values the system delivers anyway and made the icons of car and scooter resemble the plug state of the wallbox.
+This is a screen shot of the live view, the system is running and data are actual values. I added some more readings the system delivers anyway and made the icons of car and scooter resemble the plug state of the wallbox.
 
 The arrows indicate current flow. Only those arrows show up where current is actually flowing.
 
