@@ -16,6 +16,12 @@ Modelled with QT Creator, the basic display shows up as follows:
 
 In the final version the pink texts and values will become white as all other text.
 
+This is, how the current implementation looks like:
+
+![grafik](https://user-images.githubusercontent.com/26298406/150100975-b410f042-3a54-4f92-8d6e-6fdaa3609e60.png)
+
+This is a screen shot of the live view, the system is running and data are actual values. I added some more values the system delivers anyway and made the icons of car and scooter resemble the plug state of the wallbox.
+
 The arrows indicate current flow. Only those arrows show up where current is actually flowing.
 
 Depending on the current direction, some texts change, e.g. "Batterie-ladung" / Batterie-entladung" or "Netzbezug" / "Netz-einspeisung".
