@@ -16,13 +16,15 @@ HEADERS += \
     Downloader.h \
     PowerNodeModel.h \
     SmartChargerXML.h \
-    Types.h
+    Types.h \
+    WechselrichterJSON.h
 
 SOURCES += \
     Downloader.cpp \
     PowerNodeModel.cpp \
     SmartChargerXML.cpp \
     Types.cpp \
+    WechselrichterJSON.cpp \
     main.cpp
 
 RESOURCES += qml.qrc \
@@ -43,3 +45,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 #include(thirdparty/qmsgpack/qmsgpack.pri)
 
 FORMS +=
+

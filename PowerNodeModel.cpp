@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <iostream>
 
 #ifdef USE_MQTT
 #include <msgpack.h>
@@ -9,20 +10,29 @@
 #endif
 
 #include "Types.h"
+#include "Downloader.h"
+#include "SmartChargerXML.h"
+#include "WechselrichterJSON.h"
+
+Downloader downler;
+SmartChargerXML smchaXML;
+WechselrichterJSON smchaJSON;
+
 
 using namespace std::chrono_literals;
 
 #ifndef USE_MQTT
 PowerNodeModel::PowerNodeModel() {
+
 #else
 PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
     : m_client(mqttClient) {
 #endif
 
-#if defined DEMOMODE
+//#if defined DEMOMODE
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
-    m_dataTimer.start(2000);
-#endif
+    m_dataTimer.start(5000);
+//#endif
 
 #ifdef USE_MQTT
     connect(&m_client, &QMQTT::Client::connected, this, &PowerNodeModel::onConnected);
@@ -33,6 +43,7 @@ PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
 
     m_client.connectToHost();
 #endif
+
 }
 
 PowerNodeModel::~PowerNodeModel() {
@@ -42,6 +53,10 @@ PowerNodeModel::~PowerNodeModel() {
 void PowerNodeModel::onDataTimer() {
 
 // Update the different values in C++
+    getXMLdata();
+#ifdef USE_MBMD
+    getJSONdata();
+#endif
     generatorHandling();    // PV generator handling
     batteryHandling();      // battery handling
     gridHandling();         // grid handling
@@ -51,16 +66,62 @@ void PowerNodeModel::onDataTimer() {
     shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
 
 // Update the different values in QML
+    emit arrowsChanged();
+    emit shadeDataChanged();
     emit generatorDataChanged();
     emit batteryDataChanged();
     emit gridDataChanged();
     emit chargingDataChanged();
     emit consumptionDataChanged();
-    emit arrowsChanged();
-    emit shadeDataChanged();
 }
 
 // handling routines, may be called from MQTT routines (comment rand() calls then ;)
+void PowerNodeModel::getXMLdata(void)
+{
+    // download XML data from SmartCharger XML page into **global**  m_XMLfiledata
+    extern Downloader downler;
+    downler.doDownloadXML();
+
+    // decode XML data from m_XMLfiledata into member variables of SmartChargerXML
+    extern SmartChargerXML smchaXML;
+    smchaXML.ReadSmartChargerXML();
+}
+
+void PowerNodeModel::getJSONdata(void)
+{
+    // download JSON data from mbmd JSON page into **global**  m_JSONfiledata
+    extern Downloader downler;
+    downler.doDownloadJSON();
+
+    // decode JSON data from m_JSONfiledata into member variables of SmartChargerJSON
+    extern WechselrichterJSON smchaJSON;
+    smchaJSON.ReadWechselrichterJSON();
+}
+
+void PowerNodeModel::setMBMDWarning(bool enabled)
+{
+    if (enabled == true)
+    {
+        m_MBMDProblemText = "MBMD hat Probleme!";
+    }
+    else
+    {
+        m_MBMDProblemText = "";
+    }
+}
+
+void PowerNodeModel::setEDLDWarning(bool enabled)
+{
+    if (enabled == true)
+    {
+        m_EDLDProblemText = "EDLD hat Probleme!";
+    }
+    else
+    {
+        m_EDLDProblemText = "";
+    }
+}
+
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
 {
@@ -69,13 +130,20 @@ void PowerNodeModel::generatorHandling(void)
     m_generatorPowerGaube = rand() % 3600;
     m_generatorPowerGarage = rand() % 3000;
     m_generatorTotalEnergy = (rand() % 66000) + 30000;  // im Bereich ab 66 MWh
+#endif
+
+
+    m_generatorPowerDach = (smchaJSON.getPVDachActualPower());
+    m_generatorPowerGarage = (smchaJSON.getPVGarageActualPower());
+    m_generatorPowerGaube = (smchaJSON.getPVGaubeActualPower());
 
     m_generatorPowerTotal   =   m_generatorPowerDach
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
-#endif
 
-//        m_generatorPowerTotal = 0;                    // test
+    m_generatorTotalEnergy = (smchaJSON.getPVGesamtErtrag());
+
+//        m_generatorPowerTotal = 230;                    // test
 
     if(m_generatorPowerTotal == 0) {
         m_generatorColor = VLIGHTGRAY;                  // helles Hellgrau, keine QML Basic/SVG color
@@ -92,6 +160,12 @@ void PowerNodeModel::batteryHandling(void)
     m_batteryPower = (rand() % 10000) - 5000;
     //    m_batteryPower = 0;               // test
     m_batteryPercentage = rand() % 100;
+    m_battTemp = 30.0 + (rand() % 30) - 15;
+#else
+    extern SmartChargerXML smchaXML;
+    m_batteryPower = -(smchaXML.getStorageSystemActualPower());
+    m_batteryPercentage = smchaXML.getStorageSystemSOC();
+    m_battTemp = smchaXML.getStorageSystemTemperature();
 #endif
 
     m_battPowerAnzeige = m_batteryPower;
@@ -110,34 +184,6 @@ void PowerNodeModel::batteryHandling(void)
         m_batteryColor = FORESTGREEN;                   // Dunkelgrün
     }
 
-
-/*    // change battery icon depending on battery percentage (Sunny Portal style)
-    if( m_batteryPercentage <= 5)
-    {
-        m_batteryImage = "/Icons/Akku_weiss_transparent00.png";
-    }
-    else if (m_batteryPercentage > 5 && m_batteryPercentage < 39)
-    {
-        m_batteryImage = "/Icons/Akku_weiss_transparent20.png";
-    }
-    else if (m_batteryPercentage > 40 && m_batteryPercentage < 59)
-    {
-        m_batteryImage = "/Icons/Akku_weiss_transparent40.png";
-    }
-    else if (m_batteryPercentage > 60 && m_batteryPercentage < 79)
-    {
-        m_batteryImage = "/Icons/Akku_weiss_transparent60.png";
-    }
-    else if (m_batteryPercentage > 80 && m_batteryPercentage < 96)
-    {
-        m_batteryImage = "/Icons/Akku_weiss_transparent80.png";
-    }
-    else
-    {
-        m_batteryImage = "/Icons/Akku_weiss_transparent100.png";
-    }
-*/
-
     // change battery icon depending on battery percentage (quasi Analog)
     m_batteryFill = m_batteryPercentage;
 }
@@ -151,22 +197,30 @@ void PowerNodeModel::gridHandling(void)
 
     m_gridPower = (rand() % 10000) - 5000;
 //    m_gridPower = 0;
+#else
+    extern SmartChargerXML smchaXML;
+    m_gridEnergyImport = smchaXML.getSmartMeterConsumption();
+    m_gridEnergyExport = smchaXML.getSmartMeterSurplus();
+    m_gridPower = -(smchaXML.getSmartMeterActualPower());
 #endif
 
-    m_gridPowerAnzeige = m_gridPower;               // für die Anzeige eine extra Var benutzen wegen abs()
-    if(m_gridPowerAnzeige == 0) {
-        m_gridText = "";                            // kein Strom  -> kein Text
-        m_gridColor = VLIGHTGRAY;                   // helles Hellgrau, keine QML Basic/SVG color
+//    m_gridPowerAnzeige = m_gridPower;                   // für die Anzeige eine extra Var benutzen wegen abs()
+    m_gridPowerAnzeige = abs(m_gridPower);              // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
+
+    if (m_gridPower < -10)                              // Netzbezug
+    {
+        m_gridColor = FIREBRICK;                        // Dunkelrot
+        m_gridText = "Netzbezug";
     }
-    else if (m_gridPowerAnzeige > 0) {
-        m_gridColor = LIMEGREEN;                    // Hellgrün
+    else if (m_gridPower >= 10)                         // Einspeisung
+    {
+        m_gridColor = LIMEGREEN;                        // Hellgrün
         m_gridText = "Netz-einspeisung";
     }
-    else {
-        m_gridPowerAnzeige = abs(m_gridPowerAnzeige); // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
-
-        m_gridColor = FIREBRICK;                    // Dunkelrot
-        m_gridText = "Netzbezug";
+    else
+    {
+        m_gridColor = VLIGHTGRAY;                       // helles Hellgrau, keine QML Basic/SVG color
+        m_gridText = "";                                // kein Strom  -> kein Text
     }
 }
 
@@ -174,29 +228,94 @@ void PowerNodeModel::gridHandling(void)
 void PowerNodeModel::wallboxHandling()
 {
 #if defined DEMOMODE
-//    m_chargingPower = rand() % 4000;
+    m_chargingPower = rand() % 4000;
     m_chargedEnergy += rand() % 100000;
     m_sessionEnergy += 10;
+    m_evalPoints += 1;
+    m_evalPoints = m_evalPoints % 11;
 
     bool test = rand() % 2;                      // test
     test == 1 ? m_chargingPower = rand() % 4000 : m_chargingPower = 0;    // test
     m_evAttached = rand() % 2;                  // test
     m_evAttached == 1 ? m_evAttached = true : m_evAttached = false;    // test
-#endif
 
-    if(m_evAttached == true) {                      // cable attached to ev (car/bike)
+    if(m_evAttached == true)                        // cable attached to ev (car/bike)
+    {
+        m_wallboxCar = "Icons/electric-car-icon_steckt_weiss_transparent.png";
+        m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png";
 
-        if(m_chargingPower > 0){                    // keine Ladung aktiv ->
+        if(m_chargingPower > 1){                    // keine Ladung aktiv ->
             m_wallboxColor = DODGERBLUE;            // schickes Blau
         }
         else
-        {
+        {                                           // Ladung aktiv ->
             m_wallboxColor = DARKBLUE;              // dunkles Blau
         }
     }
-    else {
+    else
+    {
+        m_wallboxCar = "Icons/electric-car-icon_weiss_transparent.png";
+        m_wallboxScoot  = "Icons/electric-scooter_icon_weiss_transparent_rad.png";
+
         m_wallboxColor =VLIGHTGRAY ;                // helles Hellgrau, keine QML Basic/SVG color
     }
+#else
+    extern SmartChargerXML smchaXML;
+    m_evalPoints = smchaXML.getEVEvaluationPoints();
+    m_chargingPower = smchaXML.getEVActualPower();
+    m_chargedEnergy = smchaXML.getEVTotalEnergy();
+    m_sessionEnergy = smchaXML.getEVSessionEnergy();
+
+    // derive attach state and charging state from wallbox states
+
+    /*    // color selection
+       "State" = Current state of the charging station
+        0 : starting
+        1 : not ready for charging; e.g. unplugged, X1 or "ena" not enabled, RFID not enabled, ...
+        2 : ready for charging; waiting for EV charging request (S2)
+        3 : charging
+        4 : error
+        5 : authorization rejected
+    */
+
+    if (smchaXML.getEVState() == 2)
+    {
+        m_wallboxColor = DARKBLUE;              // Ladung startet oder ist beendet -> dunkles Blau
+    }
+    else if (smchaXML.getEVState() == 3)
+    {
+        m_wallboxColor = DODGERBLUE;            // Ladung läuft -> schickes Blau
+    }
+    else if (smchaXML.getEVState() == 4)        // Error oder rejected
+    {
+        m_wallboxColor = FIREBRICK ;            // dunkles Rot
+    }
+    else
+        m_wallboxColor = VLIGHTGRAY ;           // helles Hellgrau, keine QML Basic/SVG color
+
+    /*  // picture selection
+       "Plug" = Current condition of the loading connection
+        0 unplugged
+        1 plugged on charging station
+        3 plugged on charging station plug locked
+        5 plugged on charging station plugged on EV
+        7 plugged on charging station plug locked plugged on EV
+
+        "Enable sys" = Enable state for charging (contains Enable input, RFID, UDP,..)
+    */
+
+    if (smchaXML.getEVPlug() >= 5)      // Stecker an EV und Wallbox stecken
+    {
+        m_wallboxCar = "Icons/electric-car-icon_steckt_weiss_transparent.png";
+        m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png";
+    }
+    else
+    {
+        m_wallboxCar = "Icons/electric-car-icon_weiss_transparent.png";
+        m_wallboxScoot  = "Icons/electric-scooter_icon_weiss_transparent_rad.png";
+    }
+
+#endif
 }
 
 // consumption handling ----------------------------------------------------------
@@ -205,9 +324,17 @@ void PowerNodeModel::consumptionHandling(void)
 #if defined DEMOMODE
     m_totalPowerConsumption = rand() % 10000;
     //m_totalPowerConsumption = 0;
+#else
+    extern SmartChargerXML smchaXML;
+    // die Null steht für die PV-Leistung vom Dach
+    m_totalPowerConsumption = m_generatorPowerTotal     - (  (m_gridPower)
+                                                        + (m_chargingPower)
+                                                        + (m_batteryPower) );
+
+    m_totalPowerConsumption = abs(m_totalPowerConsumption);  // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
 #endif
 
-    if(m_totalPowerConsumption == 0) {
+    if(m_totalPowerConsumption == 0.0) {
         m_homeColor = VLIGHTGRAY;                   // helles Hellgrau, keine QML Basic/SVG color
     }
     else {
@@ -219,7 +346,7 @@ void PowerNodeModel::consumptionHandling(void)
 void PowerNodeModel::arrowsHandling(void)
 {
     // PV to battery
-    if((m_batteryPower > 0) && (m_generatorPowerTotal > 0))
+    if((m_batteryPower > 0.0) && (m_generatorPowerTotal > 0.0))
     {
         m_pv2batt = true;
     }
@@ -229,7 +356,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // PV to house
-    if((m_totalPowerConsumption > 0) && (m_generatorPowerTotal > 0))
+    if((m_totalPowerConsumption > 0.0) && (m_generatorPowerTotal > 0.0))
     {
         m_pv2house = true;
     }
@@ -239,7 +366,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // PV to grid
-    if((m_gridPower > 0) && (m_generatorPowerTotal > 0))
+    if((m_gridPower > 0.0) && (m_generatorPowerTotal > 0.0))
     {
         m_pv2grid = true;
     }
@@ -249,8 +376,8 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // battery to house
-    if(((m_batteryPower < 0) && (m_generatorPowerTotal == 0)) ||     // PV keine Leistung
-            ((m_batteryPower < 0) && (m_totalPowerConsumption > 0)))     // Haus braucht Energie
+    if(((m_batteryPower < 0.0) && (m_generatorPowerTotal == 0.0)) ||     // PV keine Leistung
+            ((m_batteryPower < 0.0) && (m_totalPowerConsumption > 0.0)))     // Haus braucht Energie
     {
         m_batt2house = true;
     }
@@ -260,7 +387,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // house to battery (battery conditioning when PV is off for long time)
-    if((m_batteryPower > 0) && (m_generatorPowerTotal == 0) && (m_totalPowerConsumption > 0) && (m_gridPower < 0))
+    if((m_batteryPower > 0.0) && (m_generatorPowerTotal == 0.0) && (m_totalPowerConsumption > 0.0) && (m_gridPower < 0.0))
     {
         m_house2batt = true;
     }
@@ -270,13 +397,23 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // grid to house
-    if((m_gridPower < 0) && (m_totalPowerConsumption > 0))
+    if((m_gridPower < -10) /*&& (m_totalPowerConsumption > 10)*/)
     {
         m_grid2house = true;
     }
     else
     {
         m_grid2house = false;
+    }
+
+    // house to grid        // generator is off (night) and battery feeds house and temporarily the grid
+    if((m_gridPower >= 10) && (m_generatorPowerTotal == 0.0))    // m_gridPowerAnzeige >= 10
+    {
+        m_house2grid = true;
+    }
+    else
+    {
+        m_house2grid = false;
     }
 
     // house to wallbox (charging of elctric vehicle)
@@ -296,7 +433,7 @@ void PowerNodeModel::shadeHandling(void)
 {
     // Anteil Netzbezug in ROT von oben kommend einblenden
     if(m_gridPower < 0){                            // Netzbezug
-        m_homeTopRedH = std::min((abs(m_gridPower) / m_totalPowerConsumption), (double).5) * 270;    // Höhe Home rectangle = 270
+        m_homeTopRedH = std::min((abs(m_gridPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
     {
@@ -305,13 +442,14 @@ void PowerNodeModel::shadeHandling(void)
 
     // Anteil Akkubezug in GRÜN von unten kommend einblenden
     if(m_batteryPower < 0){                            // Netzbezug
-        m_homeBotGreenH = std::min((abs(m_batteryPower) / m_totalPowerConsumption), (double).5) * 270;    // Höhe Home rectangle = 270
+        m_homeBotGreenH = std::min((abs(m_batteryPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
     {
         m_homeBotGreenH = 0;
     }
 }
+
 
 #ifdef USE_MQTT
 void PowerNodeModel::onConnected() {

@@ -5,15 +5,15 @@
 #include <QString>
 #include <QQuickImageProvider>
 
-#define DEMOMODE                // generate random power values for coloring and arrows
+//#define DEMOMODE              // generate random power values for checking coloring and arrows
 //#define USE_MQTT              // enable to use MQTT connection
+#define USE_MBMD              // enable to read JSON output of MBMD (ModBus Measurement Daemon)
 
 #ifdef USE_MQTT
 #include <qmqtt.h>
 #endif
 
 class StringData;
-
 
 // define colors according https://doc.qt.io/qt-5/qml-color.html
 // use #RRGGBB notation for QML instead of 0xRRGGBB
@@ -51,6 +51,7 @@ public:
     Q_PROPERTY(QString batteryColor MEMBER m_batteryColor NOTIFY batteryDataChanged)
     Q_PROPERTY(QString batteryImage MEMBER m_batteryImage NOTIFY batteryDataChanged)
     Q_PROPERTY(int batteryFill MEMBER m_batteryFill NOTIFY batteryDataChanged)
+    Q_PROPERTY(double battTemp MEMBER m_battTemp NOTIFY batteryDataChanged)
 
     // home consumption properties - all home consumption values are updated in one call to "consumptionDataChanged"
     Q_PROPERTY(double consumptionPower MEMBER m_totalPowerConsumption NOTIFY consumptionDataChanged)
@@ -62,26 +63,36 @@ public:
     Q_PROPERTY(int homeTopRedH MEMBER m_homeTopRedH NOTIFY consumptionDataChanged)
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
+    Q_PROPERTY(QString gridText MEMBER m_gridText NOTIFY gridDataChanged)
+    Q_PROPERTY(QString gridColor MEMBER m_gridColor NOTIFY gridDataChanged)
     Q_PROPERTY(double gridPower MEMBER m_gridPowerAnzeige NOTIFY gridDataChanged)
     Q_PROPERTY(double gridEnergyImport MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                    // Verbrauchszähler [kWh]
     Q_PROPERTY(double gridEnergyExport MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                    // Einspeisezähler [kWh]
-    Q_PROPERTY(QString gridText MEMBER m_gridText NOTIFY gridDataChanged)
-    Q_PROPERTY(QString gridColor MEMBER m_gridColor NOTIFY gridDataChanged)
 
     // wallbox properties - all wallbox values are updated in one call to "chargingDataChanged"
     Q_PROPERTY(double chargingPower MEMBER m_chargingPower NOTIFY chargingDataChanged)                      // current power [kW]
     Q_PROPERTY(double chargedEnergy MEMBER m_chargedEnergy NOTIFY chargingDataChanged)                      // total energy [kWh]
     Q_PROPERTY(double sessionEnergy MEMBER m_sessionEnergy NOTIFY chargingDataChanged)                      // last session energy [kWh]
-    Q_PROPERTY(QString wallboxColor MEMBER m_wallboxColor NOTIFY chargingDataChanged)
+    Q_PROPERTY(double evalPoints    MEMBER m_evalPoints    NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxColor MEMBER m_wallboxColor  NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxCar MEMBER m_wallboxCar  NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxScoot MEMBER m_wallboxScoot  NOTIFY chargingDataChanged)
+
+    Q_PROPERTY(QString EDLDProblemText MEMBER m_EDLDProblemText NOTIFY gridDataChanged)
+    Q_PROPERTY(QString MBMDProblemText MEMBER m_MBMDProblemText NOTIFY gridDataChanged)
 
     // arrow properties - all arrows are updated in one call to "arrowsDataChanged"
     Q_PROPERTY(bool batt2house MEMBER m_batt2house  NOTIFY arrowsChanged)
     Q_PROPERTY(bool house2batt MEMBER m_house2batt  NOTIFY arrowsChanged)
     Q_PROPERTY(bool grid2house MEMBER m_grid2house  NOTIFY arrowsChanged)
+    Q_PROPERTY(bool house2grid MEMBER m_house2grid  NOTIFY arrowsChanged)
     Q_PROPERTY(bool pv2house MEMBER m_pv2house  NOTIFY arrowsChanged)
     Q_PROPERTY(bool pv2batt MEMBER m_pv2batt  NOTIFY arrowsChanged)
     Q_PROPERTY(bool pv2grid MEMBER m_pv2grid  NOTIFY arrowsChanged)
     Q_PROPERTY(bool house2charger MEMBER m_house2charger NOTIFY arrowsChanged)
+
+    void setMBMDWarning(bool);
+    void setEDLDWarning(bool);
 
 Q_SIGNALS:
     void generatorDataChanged();
@@ -93,6 +104,8 @@ Q_SIGNALS:
     void shadeDataChanged();
 
 private:
+    void getXMLdata(void);
+    void getJSONdata(void);
     void generatorHandling(void);
     void batteryHandling(void);
     void gridHandling(void);
@@ -100,6 +113,10 @@ private:
     void consumptionHandling(void);
     void arrowsHandling(void);
     void shadeHandling(void);
+    void loadSmChXML();               //
+
+// QByteArray für XML data vom SmartCharger
+//    QByteArray m_XMLfiledata;
 
 // generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
@@ -125,6 +142,7 @@ private:
     QString m_batteryText = "";             // Text in der Batterie Box, wechselt Ladung/Entladung
     QString m_batteryImage = "/Icons/Akku_weiss_transparent00.png";
     int m_batteryFill = 0;                  // analoge Balkenanzeige des Betteriefüllstands
+    double m_battTemp = 0.0;                // Temperatur des Akkus
 // consumption, home, Hausverbrauch
     double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
     double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
@@ -143,7 +161,12 @@ private:
     double m_chargingPower = 0.0;           // current power [kW]
     double m_chargedEnergy = 0.0;           // total energy [kWh]
     double m_sessionEnergy = 0.0;           // last session energy [kWh]
+    int m_evalPoints = 0;                   // Evaluation Points (when to start charging)
     QString m_wallboxColor = VLIGHTGRAY;
+    QString m_wallboxCar = "Icons/electric-car-icon_weiss_transparent.png";
+    QString m_wallboxScoot = "Icons/electric-scooter_icon_weiss_transparent_rad.png";
+    QString m_MBMDProblemText = "";
+    QString m_EDLDProblemText = "";
 
 // arrow handling
     bool m_pv2batt = false;
@@ -152,6 +175,7 @@ private:
     bool m_batt2house = false;
     bool m_house2batt = false;
     bool m_grid2house = false;
+    bool m_house2grid = false;
     bool m_house2charger = false;
 
     // Members for demo purposes

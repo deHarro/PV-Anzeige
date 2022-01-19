@@ -9,6 +9,12 @@
 #include <qmqtt.h>
 #endif
 
+// global array for saving the XML content of SmartCharger app running on SmartCharger RasPi
+QByteArray m_XMLfiledata;
+// global array for saving the JSON content of mbmd app running on SmartCharger RasPi
+QString m_JSONfiledata;
+
+
 int main(int argc, char *argv[])
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
