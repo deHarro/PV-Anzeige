@@ -1,4 +1,7 @@
-QT += quick svg
+TEMPLATE += app
+
+QT += quick
+QT += svg
 QT += gui
 QT += network
 QT += xml
@@ -6,6 +9,8 @@ QT += xml
 CONFIG += c++14
 CONFIG += QMQTT_NO_SSL
 CONFIG += NO_UNIT_TESTS
+CONFIG += qtquickcompiler
+
 DEFINES += MSGPACK_STATIC
 
 # You can make your code fail to compile if it uses deprecated APIs.
