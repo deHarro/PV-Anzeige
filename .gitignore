@@ -9,3 +9,5 @@ build-*
 PV-Anzeige.pro.user
 icons/sources/*.*
 icons/sources/
+thirdparty/*
+thirdparty/
