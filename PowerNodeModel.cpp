@@ -4,11 +4,6 @@
 #include <chrono>
 #include <iostream>
 
-#ifdef USE_MQTT
-#include <msgpack.h>
-#include <qmqtt.h>
-#endif
-
 #include "Downloader.h"
 #include "SmartChargerXML.h"
 #include "WechselrichterJSON.h"
@@ -20,35 +15,17 @@ WechselrichterJSON smchaJSON;
 
 using namespace std::chrono_literals;
 
-#ifndef USE_MQTT
+
 PowerNodeModel::PowerNodeModel() {
 
-#else
-PowerNodeModel::PowerNodeModel(QMQTT::Client& mqttClient)
-    : m_client(mqttClient) {
-#endif
-
-//#if defined DEMOMODE
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
     m_dataTimer.start(5000);
-//#endif
-
-#ifdef USE_MQTT
-    connect(&m_client, &QMQTT::Client::connected, this, &PowerNodeModel::onConnected);
-    connect(&m_client, &QMQTT::Client::disconnected, this, &PowerNodeModel::onDisconnected);
-    connect(&m_client, &QMQTT::Client::error, this, &PowerNodeModel::onError);
-    connect(&m_client, &QMQTT::Client::subscribed, this, &PowerNodeModel::onSubscribed);
-    connect(&m_client, &QMQTT::Client::received, this, &PowerNodeModel::onReceived);
-
-    m_client.connectToHost();
-#endif
-
 }
 
 PowerNodeModel::~PowerNodeModel() {
 }
 
-// demo - change / increment values
+// cyclically retrieve data from converters and wallbox
 void PowerNodeModel::onDataTimer() {
 
 // Update the different values in C++
@@ -448,44 +425,3 @@ void PowerNodeModel::shadeHandling(void)
         m_homeBotGreenH = 0;
     }
 }
-
-
-#ifdef USE_MQTT
-void PowerNodeModel::onConnected() {
-    m_client.subscribe("sbfspot_1234567890/live");
-}
-
-void PowerNodeModel::onDisconnected() {
-
-}
-
-void PowerNodeModel::onError(const QMQTT::ClientError error) {
-
-}
-
-void PowerNodeModel::onSubscribed(const QString& topic) {
-
-}
-
-void PowerNodeModel::onReceived(const QMQTT::Message& message) {
-    auto topic = message.topic();
-    qDebug() << topic;
-
-    // Inverter live data
-    auto variant = MsgPack::unpack(message.payload()).toMap();
-    m_lastUpdate = variant.value(toIntString(InverterProperty::Timestamp)).toDateTime();
-    m_yieldTotal = variant.value(toIntString(InverterProperty::YieldTotal)).toDouble();
-    m_yieldToday = variant.value(toIntString(InverterProperty::YieldToday)).toDouble();
-    m_generatorPowerTotal = variant.value(toIntString(InverterProperty::Power)).toDouble();
-
-     // String live data;
-     auto strings = variant.value(toIntString(InverterProperty::Strings)).toList();
-     int i = 0;
-     int j = 0;
-     m_generatorPowerTotal = 0.0;
-     for (; (i < strings.size()) && (j < m_stringLiveData.size()); ++i, ++j) {
-         m_stringLiveData[i]->power = strings.value(i).toMap().value(toIntString(InverterProperty::StringPower)).toReal();
-         m_generatorPowerTotal += m_stringLiveData[i]->power;
-     }
-}
-#endif

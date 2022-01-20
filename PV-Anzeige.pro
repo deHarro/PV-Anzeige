@@ -1,4 +1,4 @@
-TEMPLATE += app
+#TEMPLATE += app
 
 QT += quick
 QT += svg
@@ -7,11 +7,8 @@ QT += network
 QT += xml
 
 CONFIG += c++14
-CONFIG += QMQTT_NO_SSL
 CONFIG += NO_UNIT_TESTS
-CONFIG += qtquickcompiler
-
-DEFINES += MSGPACK_STATIC
+CONFIG += QTQUICKCOMPILER
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -42,9 +39,6 @@ QML_DESIGNER_IMPORT_PATH =
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-#include(thirdparty/qmqtt/qmqtt.pri)
-#include(thirdparty/qmsgpack/qmsgpack.pri)
 
 FORMS +=
 

@@ -6,12 +6,7 @@
 #include <QQuickImageProvider>
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
-//#define USE_MQTT              // enable to use MQTT connection
 #define USE_MBMD              // enable to read JSON output of MBMD (ModBus Measurement Daemon)
-
-#ifdef USE_MQTT
-#include <qmqtt.h>
-#endif
 
 class StringData;
 
@@ -29,11 +24,7 @@ class PowerNodeModel : public QObject {
     Q_OBJECT
 
 public:
-#ifndef USE_MQTT
     PowerNodeModel();
-#else
-    PowerNodeModel(QMQTT::Client& mqttClient);
-#endif
     ~PowerNodeModel();
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
@@ -115,9 +106,6 @@ private:
     void shadeHandling(void);
     void loadSmChXML();               //
 
-// QByteArray für XML data vom SmartCharger
-//    QByteArray m_XMLfiledata;
-
 // generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
     double m_generatorPowerDach = 0.0;      // Momentanleistung String Dach
@@ -125,14 +113,6 @@ private:
     double m_generatorPowerGarage = 0.0;    // Momentanleistung String Garage
     double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
     QString m_generatorColor = VLIGHTGRAY;
-
-#ifdef USE_MQTT
-// Manuels Daten
-    QList<StringData*> m_stringLiveData;
-    QDateTime m_lastUpdate;
-    double m_yieldTotal = 0.0;
-    double m_yieldToday = 0.0;
-#endif
 
 // battery, Akku
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]
@@ -182,14 +162,4 @@ private:
     QTimer m_dataTimer;
     void onDataTimer();
 
-#ifdef USE_MQTT
-    // MQTT members
-    void onConnected();
-    void onDisconnected();
-    void onError(const QMQTT::ClientError error);
-    void onSubscribed(const QString& topic);
-    void onReceived(const QMQTT::Message& message);
-
-    QMQTT::Client& m_client;
-#endif
 };
