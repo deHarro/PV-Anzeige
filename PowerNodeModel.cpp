@@ -9,7 +9,6 @@
 #include <qmqtt.h>
 #endif
 
-#include "Types.h"
 #include "Downloader.h"
 #include "SmartChargerXML.h"
 #include "WechselrichterJSON.h"
