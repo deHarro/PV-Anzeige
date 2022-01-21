@@ -17,7 +17,7 @@ class StringData;
 #define FORESTGREEN     "FORESTGREEN"   // "0x228b22"
 #define FIREBRICK       "FIREBRICK"     // "0xb22222"
 #define DODGERBLUE      "#02a4f5"       // "DODGERBLUE"   // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
-#define DARKBLUE        "#0371da"       // "0x00008b"     // EV attached to wallbox
+#define DARKBLUE        "#2828B3"       // "#0371da" "0x00008b"     // EV attached to wallbox
 
 
 class PowerNodeModel : public QObject {
@@ -50,8 +50,8 @@ public:
     Q_PROPERTY(QString homeColor MEMBER m_homeColor NOTIFY consumptionDataChanged)
 
     // shade properties
-    Q_PROPERTY(int homeBotGreenH MEMBER m_homeBotGreenH NOTIFY shadeDataChanged)
-    Q_PROPERTY(int homeTopRedH MEMBER m_homeTopRedH NOTIFY consumptionDataChanged)
+    Q_PROPERTY(int homeTopGreenH MEMBER m_homeTopGreenH NOTIFY shadeDataChanged)
+    Q_PROPERTY(int homeBotRedH MEMBER m_homeBotRedH NOTIFY shadeDataChanged)
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
     Q_PROPERTY(QString gridText MEMBER m_gridText NOTIFY gridDataChanged)
@@ -69,9 +69,6 @@ public:
     Q_PROPERTY(QString wallboxCar MEMBER m_wallboxCar  NOTIFY chargingDataChanged)
     Q_PROPERTY(QString wallboxScoot MEMBER m_wallboxScoot  NOTIFY chargingDataChanged)
 
-    Q_PROPERTY(QString EDLDProblemText MEMBER m_EDLDProblemText NOTIFY gridDataChanged)
-    Q_PROPERTY(QString MBMDProblemText MEMBER m_MBMDProblemText NOTIFY gridDataChanged)
-
     // arrow properties - all arrows are updated in one call to "arrowsDataChanged"
     Q_PROPERTY(bool batt2house MEMBER m_batt2house  NOTIFY arrowsChanged)
     Q_PROPERTY(bool house2batt MEMBER m_house2batt  NOTIFY arrowsChanged)
@@ -82,8 +79,8 @@ public:
     Q_PROPERTY(bool pv2grid MEMBER m_pv2grid  NOTIFY arrowsChanged)
     Q_PROPERTY(bool house2charger MEMBER m_house2charger NOTIFY arrowsChanged)
 
-    void setMBMDWarning(bool);
-    void setEDLDWarning(bool);
+    Q_PROPERTY(QString EDLDProblemText MEMBER m_EDLDProblemText NOTIFY setEDLDWarning)
+    Q_PROPERTY(QString MBMDProblemText MEMBER m_MBMDProblemText NOTIFY setMBMDWarning)
 
 Q_SIGNALS:
     void generatorDataChanged();
@@ -93,6 +90,9 @@ Q_SIGNALS:
     void chargingDataChanged();
     void arrowsChanged();
     void shadeDataChanged();
+
+    void setEDLDWarning();
+    void setMBMDWarning();
 
 private:
     void getXMLdata(void);
@@ -105,6 +105,9 @@ private:
     void arrowsHandling(void);
     void shadeHandling(void);
     void loadSmChXML();               //
+    void setMBMDText();
+    void setEDLDText();
+
 
 // generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
@@ -127,8 +130,8 @@ private:
     double m_totalPowerConsumption = 0.0;   // Gesamtverbrauch [kW]
     double m_totalEnergyConsumption = 0.0;  // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
     QString m_homeColor = VLIGHTGRAY;
-    int m_homeTopRedH = 0;                  // anteilige Energie aus Netzbezug (roter Balken von oben wachsend)
-    int m_homeBotGreenH = 0;                // anteilige Energie aus Akku (dunkelgrüner Balken von unten wachsend)
+    int m_homeBotRedH = 0;                  // anteilige Energie aus Netzbezug (roter Balken von oben wachsend)
+    int m_homeTopGreenH = 0;                // anteilige Energie aus Akku (dunkelgrüner Balken von unten wachsend)
 // grid, Netz
     double m_gridPower = 0.0;               // Netzbezug/Einspeisung [kW]
     double m_gridPowerAnzeige = 0.0;        // Netzbezug für die Anzeige
@@ -143,8 +146,9 @@ private:
     double m_sessionEnergy = 0.0;           // last session energy [kWh]
     int m_evalPoints = 0;                   // Evaluation Points (when to start charging)
     QString m_wallboxColor = VLIGHTGRAY;
-    QString m_wallboxCar = "Icons/electric-car-icon_weiss_transparent.png";
-    QString m_wallboxScoot = "Icons/electric-scooter_icon_weiss_transparent_rad.png";
+    QString m_wallboxCar =      "Icons/electric-car-icon_weiss_transparent.png";            // default mit Stecker in der Luft
+    QString m_wallboxScoot =    "Icons/electric-scooter_icon_weiss_transparent_rad.png";    // default mit Stecker in der Luft
+
     QString m_MBMDProblemText = "";
     QString m_EDLDProblemText = "";
 
@@ -163,3 +167,4 @@ private:
     void onDataTimer();
 
 };
+

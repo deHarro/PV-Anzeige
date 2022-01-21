@@ -12,6 +12,12 @@ Downloader downler;
 SmartChargerXML smchaXML;
 WechselrichterJSON smchaJSON;
 
+// Ausgabe von Warnungen über die Services auf dem Raspberry Pi
+// gesteuert über globales Flag Byte
+// Flag: Bit 0 = 1 -> EDLD antwortet nicht korrekt
+// Flag: Bit 1 = 1 -> MBMD antwortet nicht korrekt
+extern quint8 m_messageFlag;
+
 
 using namespace std::chrono_literals;
 
@@ -37,18 +43,24 @@ void PowerNodeModel::onDataTimer() {
     batteryHandling();      // battery handling
     gridHandling();         // grid handling
     wallboxHandling();      // wallbox handling
-    consumptionHandling();  // consumption handling
     arrowsHandling();       // arrows handling
+    consumptionHandling();  // consumption handling
     shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
+    setEDLDText();
+    setMBMDText();
 
 // Update the different values in QML
     emit arrowsChanged();
-    emit shadeDataChanged();
+    emit gridDataChanged();
     emit generatorDataChanged();
     emit batteryDataChanged();
-    emit gridDataChanged();
     emit chargingDataChanged();
     emit consumptionDataChanged();
+    emit shadeDataChanged();
+    emit gridDataChanged();
+    emit arrowsChanged();
+    emit setEDLDWarning();
+    emit setMBMDWarning();
 }
 
 // handling routines, may be called from MQTT routines (comment rand() calls then ;)
@@ -74,9 +86,9 @@ void PowerNodeModel::getJSONdata(void)
     smchaJSON.ReadWechselrichterJSON();
 }
 
-void PowerNodeModel::setMBMDWarning(bool enabled)
+void PowerNodeModel::setMBMDText(void)
 {
-    if (enabled == true)
+    if (m_messageFlag & MBMDFlag)
     {
         m_MBMDProblemText = "MBMD hat Probleme!";
     }
@@ -86,9 +98,9 @@ void PowerNodeModel::setMBMDWarning(bool enabled)
     }
 }
 
-void PowerNodeModel::setEDLDWarning(bool enabled)
+void PowerNodeModel::setEDLDText(void)
 {
-    if (enabled == true)
+    if (m_messageFlag & EDLDFlag)
     {
         m_EDLDProblemText = "EDLD hat Probleme!";
     }
@@ -183,12 +195,12 @@ void PowerNodeModel::gridHandling(void)
 //    m_gridPowerAnzeige = m_gridPower;                   // für die Anzeige eine extra Var benutzen wegen abs()
     m_gridPowerAnzeige = abs(m_gridPower);              // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
 
-    if (m_gridPower < -10)                              // Netzbezug
+    if (m_gridPower < -9)                              // Netzbezug
     {
         m_gridColor = FIREBRICK;                        // Dunkelrot
         m_gridText = "Netzbezug";
     }
-    else if (m_gridPower >= 10)                         // Einspeisung
+    else if (m_gridPower >= 9)                         // Einspeisung
     {
         m_gridColor = LIMEGREEN;                        // Hellgrün
         m_gridText = "Netz-einspeisung";
@@ -254,13 +266,13 @@ void PowerNodeModel::wallboxHandling()
         5 : authorization rejected
     */
 
-    if (smchaXML.getEVState() == 2)
+    if (smchaXML.getEVState() == 2)             // state ready for charging (alles vorbereitet)
+    {
+        m_wallboxColor = DODGERBLUE;            // Ladung vorbereitet -> schickes helles Blau
+    }
+    else if ((smchaXML.getEVState() == 3) && (m_chargingPower > 0))  // state=charging && power>0
     {
         m_wallboxColor = DARKBLUE;              // Ladung startet oder ist beendet -> dunkles Blau
-    }
-    else if (smchaXML.getEVState() == 3)
-    {
-        m_wallboxColor = DODGERBLUE;            // Ladung läuft -> schickes Blau
     }
     else if (smchaXML.getEVState() == 4)        // Error oder rejected
     {
@@ -280,7 +292,7 @@ void PowerNodeModel::wallboxHandling()
         "Enable sys" = Enable state for charging (contains Enable input, RFID, UDP,..)
     */
 
-    if (smchaXML.getEVPlug() >= 5)      // Stecker an EV und Wallbox stecken
+    if (smchaXML.getEVPlug() >= 5)              // Stecker an EV und Wallbox sind eingesteckt
     {
         m_wallboxCar = "Icons/electric-car-icon_steckt_weiss_transparent.png";
         m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png";
@@ -322,7 +334,7 @@ void PowerNodeModel::consumptionHandling(void)
 void PowerNodeModel::arrowsHandling(void)
 {
     // PV to battery
-    if((m_batteryPower > 0.0) && (m_generatorPowerTotal > 0.0))
+    if((m_batteryPower > 9) && (m_generatorPowerTotal > 0))
     {
         m_pv2batt = true;
     }
@@ -332,7 +344,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // PV to house
-    if((m_totalPowerConsumption > 0.0) && (m_generatorPowerTotal > 0.0))
+    if((m_totalPowerConsumption > 9) && (m_generatorPowerTotal > 0))
     {
         m_pv2house = true;
     }
@@ -342,7 +354,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // PV to grid
-    if((m_gridPower > 0.0) && (m_generatorPowerTotal > 0.0))
+    if((m_gridPower > 9) && (m_generatorPowerTotal > 0))
     {
         m_pv2grid = true;
     }
@@ -352,8 +364,8 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // battery to house
-    if(((m_batteryPower < 0.0) && (m_generatorPowerTotal == 0.0)) ||     // PV keine Leistung
-            ((m_batteryPower < 0.0) && (m_totalPowerConsumption > 0.0)))     // Haus braucht Energie
+    if(((m_batteryPower < -9) && (m_generatorPowerTotal == 0)) ||     // PV keine Leistung
+            ((m_batteryPower < -9) && (m_totalPowerConsumption > 0))) // Haus braucht Energie
     {
         m_batt2house = true;
     }
@@ -363,7 +375,8 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // house to battery (battery conditioning when PV is off for long time)
-    if((m_batteryPower > 0.0) && (m_generatorPowerTotal == 0.0) && (m_totalPowerConsumption > 0.0) && (m_gridPower < 0.0))
+    if((m_batteryPower > 9) && (m_generatorPowerTotal == 0) &&
+            (m_totalPowerConsumption > 0) && (m_gridPower < 0))
     {
         m_house2batt = true;
     }
@@ -373,7 +386,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // grid to house
-    if((m_gridPower < -10) /*&& (m_totalPowerConsumption > 10)*/)
+    if((m_gridPower < -9) /*&& (m_totalPowerConsumption > 10)*/)
     {
         m_grid2house = true;
     }
@@ -383,7 +396,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // house to grid        // generator is off (night) and battery feeds house and temporarily the grid
-    if((m_gridPower >= 10) && (m_generatorPowerTotal == 0.0))    // m_gridPowerAnzeige >= 10
+    if((m_gridPower > 9) && (m_generatorPowerTotal == 0))    // m_gridPowerAnzeige >= 10
     {
         m_house2grid = true;
     }
@@ -407,21 +420,21 @@ void PowerNodeModel::arrowsHandling(void)
 // shade handling  ----------------------------------------------------------
 void PowerNodeModel::shadeHandling(void)
 {
-    // Anteil Netzbezug in ROT von oben kommend einblenden
+    // Anteil Netzbezug in ROT von unten kommend einblenden
     if(m_gridPower < 0){                            // Netzbezug
-        m_homeTopRedH = std::min((abs(m_gridPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
+        m_homeBotRedH   = std::min((abs(m_gridPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
     {
-        m_homeTopRedH = 0;
+        m_homeBotRedH = 0;
     }
 
     // Anteil Akkubezug in GRÜN von unten kommend einblenden
-    if(m_batteryPower < 0){                            // Netzbezug
-        m_homeBotGreenH = std::min((abs(m_batteryPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
+    if(m_batteryPower < 0){                            // Batteriebezug
+        m_homeTopGreenH = std::min((abs(m_batteryPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
     {
-        m_homeBotGreenH = 0;
+        m_homeTopGreenH = 0;
     }
 }
