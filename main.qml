@@ -86,14 +86,18 @@ Window {
                 Rectangle {
                     id: rectangleGreen
                     anchors.left: parent.left
-                    y:  270 - PowerNodeModel.homeBotGreenH
-                    width: 90
-                    height: PowerNodeModel.homeBotGreenH
+//                    anchors.top: parent.top
                     anchors.margins: 0
+                    height: PowerNodeModel.homeTopGreenH
+                    x: coordHouseX              // 157
+                    y: 270 - PowerNodeModel.homeBotRedH - PowerNodeModel.homeTopGreenH
+//                    y: coordHouseY              // 140
+                    width: coordHouseW          //  90
                     visible: true
                     color: "FORESTGREEN"
                     opacity: 1
                     radius: 0
+                    border.width: 0
                     clip: true
                 }
 
@@ -101,17 +105,14 @@ Window {
                 Rectangle {
                     id: rectangleRed
                     anchors.left: parent.left
-                    anchors.top: parent.top
+                    y:  270 - PowerNodeModel.homeBotRedH
+                    width: 90
+                    height: PowerNodeModel.homeBotRedH
                     anchors.margins: 0
-                    height: PowerNodeModel.homeTopRedH
-                    x: coordHouseX
-                    y: coordHouseY
-                    width: coordHouseW
                     visible: true
                     color: "FIREBRICK"
                     opacity: 1
                     radius: 0
-                    border.width: 0
                     clip: true
                 }
 
