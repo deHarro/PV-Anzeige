@@ -6,8 +6,6 @@ Downloader::Downloader(QObject *parent) :
 {
 }
 
-PowerNodeModel warnTexts;
-
 // download XML data from SmartCharger ----------------------------------------
 void Downloader::doDownloadXML(void)
 {
@@ -19,13 +17,16 @@ void Downloader::doDownloadXML(void)
     manager->get(QNetworkRequest(QUrl("http://192.168.1.92:18001/xml")));
 }
 
+PowerNodeModel powerNodeModel;
+
 void Downloader::replyFinishedXML (QNetworkReply *reply)
 {
     if(reply->error())
     {
-        qDebug() << "ERROR!";
+        qDebug() << "ERROR with SmartCharger";
         qDebug() << reply->errorString();
-        warnTexts.setEDLDWarning(true);                         // EDL Daemon ist abgestuerzt -> Meldung
+        m_messageFlag |= EDLDFlag;                             // EDL Daemon ist abgestuerzt -> Meldung
+//        emit powerNodeModel.setEDLDWarning();                         // EDL Daemon ist abgestuerzt -> Meldung
     }
     else
     {
@@ -33,7 +34,8 @@ void Downloader::replyFinishedXML (QNetworkReply *reply)
 
         m_XMLfiledata.clear();
         m_XMLfiledata.append(reply->readAll());
-        warnTexts.setEDLDWarning(false);                        // EDL Daemon ist ok -> ausblenden
+        m_messageFlag &= !EDLDFlag;                            // EDL Daemon ist ok -> ausblenden
+//        emit powerNodeModel.setEDLDWarning();                        // EDL Daemon ist ok -> ausblenden
     }
 
     reply->deleteLater();
@@ -52,13 +54,12 @@ void Downloader::doDownloadJSON(void)
 
 void Downloader::replyFinishedJSON(QNetworkReply *reply)
 {
-    PowerNodeModel warnTexts;
-
     if(reply->error())
     {
-        qDebug() << "ERROR!";
+        qDebug() << "ERROR with MBMD";
         qDebug() << reply->errorString();
-        warnTexts.setMBMDWarning(true);                         // MBMD Daemon ist abgestuerzt -> Meldung
+//        emit powerNodeModel.setMBMDWarning();                         // MBMD Daemon ist abgestuerzt -> Meldung
+        m_messageFlag |= MBMDFlag;                         // MBMD Daemon ist abgestuerzt -> Meldung
     }
     else
     {
@@ -66,7 +67,8 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
 
         m_JSONfiledata.clear();
         m_JSONfiledata.append(reply->readAll());
-        warnTexts.setMBMDWarning(false);                        // MBMD Daemon ist ok -> ausblenden
+//        emit powerNodeModel.setMBMDWarning();                        // MBMD Daemon ist ok -> ausblenden
+        m_messageFlag &= !MBMDFlag;                        // MBMD Daemon ist ok -> ausblenden
     }
 
     reply->deleteLater();

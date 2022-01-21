@@ -6,6 +6,13 @@
 #include <QNetworkReply>
 #include <QUrl>
 
+// global flag memory for error messages
+extern quint8 m_messageFlag;
+// Flag: Bit 0 = 1 -> EDLD antwortet nicht korrekt
+// Flag: Bit 1 = 1 -> MBMD antwortet nicht korrekt
+#define EDLDFlag 1
+#define MBMDFlag 2
+
 class Downloader : public QObject
 {
     Q_OBJECT
