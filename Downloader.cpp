@@ -26,7 +26,6 @@ void Downloader::replyFinishedXML (QNetworkReply *reply)
         qDebug() << "ERROR with SmartCharger";
         qDebug() << reply->errorString();
         m_messageFlag |= EDLDFlag;                             // EDL Daemon ist abgestuerzt -> Meldung
-//        emit powerNodeModel.setEDLDWarning();                         // EDL Daemon ist abgestuerzt -> Meldung
     }
     else
     {
@@ -35,7 +34,6 @@ void Downloader::replyFinishedXML (QNetworkReply *reply)
         m_XMLfiledata.clear();
         m_XMLfiledata.append(reply->readAll());
         m_messageFlag &= !EDLDFlag;                            // EDL Daemon ist ok -> ausblenden
-//        emit powerNodeModel.setEDLDWarning();                        // EDL Daemon ist ok -> ausblenden
     }
 
     reply->deleteLater();
@@ -58,7 +56,6 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
     {
         qDebug() << "ERROR with MBMD";
         qDebug() << reply->errorString();
-//        emit powerNodeModel.setMBMDWarning();                         // MBMD Daemon ist abgestuerzt -> Meldung
         m_messageFlag |= MBMDFlag;                         // MBMD Daemon ist abgestuerzt -> Meldung
     }
     else
@@ -67,7 +64,6 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
 
         m_JSONfiledata.clear();
         m_JSONfiledata.append(reply->readAll());
-//        emit powerNodeModel.setMBMDWarning();                        // MBMD Daemon ist ok -> ausblenden
         m_messageFlag &= !MBMDFlag;                        // MBMD Daemon ist ok -> ausblenden
     }
 
