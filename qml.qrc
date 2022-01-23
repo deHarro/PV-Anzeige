@@ -10,5 +10,6 @@
         <file>Icons/Mast_vec_weiss_transparent.png</file>
         <file>Icons/Sonne_weiss_transparent.png</file>
         <file>Icons/electric-car-icon_weiss_transparent.png</file>
+        <file>Icons/PV-Anzeige_Icon.ico</file>
     </qresource>
 </RCC>
