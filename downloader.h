@@ -29,6 +29,7 @@ public slots:
     void replyFinishedJSON (QNetworkReply *reply);
 
 private:
-   QNetworkAccessManager *manager;
+    QNetworkAccessManager *jsonManager;
+    QNetworkAccessManager *xmlManager;
 };
 

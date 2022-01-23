@@ -9,15 +9,13 @@ Downloader::Downloader(QObject *parent) :
 // download XML data from SmartCharger ----------------------------------------
 void Downloader::doDownloadXML(void)
 {
-    manager = new QNetworkAccessManager(this);
+    xmlManager = new QNetworkAccessManager(this);
 
-    connect(manager, SIGNAL(finished(QNetworkReply*)),
+    connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedXML(QNetworkReply*)));
 
-    manager->get(QNetworkRequest(QUrl("http://192.168.1.92:18001/xml")));
+    xmlManager->get(QNetworkRequest(QUrl("http://192.168.1.92:18001/xml")));
 }
-
-PowerNodeModel powerNodeModel;
 
 void Downloader::replyFinishedXML (QNetworkReply *reply)
 {
@@ -25,7 +23,7 @@ void Downloader::replyFinishedXML (QNetworkReply *reply)
     {
         qDebug() << "ERROR with SmartCharger";
         qDebug() << reply->errorString();
-        m_messageFlag |= EDLDFlag;                             // EDL Daemon ist abgestuerzt -> Meldung
+        m_messageFlag |= EDLDFlag;                              // EDL Daemon ist abgestuerzt -> Meldung
     }
     else
     {
@@ -33,21 +31,24 @@ void Downloader::replyFinishedXML (QNetworkReply *reply)
 
         m_XMLfiledata.clear();
         m_XMLfiledata.append(reply->readAll());
-        m_messageFlag &= !EDLDFlag;                            // EDL Daemon ist ok -> ausblenden
+        m_messageFlag &= !EDLDFlag;                             // EDL Daemon ist ok -> ausblenden
     }
 
     reply->deleteLater();
+
+    xmlManager->deleteLater();
+    xmlManager = nullptr;
 }
 
 // download JSON data from MBMD PV-WR-reader ----------------------------------
 void Downloader::doDownloadJSON(void)
 {
-    manager = new QNetworkAccessManager(this);
+    jsonManager = new QNetworkAccessManager(this);
 
-    connect(manager, SIGNAL(finished(QNetworkReply*)),
+    connect(jsonManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedJSON(QNetworkReply*)));
 
-    manager->get(QNetworkRequest(QUrl("http://192.168.1.92:8080/api/last")));
+    jsonManager->get(QNetworkRequest(QUrl("http://192.168.1.92:8080/api/last")));
 }
 
 void Downloader::replyFinishedJSON(QNetworkReply *reply)
@@ -56,7 +57,7 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
     {
         qDebug() << "ERROR with MBMD";
         qDebug() << reply->errorString();
-        m_messageFlag |= MBMDFlag;                         // MBMD Daemon ist abgestuerzt -> Meldung
+        m_messageFlag |= MBMDFlag;                              // MBMD Daemon ist abgestuerzt -> Meldung
     }
     else
     {
@@ -64,9 +65,12 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
 
         m_JSONfiledata.clear();
         m_JSONfiledata.append(reply->readAll());
-        m_messageFlag &= !MBMDFlag;                        // MBMD Daemon ist ok -> ausblenden
+        m_messageFlag &= !MBMDFlag;                             // MBMD Daemon ist ok -> ausblenden
     }
 
     reply->deleteLater();
+
+    jsonManager->deleteLater();
+    jsonManager = nullptr;
 }
 
