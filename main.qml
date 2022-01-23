@@ -7,7 +7,7 @@ import Smarf.PowerNodeModel 1.0
 
 Window {
     id: window
-    width: 400
+    width: 404
     height: 560
     opacity: 1
     visible: true
@@ -965,3 +965,9 @@ Window {
 
 
 
+
+/*##^##
+Designer {
+    D{i:0;formeditorZoom:2}
+}
+##^##*/
