@@ -88,7 +88,7 @@ void PowerNodeModel::getJSONdata(void)
     smchaJSON.ReadWechselrichterJSON();
 }
 
-void PowerNodeModel::setMBMDText(void)
+void PowerNodeModel::setMBMDText(void)              // Fehlermeldung wenn MBMD Daemon Probleme hat
 {
     if (m_messageFlag & MBMDFlag)
     {
@@ -100,7 +100,7 @@ void PowerNodeModel::setMBMDText(void)
     }
 }
 
-void PowerNodeModel::setEDLDText(void)
+void PowerNodeModel::setEDLDText(void)              // Fehlermeldung wenn EDLD Daemon Probleme hat
 {
     if (m_messageFlag & EDLDFlag)
     {
@@ -112,11 +112,11 @@ void PowerNodeModel::setEDLDText(void)
     }
 }
 
-void PowerNodeModel::setBGColor(void)
+void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern wenn auf dem RPi Probleme auftreten
 {
-    if (m_messageFlag & (EDLDFlag | MBMDFlag))
+    if (m_messageFlag & (EDLDFlag | MBMDFlag))      // EDLD oder MBMD
     {
-        m_backgroundColor = "mistyrose";
+        m_backgroundColor = "red";
     }
     else
     {

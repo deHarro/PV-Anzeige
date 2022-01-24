@@ -799,27 +799,29 @@ Window {
         }
 
         Text {
+            // "EDLD hat Probleme"
             id: text48
             x: -28
             y: 276
             width: 117
             height: 14
-            color: "#ff0000"
-//            text: qsTr("EDLD hat Probleme!")
+            color: "#000000"  // schwarz // "#ff0000" rot
             text: PowerNodeModel.EDLDProblemText
+            font.bold : true
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
 
         Text {
+            // "MBMD hat Probleme"
             id: text49
             x: -230
             y: 276
             width: 117
             height: 14
-            color: "#ff0000"
-//            text: qsTr("MBMD hat Probleme!")
+            color: "#000000"  // schwarz // "#ff0000" rot
             text: PowerNodeModel.MBMDProblemText
+            font.bold : true
             font.pixelSize: 12
             horizontalAlignment: Text.AlignLeft
         }
