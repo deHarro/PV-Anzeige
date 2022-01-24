@@ -1,4 +1,4 @@
-#include "downloader.h"
+#include "Downloader.h"
 #include "PowerNodeModel.h"
 
 Downloader::Downloader(QObject *parent) :
