@@ -81,6 +81,7 @@ public:
 
     Q_PROPERTY(QString EDLDProblemText MEMBER m_EDLDProblemText NOTIFY setEDLDWarning)
     Q_PROPERTY(QString MBMDProblemText MEMBER m_MBMDProblemText NOTIFY setMBMDWarning)
+    Q_PROPERTY(QString backgroundColor MEMBER m_backgroundColor NOTIFY setBackgroundColor)
 
 Q_SIGNALS:
     void generatorDataChanged();
@@ -93,6 +94,7 @@ Q_SIGNALS:
 
     void setEDLDWarning();
     void setMBMDWarning();
+    void setBackgroundColor();
 
 private:
     void getXMLdata(void);
@@ -107,7 +109,7 @@ private:
     void loadSmChXML();               //
     void setMBMDText();
     void setEDLDText();
-
+    void setBGColor();
 
 // generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
@@ -151,6 +153,7 @@ private:
 
     QString m_MBMDProblemText = "";
     QString m_EDLDProblemText = "";
+    QString m_backgroundColor = "whitesmoke";
 
 // arrow handling
     bool m_pv2batt = false;

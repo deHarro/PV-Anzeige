@@ -11,7 +11,7 @@ Window {
     height: 560
     opacity: 1
     visible: true
-    color: "whitesmoke"                     // sehr helles Grau für Fensterhintergrund
+    color: PowerNodeModel.backgroundColor    // sehr helles Grau oder helles Rosa (bei Fehler) für Fensterhintergrund
     title: qsTr("PV-Anzeige")
 
     property alias rectangle1: rectangle1

@@ -48,6 +48,7 @@ void PowerNodeModel::onDataTimer() {
     shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
     setEDLDText();
     setMBMDText();
+    setBGColor();
 
 // Update the different values in QML
     emit arrowsChanged();
@@ -61,6 +62,7 @@ void PowerNodeModel::onDataTimer() {
     emit arrowsChanged();
     emit setEDLDWarning();
     emit setMBMDWarning();
+    emit setBackgroundColor();
 }
 
 // handling routines, may be called from MQTT routines (comment rand() calls then ;)
@@ -107,6 +109,18 @@ void PowerNodeModel::setEDLDText(void)
     else
     {
         m_EDLDProblemText = "";
+    }
+}
+
+void PowerNodeModel::setBGColor(void)
+{
+    if (m_messageFlag & (EDLDFlag | MBMDFlag))
+    {
+        m_backgroundColor = "mistyrose";
+    }
+    else
+    {
+        m_backgroundColor = "whitesmoke";
     }
 }
 
