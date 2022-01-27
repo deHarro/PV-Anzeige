@@ -91,24 +91,28 @@ void PowerNodeModel::getJSONdata(void)
 void PowerNodeModel::setMBMDText(void)              // Fehlermeldung wenn MBMD Daemon Probleme hat
 {
     if (m_messageFlag & MBMDFlag)
-    {
+    {   // text
         m_MBMDProblemText = "MBMD hat Probleme!";
+        // color
     }
     else
-    {
+    {   // text
         m_MBMDProblemText = "";
+        // color
     }
 }
 
 void PowerNodeModel::setEDLDText(void)              // Fehlermeldung wenn EDLD Daemon Probleme hat
 {
     if (m_messageFlag & EDLDFlag)
-    {
+    {   // text
         m_EDLDProblemText = "EDLD hat Probleme!";
+        // color
     }
     else
-    {
+    {   // text
         m_EDLDProblemText = "";
+        // color
     }
 }
 
@@ -121,6 +125,54 @@ void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern 
     else
     {
         m_backgroundColor = "whitesmoke";
+    }
+
+    if (m_messageFlag & EDLDFlag)                   // EDLD
+    {
+        m_chargingPowerColor        = "red";
+        m_evalPointsColor           = "red";
+        m_sessionEnergyColor        = "red";
+        m_chargedEnergyColor        = "red";
+        m_batteryPowerPowerColor    = "red";
+        m_battTempPowerColor        = "red";
+        m_battPercentageColor       = "red";
+        m_gridPowerColor            = "red";
+        m_gridEnergyExportColor     = "red";
+        m_consumptionPowerColor     = "red";        // depends on both, MBMD and EDLD
+        m_gridEnergyImportColor     = "red";
+    }
+    else
+    {
+        m_chargingPowerColor        = "white";
+        m_evalPointsColor           = "white";
+        m_sessionEnergyColor        = "white";
+        m_chargedEnergyColor        = "white";
+        m_batteryPowerPowerColor    = "white";
+        m_battTempPowerColor        = "white";
+        m_battPercentageColor       = "white";
+        m_gridPowerColor            = "white";
+        m_gridEnergyExportColor     = "white";
+        m_consumptionPowerColor     = "white";      // depends on both, MBMD and EDLD
+        m_gridEnergyImportColor     = "white";
+    }
+
+    if (m_messageFlag & MBMDFlag)                   // MBMD
+    {
+        m_generatorPowerTotalColor  = "red";
+        m_generatorPowerDachColor   = "red";
+        m_generatorPowerGaubeColor  = "red";
+        m_generatorPowerGarageColor = "red";
+        m_generatorTotalEnergyColor = "red";
+        m_consumptionPowerColor     = "red";        // depends on both, MBMD and EDLD
+    }
+    else
+    {
+        m_generatorPowerTotalColor  = "white";
+        m_generatorPowerDachColor   = "white";
+        m_generatorPowerGaubeColor  = "white";
+        m_generatorPowerGarageColor = "white";
+        m_generatorTotalEnergyColor = "white";
+        m_consumptionPowerColor     = "white";      // depends on both, MBMD and EDLD
     }
 }
 

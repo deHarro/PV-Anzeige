@@ -171,7 +171,8 @@ Window {
                         y: 46
                         width: 77
                         height: 26
-                        color: "#ffffff"
+                        color: PowerNodeModel.consumptionPowerColor
+//                        color: "#ffffff"
                         text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
                         font.pixelSize: 23
                         horizontalAlignment: Text.AlignHCenter
@@ -184,7 +185,8 @@ Window {
                         y: 214
                         width: 74
                         height: 14
-                        color: "#ffffff"   // "#f9bbcbc"
+                        color: PowerNodeModel.gridEnergyImportColor
+//                        color: "#ffffff"   // "#f9bbcbc"
                         // eine Nachkommastellen, zentriert
                         text: (PowerNodeModel.gridEnergyImport).toFixed(1)
                         font.pixelSize: 12
@@ -257,7 +259,8 @@ Window {
             y: 32
             width: 92
             height: 26
-            color: "#ffffff"
+            color: PowerNodeModel.generatorPowerTotalColor
+//            color: "#ffffff"
             text: (PowerNodeModel.generatorPowerTotal / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
@@ -303,7 +306,8 @@ Window {
             y: 6
             width: 33
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: PowerNodeModel.generatorPowerDachColor
+//            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorPowerDach / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -314,7 +318,8 @@ Window {
             y: 27
             width: 33
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: PowerNodeModel.generatorPowerGaubeColor
+//            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorPowerGaube / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -325,7 +330,8 @@ Window {
             y: 47
             width: 33
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: PowerNodeModel.generatorPowerGarageColor
+//            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorPowerGarage / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -376,7 +382,8 @@ Window {
             y: 67
             width: 45
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: PowerNodeModel.generatorTotalEnergyColor
+//            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorTotalEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -438,7 +445,8 @@ Window {
             y: 32
             width: 77
             height: 26
-            color: "#ffffff"
+            color: PowerNodeModel.chargingPowerColor
+//            color: "#ffffff"
             text: (PowerNodeModel.chargingPower / 1000.0).toFixed(3)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
@@ -482,7 +490,8 @@ Window {
             y: 71
             width: 40
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: PowerNodeModel.sessionEnergyColor
+//            color: "#ffffff"   // "#f9bbcbc"
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
             text: (PowerNodeModel.sessionEnergy / 1000.0).toFixed(3)
@@ -509,7 +518,8 @@ Window {
             y: 71
             width: 50
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: PowerNodeModel.chargedEnergyColor
+//            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -538,7 +548,8 @@ Window {
             y: 6
             width: 16
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: PowerNodeModel.evalPointsColor
+//            color: "#ffffff"   // "#f9bbcbc"
             text: PowerNodeModel.evalPoints.toFixed(0)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -589,7 +600,8 @@ Window {
             y: 46
             width: 77
             height: 26
-            color: "#ffffff"
+            color: PowerNodeModel.batteryPowerColor
+//            color: "#ffffff"
             text: (PowerNodeModel.batteryPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
@@ -627,7 +639,8 @@ Window {
             y: 216
             width: 45
             height: 26
-            color: "#ffffff"
+            color: PowerNodeModel.battPercentageColor
+//            color: "#ffffff"
             // ohne Nachkommastellen, rechtsbündig
             text: (PowerNodeModel.batteryPercentage).toFixed(0)
             font.pixelSize: 23
@@ -681,7 +694,8 @@ Window {
             y: 153
             width: 16
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: PowerNodeModel.battTempColor
+//            color: "#ffffff"   // "#f9bbcbc"
             text: PowerNodeModel.battTemp.toFixed(1)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -750,7 +764,8 @@ Window {
             y: 46
             width: 77
             height: 26
-            color: "#ffffff"
+            color: PowerNodeModel.gridPowerColor
+//            color: "#ffffff"
             text: (PowerNodeModel.gridPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
@@ -782,7 +797,8 @@ Window {
             y: 214
             width: 74
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: PowerNodeModel.gridEnergyExportColor
+//            color: "#ffffff"   // "#f9bbcbc"
             // eine Nachkommastellen, zentriert
             text: (PowerNodeModel.gridEnergyExport).toFixed(1)
             font.pixelSize: 12
@@ -970,6 +986,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:2}
+    D{i:0;formeditorZoom:1.33}
 }
 ##^##*/
