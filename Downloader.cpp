@@ -1,5 +1,6 @@
 #include "Downloader.h"
 #include "PowerNodeModel.h"
+#include "config.h"
 
 Downloader::Downloader(QObject *parent) :
     QObject(parent)
@@ -14,7 +15,9 @@ void Downloader::doDownloadXML(void)
     connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedXML(QNetworkReply*)));
 
-    xmlManager->get(QNetworkRequest(QUrl("http://192.168.1.92:18001/xml")));
+    QUrl SmartChargerAddr = "http://" + (QString)SMARTCHARGERIP + ":" + (QString)SMARTCHARGERPORT + "/xml";
+
+    xmlManager->get(QNetworkRequest(SmartChargerAddr));
 }
 
 void Downloader::replyFinishedXML (QNetworkReply *reply)

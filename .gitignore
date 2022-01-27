@@ -11,3 +11,4 @@ icons/sources/*.*
 icons/sources/
 thirdparty/*
 thirdparty/
+privateconfig.h

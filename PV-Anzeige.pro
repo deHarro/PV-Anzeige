@@ -18,7 +18,8 @@ HEADERS += \
     Downloader.h \
     PowerNodeModel.h \
     SmartChargerXML.h \
-    WechselrichterJSON.h
+    WechselrichterJSON.h \
+    config.h
 
 SOURCES += \
     Downloader.cpp \
