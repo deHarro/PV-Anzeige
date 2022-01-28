@@ -30,7 +30,7 @@ SOURCES += \
 
 RESOURCES += qml.qrc
 
-RC_FILE = PV-Anzeige.rc         // App Icon
+RC_FILE = PV-Anzeige.rc         # App Icon
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

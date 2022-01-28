@@ -35,10 +35,8 @@ PowerNodeModel::~PowerNodeModel() {
 void PowerNodeModel::onDataTimer() {
 
 // Update the different values in C++
-    getXMLdata();
-#ifdef USE_MBMD
-    getJSONdata();
-#endif
+    getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
+    getJSONdata();          // extract values from JSON string, read from RPi MBMD Daemon
     generatorHandling();    // PV generator handling
     batteryHandling();      // battery handling
     gridHandling();         // grid handling
@@ -46,8 +44,8 @@ void PowerNodeModel::onDataTimer() {
     arrowsHandling();       // arrows handling
     consumptionHandling();  // consumption handling
     shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
-    setEDLDText();
-    setMBMDText();
+    setEDLDText();          // emit warning message if connection to EDL Daemon on RPi ceases
+    setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
     setBGColor();
 
 // Update the different values in QML
@@ -105,14 +103,12 @@ void PowerNodeModel::setMBMDText(void)              // Fehlermeldung wenn MBMD D
 void PowerNodeModel::setEDLDText(void)              // Fehlermeldung wenn EDLD Daemon Probleme hat
 {
     if (m_messageFlag & EDLDFlag)
-    {   // text
+    {
         m_EDLDProblemText = "EDLD hat Probleme!";
-        // color
     }
     else
-    {   // text
+    {
         m_EDLDProblemText = "";
-        // color
     }
 }
 
@@ -120,59 +116,30 @@ void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern 
 {
     if (m_messageFlag & (EDLDFlag | MBMDFlag))      // EDLD oder MBMD
     {
-        m_backgroundColor = "red";
+        m_backgroundColor = "#FFC8C8";              // sehr helles Rot
     }
     else
     {
         m_backgroundColor = "whitesmoke";
     }
 
-    if (m_messageFlag & EDLDFlag)                   // EDLD
+    // zusätzlich Zahlen in Rot darstellen, wenn sie als ungültig zu betrachten sind
+    if (m_messageFlag & EDLDFlag)                   // EDLD gesteuerte Werte
     {
-        m_chargingPowerColor        = "red";
-        m_evalPointsColor           = "red";
-        m_sessionEnergyColor        = "red";
-        m_chargedEnergyColor        = "red";
-        m_batteryPowerPowerColor    = "red";
-        m_battTempPowerColor        = "red";
-        m_battPercentageColor       = "red";
-        m_gridPowerColor            = "red";
-        m_gridEnergyExportColor     = "red";
-        m_consumptionPowerColor     = "red";        // depends on both, MBMD and EDLD
-        m_gridEnergyImportColor     = "red";
+          m_EDLDfigures = "red";
     }
     else
     {
-        m_chargingPowerColor        = "white";
-        m_evalPointsColor           = "white";
-        m_sessionEnergyColor        = "white";
-        m_chargedEnergyColor        = "white";
-        m_batteryPowerPowerColor    = "white";
-        m_battTempPowerColor        = "white";
-        m_battPercentageColor       = "white";
-        m_gridPowerColor            = "white";
-        m_gridEnergyExportColor     = "white";
-        m_consumptionPowerColor     = "white";      // depends on both, MBMD and EDLD
-        m_gridEnergyImportColor     = "white";
+          m_EDLDfigures = "white";
     }
 
-    if (m_messageFlag & MBMDFlag)                   // MBMD
+    if (m_messageFlag & MBMDFlag)                   // MBMD gesteuerte Werte
     {
-        m_generatorPowerTotalColor  = "red";
-        m_generatorPowerDachColor   = "red";
-        m_generatorPowerGaubeColor  = "red";
-        m_generatorPowerGarageColor = "red";
-        m_generatorTotalEnergyColor = "red";
-        m_consumptionPowerColor     = "red";        // depends on both, MBMD and EDLD
+        m_MBMDfigures  = "red";
     }
     else
     {
-        m_generatorPowerTotalColor  = "white";
-        m_generatorPowerDachColor   = "white";
-        m_generatorPowerGaubeColor  = "white";
-        m_generatorPowerGarageColor = "white";
-        m_generatorTotalEnergyColor = "white";
-        m_consumptionPowerColor     = "white";      // depends on both, MBMD and EDLD
+        m_MBMDfigures  = "white";
     }
 }
 

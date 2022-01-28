@@ -6,7 +6,6 @@
 #include <QQuickImageProvider>
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
-#define USE_MBMD              // enable to read JSON output of MBMD (ModBus Measurement Daemon)
 
 class StringData;
 
@@ -70,24 +69,26 @@ public:
     Q_PROPERTY(QString wallboxScoot MEMBER m_wallboxScoot  NOTIFY chargingDataChanged)
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
-    Q_PROPERTY(QString chargingPowerColor   MEMBER    m_chargingPowerColor      NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString evalPointsColor      MEMBER    m_evalPointsColor         NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString sessionEnergyColor   MEMBER    m_sessionEnergyColor      NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString chargedEnergyColor   MEMBER    m_chargedEnergyColor      NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString batteryPowerColor    MEMBER    m_batteryPowerPowerColor  NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString battTempColor        MEMBER    m_battTempPowerColor      NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString battPercentageColor  MEMBER    m_battPercentageColor     NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString gridPowerColor       MEMBER    m_gridPowerColor          NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString gridEnergyExportColor MEMBER   m_gridEnergyExportColor   NOTIFY setBackgroundColor)
+    Q_PROPERTY(QString EDLDfigures MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString chargingPowerColor   MEMBER    m_chargingPowerColor      NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString evalPointsColor      MEMBER    m_evalPointsColor         NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString sessionEnergyColor   MEMBER    m_sessionEnergyColor      NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString chargedEnergyColor   MEMBER    m_chargedEnergyColor      NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString batteryPowerColor    MEMBER    m_batteryPowerPowerColor  NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString battTempColor        MEMBER    m_battTempPowerColor      NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString battPercentageColor  MEMBER    m_battPercentageColor     NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString gridPowerColor       MEMBER    m_gridPowerColor          NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString gridEnergyExportColor MEMBER   m_gridEnergyExportColor   NOTIFY setBackgroundColor)
 
     // color of power values (red/white if no/connection to MBMD on RasPi)
-    Q_PROPERTY(QString generatorPowerTotalColor MEMBER  m_generatorPowerTotalColor  NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString generatorPowerDachColor  MEMBER  m_generatorPowerDachColor   NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString generatorPowerGaubeColor MEMBER  m_generatorPowerGaubeColor  NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString generatorPowerGarageColor MEMBER m_generatorPowerGarageColor NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString generatorTotalEnergyColor MEMBER  m_generatorTotalEnergyColor NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString consumptionPowerColor    MEMBER  m_consumptionPowerColor     NOTIFY setBackgroundColor)
-    Q_PROPERTY(QString gridEnergyImportColor    MEMBER  m_gridEnergyImportColor     NOTIFY setBackgroundColor)
+    Q_PROPERTY(QString MBMDfigures MEMBER  m_MBMDfigures  NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString generatorPowerTotalColor MEMBER  m_generatorPowerTotalColor  NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString generatorPowerDachColor  MEMBER  m_generatorPowerDachColor   NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString generatorPowerGaubeColor MEMBER  m_generatorPowerGaubeColor  NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString generatorPowerGarageColor MEMBER m_generatorPowerGarageColor NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString generatorTotalEnergyColor MEMBER  m_generatorTotalEnergyColor NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString consumptionPowerColor    MEMBER  m_consumptionPowerColor     NOTIFY setBackgroundColor)
+//    Q_PROPERTY(QString gridEnergyImportColor    MEMBER  m_gridEnergyImportColor     NOTIFY setBackgroundColor)
 
     // arrow properties - all arrows are updated in one call to "arrowsDataChanged"
     Q_PROPERTY(bool batt2house      MEMBER m_batt2house     NOTIFY arrowsChanged)
@@ -176,24 +177,26 @@ private:
     QString m_EDLDProblemText = "";
     QString m_backgroundColor = "whitesmoke";
 
-// Figures color of values, RED if error o nreading values, WHITE if readings are ok
-    QString m_chargingPowerColor = "red";
-    QString m_evalPointsColor = "red";
-    QString m_sessionEnergyColor = "red";
-    QString m_chargedEnergyColor = "red";
-    QString m_batteryPowerPowerColor = "red";
-    QString m_battTempPowerColor = "red";
-    QString m_battPercentageColor = "red";
-    QString m_gridPowerColor = "red";
-    QString m_gridEnergyExportColor = "red";
+// Figures color of values, RED if error on reading values, WHITE if readings are ok
+    QString m_EDLDfigures = "red";
+//    QString m_chargingPowerColor = "red";
+//    QString m_evalPointsColor = "red";
+//    QString m_sessionEnergyColor = "red";
+//    QString m_chargedEnergyColor = "red";
+//    QString m_batteryPowerPowerColor = "red";
+//    QString m_battTempPowerColor = "red";
+//    QString m_battPercentageColor = "red";
+//    QString m_gridPowerColor = "red";
+//    QString m_gridEnergyExportColor = "red";
 
-    QString m_generatorPowerTotalColor = "red";
-    QString m_generatorPowerDachColor = "red";
-    QString m_generatorPowerGaubeColor = "red";
-    QString m_generatorPowerGarageColor = "red";
-    QString m_generatorTotalEnergyColor = "red";
-    QString m_consumptionPowerColor = "red";
-    QString m_gridEnergyImportColor = "red";
+    QString m_MBMDfigures = "red";
+//    QString m_generatorPowerTotalColor = "red";
+//    QString m_generatorPowerDachColor = "red";
+//    QString m_generatorPowerGaubeColor = "red";
+//    QString m_generatorPowerGarageColor = "red";
+//    QString m_generatorTotalEnergyColor = "red";
+//    QString m_consumptionPowerColor = "red";
+//    QString m_gridEnergyImportColor = "red";
 
 // arrow handling
     bool m_pv2batt = false;

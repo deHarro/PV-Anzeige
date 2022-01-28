@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     PowerNodeModel powerNodeModel;
     QQmlApplicationEngine engine;
 
-    qmlRegisterSingletonInstance<PowerNodeModel>("Smarf.PowerNodeModel", 1, 0, "PowerNodeModel", &powerNodeModel);
+    qmlRegisterSingletonInstance<PowerNodeModel>("PowerNodeModel", 1, 0, "PowerNodeModel", &powerNodeModel);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
 

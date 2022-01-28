@@ -2,7 +2,8 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtGraphicalEffects 1.0
 
-import Smarf.PowerNodeModel 1.0
+//import Smarf.PowerNodeModel 1.0
+import PowerNodeModel 1.0
 
 
 Window {
@@ -171,7 +172,7 @@ Window {
                         y: 46
                         width: 77
                         height: 26
-                        color: PowerNodeModel.consumptionPowerColor
+                        color: PowerNodeModel.MBMDfigures
 //                        color: "#ffffff"
                         text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
                         font.pixelSize: 23
@@ -185,7 +186,7 @@ Window {
                         y: 214
                         width: 74
                         height: 14
-                        color: PowerNodeModel.gridEnergyImportColor
+                        color: PowerNodeModel.MBMDfigures
 //                        color: "#ffffff"   // "#f9bbcbc"
                         // eine Nachkommastellen, zentriert
                         text: (PowerNodeModel.gridEnergyImport).toFixed(1)
@@ -259,7 +260,7 @@ Window {
             y: 32
             width: 92
             height: 26
-            color: PowerNodeModel.generatorPowerTotalColor
+            color: PowerNodeModel.MBMDfigures
 //            color: "#ffffff"
             text: (PowerNodeModel.generatorPowerTotal / 1000.0).toFixed(2)
             font.pixelSize: 23
@@ -306,7 +307,7 @@ Window {
             y: 6
             width: 33
             height: 14
-            color: PowerNodeModel.generatorPowerDachColor
+            color: PowerNodeModel.MBMDfigures
 //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorPowerDach / 1000.0).toFixed(2)
             font.pixelSize: 12
@@ -318,7 +319,7 @@ Window {
             y: 27
             width: 33
             height: 14
-            color: PowerNodeModel.generatorPowerGaubeColor
+            color: PowerNodeModel.MBMDfigures
 //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorPowerGaube / 1000.0).toFixed(2)
             font.pixelSize: 12
@@ -330,7 +331,7 @@ Window {
             y: 47
             width: 33
             height: 14
-            color: PowerNodeModel.generatorPowerGarageColor
+            color: PowerNodeModel.MBMDfigures
 //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorPowerGarage / 1000.0).toFixed(2)
             font.pixelSize: 12
@@ -382,7 +383,7 @@ Window {
             y: 67
             width: 45
             height: 14
-            color: PowerNodeModel.generatorTotalEnergyColor
+            color: PowerNodeModel.MBMDfigures
 //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorTotalEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
@@ -445,7 +446,7 @@ Window {
             y: 32
             width: 77
             height: 26
-            color: PowerNodeModel.chargingPowerColor
+            color: PowerNodeModel.EDLDfigures
 //            color: "#ffffff"
             text: (PowerNodeModel.chargingPower / 1000.0).toFixed(3)
             font.pixelSize: 23
@@ -490,7 +491,7 @@ Window {
             y: 71
             width: 40
             height: 14
-            color: PowerNodeModel.sessionEnergyColor
+            color: PowerNodeModel.EDLDfigures
 //            color: "#ffffff"   // "#f9bbcbc"
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -518,7 +519,7 @@ Window {
             y: 71
             width: 50
             height: 14
-            color: PowerNodeModel.chargedEnergyColor
+            color: PowerNodeModel.EDLDfigures
 //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
@@ -548,7 +549,7 @@ Window {
             y: 6
             width: 16
             height: 14
-            color: PowerNodeModel.evalPointsColor
+            color: PowerNodeModel.EDLDfigures
 //            color: "#ffffff"   // "#f9bbcbc"
             text: PowerNodeModel.evalPoints.toFixed(0)
             font.pixelSize: 12
@@ -600,7 +601,7 @@ Window {
             y: 46
             width: 77
             height: 26
-            color: PowerNodeModel.batteryPowerColor
+            color: PowerNodeModel.EDLDfigures
 //            color: "#ffffff"
             text: (PowerNodeModel.batteryPower / 1000.0).toFixed(2)
             font.pixelSize: 23
@@ -639,7 +640,7 @@ Window {
             y: 216
             width: 45
             height: 26
-            color: PowerNodeModel.battPercentageColor
+            color: PowerNodeModel.EDLDfigures
 //            color: "#ffffff"
             // ohne Nachkommastellen, rechtsbündig
             text: (PowerNodeModel.batteryPercentage).toFixed(0)
@@ -694,7 +695,7 @@ Window {
             y: 153
             width: 16
             height: 14
-            color: PowerNodeModel.battTempColor
+            color: PowerNodeModel.EDLDfigures
 //            color: "#ffffff"   // "#f9bbcbc"
             text: PowerNodeModel.battTemp.toFixed(1)
             font.pixelSize: 12
@@ -764,7 +765,7 @@ Window {
             y: 46
             width: 77
             height: 26
-            color: PowerNodeModel.gridPowerColor
+            color: PowerNodeModel.EDLDfigures
 //            color: "#ffffff"
             text: (PowerNodeModel.gridPower / 1000.0).toFixed(2)
             font.pixelSize: 23
@@ -797,7 +798,7 @@ Window {
             y: 214
             width: 74
             height: 14
-            color: PowerNodeModel.gridEnergyExportColor
+            color: PowerNodeModel.EDLDfigures
 //            color: "#ffffff"   // "#f9bbcbc"
             // eine Nachkommastellen, zentriert
             text: (PowerNodeModel.gridEnergyExport).toFixed(1)
