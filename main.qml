@@ -2,7 +2,6 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtGraphicalEffects 1.0
 
-//import Smarf.PowerNodeModel 1.0
 import PowerNodeModel 1.0
 
 
