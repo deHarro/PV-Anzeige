@@ -10,6 +10,9 @@ As an addition the power flowing to the wallbox is displayed as well. The inform
 
 There will be no statistics and no database, those are handled well by SunnyPortal.
 
+The code is based on PowerNodeModel of Manuel and mbmd of volkszaehler. 
+Mbmd reads three PV converters over modbus, SmartCharger reads the battery converter and the SMA energy meter as well as the Keba P20 wallbox, PowerNodeModel models the connection between data layer and GUI. Thanks go to Nico (@skynet74), Manuel (@mincequi), Andreas (@andig) and Andreas (@DerAndereAndi).
+
 Modelled with QT Creator, the basic display shows up as follows:
 
 ![grafik](https://user-images.githubusercontent.com/26298406/128635477-f4f7ed47-aaed-43f9-93fd-ab3bc7f4b9b8.png)
