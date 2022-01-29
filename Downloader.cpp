@@ -70,7 +70,7 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
     }
     else
     {
-       extern QString m_JSONfiledata;    // globally defined in main.cpp
+       extern QString m_JSONfiledata;                           // globally defined in main.cpp
 
         m_JSONfiledata.clear();
         m_JSONfiledata.append(reply->readAll());
@@ -79,8 +79,8 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
 
     reply->deleteLater();
 
-    jsonManager->deleteLater();
-    jsonManager = nullptr;
+    jsonManager->deleteLater();                                 // delete manager -> prevent handle leaking
+    jsonManager = nullptr;                                      // invalidate manager
 }
 
 // get access parameter for Raspberry Pi
@@ -88,15 +88,14 @@ void Downloader::getRPiParameter()
 {
     // open PVconfig.ini
     QDir dir("./");
-    QString filepath = dir.absoluteFilePath("./");
+    QString filepath = dir.absoluteFilePath("./");              // path of PV-Anzeige.exe at _runtime_ (_not_ in Qt Creator!!)
     QString completeFilePath = filepath + "PVconfig.ini";
 
     QFile file(completeFilePath);
 
-    if(file.exists())
+    if(file.exists())                                           // check file access
     {
         if (!file.open(QIODevice::ReadOnly))
-    //    if (!PVconfigFile.open(QIODevice::ReadOnly /*| QIODevice::Text*/))
         {
             // Error while loading file
             std::cerr << "Error while loading PVconfig.ini" << std::endl;
@@ -116,7 +115,8 @@ void Downloader::getRPiParameter()
         file.close();
     }
     else
+    {
         // Error while loading file
-        std::cerr << "Error while loading PVconfig.ini" << std::endl;
-
+        std::cerr << "Error: PVconfig.ini doesn't exist (at the given path)" << std::endl;
+    }
 }
