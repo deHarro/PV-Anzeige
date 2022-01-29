@@ -1,15 +1,6 @@
-PV-Anzeige_1.pro.user
-QT_Farbwerte_korrigieren.xlsx
-fonts.qrc
-resources.qrc
-Original_SunnyPortal_3_Farben_im_Haus.png
 *.bak
 main.qml.autosave
 build-*
 PV-Anzeige.pro.user
 icons/sources/*.*
 icons/sources/
-thirdparty/*
-thirdparty/
-privateconfig.h
-PVconfig.ini
