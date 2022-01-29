@@ -185,7 +185,7 @@ Window {
                         y: 214
                         width: 74
                         height: 14
-                        color: PowerNodeModel.MBMDfigures
+                        color: PowerNodeModel.EDLDfigures
 //                        color: "#ffffff"   // "#f9bbcbc"
                         // eine Nachkommastellen, zentriert
                         text: (PowerNodeModel.gridEnergyImport).toFixed(1)
@@ -554,7 +554,6 @@ Window {
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
-
     }
 
     Rectangle {
