@@ -88,10 +88,8 @@ void Downloader::getRPiParameter()
 {
     // open PVconfig.ini
     QDir dir("./");
-    QString filepath = dir.absoluteFilePath("./");              // path of PV-Anzeige.exe at _runtime_ (_not_ in Qt Creator!!)
-    QString completeFilePath = filepath + "PVconfig.ini";
-
-    QFile file(completeFilePath);
+    QString filepath = dir.absoluteFilePath("./");              // path of PV-Anzeige.exe _at runtime_ (_not_ in Qt Creator!!)
+    QFile file(filepath + "PVconfig.ini");                      // add filename to path
 
     if(file.exists())                                           // check file access
     {
