@@ -1,10 +1,16 @@
+#include <QFile>
+#include <iostream>
+#include <QGuiApplication>
+#include <QDir>
+#include <QIODevice>
+
 #include "Downloader.h"
 #include "PowerNodeModel.h"
-#include "config.h"
 
 Downloader::Downloader(QObject *parent) :
     QObject(parent)
 {
+    getRPiParameter();
 }
 
 // download XML data from SmartCharger ----------------------------------------
@@ -15,8 +21,7 @@ void Downloader::doDownloadXML(void)
     connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedXML(QNetworkReply*)));
 
-    QUrl SmartChargerAddr = "http://" + (QString)SMARTCHARGERIP + ":" + (QString)SMARTCHARGERPORT + "/xml";
-
+    QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/xml";
     xmlManager->get(QNetworkRequest(SmartChargerAddr));
 }
 
@@ -51,7 +56,8 @@ void Downloader::doDownloadJSON(void)
     connect(jsonManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedJSON(QNetworkReply*)));
 
-    jsonManager->get(QNetworkRequest(QUrl("http://192.168.1.92:8080/api/last")));
+    QUrl ModbusDaemonAddr = "http://" + m_smartChargerIP + ":" + m_mbmdPort + "/api/last";
+    jsonManager->get(QNetworkRequest(ModbusDaemonAddr));
 }
 
 void Downloader::replyFinishedJSON(QNetworkReply *reply)
@@ -77,3 +83,40 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
     jsonManager = nullptr;
 }
 
+// get access parameter for Raspberry Pi
+void Downloader::getRPiParameter()
+{
+    // open PVconfig.ini
+    QDir dir("./");
+    QString filepath = dir.absoluteFilePath("./");
+    QString completeFilePath = filepath + "PVconfig.ini";
+
+    QFile file(completeFilePath);
+
+    if(file.exists())
+    {
+        if (!file.open(QIODevice::ReadOnly))
+    //    if (!PVconfigFile.open(QIODevice::ReadOnly /*| QIODevice::Text*/))
+        {
+            // Error while loading file
+            std::cerr << "Error while loading PVconfig.ini" << std::endl;
+        }
+        else
+        {
+            while (!file.atEnd()) {
+                QString line = file.readLine();
+                if (line.contains("[SMARTCHARGERIP]"))
+                    m_smartChargerIP = QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n'));
+                if (line.contains("[SMARTCHARGERPORT]"))
+                    m_smartChargerPort = QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n'));
+                if (line.contains("[MBMDPORT]"))
+                    m_mbmdPort = QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n'));
+            }
+        }
+        file.close();
+    }
+    else
+        // Error while loading file
+        std::cerr << "Error while loading PVconfig.ini" << std::endl;
+
+}

@@ -5,6 +5,8 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
+#include <QDir>
+#include <QCoreApplication>
 
 // global flag memory for error messages
 extern quint8 m_messageFlag;
@@ -29,7 +31,12 @@ public slots:
     void replyFinishedJSON (QNetworkReply *reply);
 
 private:
+    void getRPiParameter(void);
+
     QNetworkAccessManager *jsonManager;
     QNetworkAccessManager *xmlManager;
+    QString m_smartChargerIP;
+    QString m_smartChargerPort;
+    QString m_mbmdPort;
 };
 
