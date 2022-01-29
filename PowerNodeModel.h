@@ -179,24 +179,7 @@ private:
 
 // Figures color of values, RED if error on reading values, WHITE if readings are ok
     QString m_EDLDfigures = "red";
-//    QString m_chargingPowerColor = "red";
-//    QString m_evalPointsColor = "red";
-//    QString m_sessionEnergyColor = "red";
-//    QString m_chargedEnergyColor = "red";
-//    QString m_batteryPowerPowerColor = "red";
-//    QString m_battTempPowerColor = "red";
-//    QString m_battPercentageColor = "red";
-//    QString m_gridPowerColor = "red";
-//    QString m_gridEnergyExportColor = "red";
-
     QString m_MBMDfigures = "red";
-//    QString m_generatorPowerTotalColor = "red";
-//    QString m_generatorPowerDachColor = "red";
-//    QString m_generatorPowerGaubeColor = "red";
-//    QString m_generatorPowerGarageColor = "red";
-//    QString m_generatorTotalEnergyColor = "red";
-//    QString m_consumptionPowerColor = "red";
-//    QString m_gridEnergyImportColor = "red";
 
 // arrow handling
     bool m_pv2batt = false;

@@ -89,14 +89,12 @@ void PowerNodeModel::getJSONdata(void)
 void PowerNodeModel::setMBMDText(void)              // Fehlermeldung wenn MBMD Daemon Probleme hat
 {
     if (m_messageFlag & MBMDFlag)
-    {   // text
+    {
         m_MBMDProblemText = "MBMD hat Probleme!";
-        // color
     }
     else
-    {   // text
+    {
         m_MBMDProblemText = "";
-        // color
     }
 }
 
