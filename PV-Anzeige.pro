@@ -14,12 +14,13 @@ CONFIG += QTQUICKCOMPILER
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+TARGET = PV-Anzeige
+
 HEADERS += \
     Downloader.h \
     PowerNodeModel.h \
     SmartChargerXML.h \
-    WechselrichterJSON.h \
-    config.h
+    WechselrichterJSON.h
 
 SOURCES += \
     Downloader.cpp \
@@ -30,7 +31,9 @@ SOURCES += \
 
 RESOURCES += qml.qrc
 
-RC_FILE = PV-Anzeige.rc         # App Icon
+
+# App Icon
+RC_FILE = PV-Anzeige.rc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
