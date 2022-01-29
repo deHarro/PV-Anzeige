@@ -12,3 +12,4 @@ icons/sources/
 thirdparty/*
 thirdparty/
 privateconfig.h
+PVconfig.ini
