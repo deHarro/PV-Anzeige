@@ -1,10 +1,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQuickView>
-#include <QApplication>
 
 #include "PowerNodeModel.h"
 
+// globals ----------------------------------------
 // global array for saving the XML content of SmartCharger app running on SmartCharger RasPi
 QByteArray m_XMLfiledata;
 
@@ -15,6 +14,7 @@ QString m_JSONfiledata;
 // Flag: Bit 0 = 1 -> EDLD antwortet nicht korrekt
 // Flag: Bit 1 = 1 -> MBMD antwortet nicht korrekt
 quint8 m_messageFlag = 0;
+// globals ----------------------------------------
 
 
 int main(int argc, char *argv[])
@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
 #endif
 
     QGuiApplication app(argc, argv);
-//    QApplication app(argc, argv);
 
     PowerNodeModel powerNodeModel;
     QQmlApplicationEngine engine;
