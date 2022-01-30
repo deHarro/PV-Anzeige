@@ -309,6 +309,11 @@ void PowerNodeModel::wallboxHandling()
     {
         m_wallboxColor = FIREBRICK ;            // dunkles Rot
     }
+    else if (((smchaXML.getEVState() <= 2) || (smchaXML.getEVState() == 5))
+         && ((smchaXML.getEVPlug() == 5) || (smchaXML.getEVPlug() == 7)))   // Stecker steckt aber Wallbox not ready
+    {
+        m_wallboxColor = LIGHTBLUE ;            // helles Blau
+    }
     else
         m_wallboxColor = VLIGHTGRAY ;           // helles Hellgrau, keine QML Basic/SVG color
 

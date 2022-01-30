@@ -17,6 +17,7 @@ class StringData;
 #define FIREBRICK       "FIREBRICK"     // "0xb22222"
 #define DODGERBLUE      "#02a4f5"       // "DODGERBLUE"   // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
 #define DARKBLUE        "#2828B3"       // "#0371da" "0x00008b"     // EV attached to wallbox
+#define LIGHTBLUE       "#A3D1FF"       // sehr helles Blau
 
 
 class PowerNodeModel : public QObject {
