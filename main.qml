@@ -274,7 +274,8 @@ Window {
             height: 78
             source: "Icons/Sonne_weiss_transparent.png"
             fillMode: Image.PreserveAspectFit
-            rotation: 22.5
+//            rotation: 22.5
+            rotation: PowerNodeModel.sunAngle
         }
         Text {
             id: text22

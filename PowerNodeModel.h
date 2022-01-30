@@ -17,7 +17,10 @@ class StringData;
 #define FIREBRICK       "FIREBRICK"     // "0xb22222"
 #define DODGERBLUE      "#02a4f5"       // "DODGERBLUE"   // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
 #define DARKBLUE        "#2828B3"       // "#0371da" "0x00008b"     // EV attached to wallbox
-#define LIGHTBLUE       "#A3D1FF"       // sehr helles Blau
+//#define LIGHTBLUE       "#49C6E5"       // sehr helles Blau
+//#define LIGHTBLUE       "#00C3FF"       // sehr helles Blau
+//#define LIGHTBLUE       "#A3D1FF"       // sehr helles Blau
+#define LIGHTBLUE       "#72BBFF"       // sehr helles Blau
 
 
 class PowerNodeModel : public QObject {
@@ -34,6 +37,7 @@ public:
     Q_PROPERTY(double generatorPowerGarage MEMBER m_generatorPowerGarage NOTIFY generatorDataChanged)
     Q_PROPERTY(double generatorTotalEnergy MEMBER m_generatorTotalEnergy NOTIFY generatorDataChanged)
     Q_PROPERTY(QString generatorColor MEMBER m_generatorColor NOTIFY generatorDataChanged)
+    Q_PROPERTY(double sunAngle MEMBER m_sunAngle NOTIFY rotateSun)
 
     // battery properties - all battery values are updated in one call to "batteryDataChanged"
     Q_PROPERTY(double batteryPower MEMBER m_battPowerAnzeige NOTIFY batteryDataChanged)
@@ -71,25 +75,9 @@ public:
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
     Q_PROPERTY(QString EDLDfigures MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString chargingPowerColor   MEMBER    m_chargingPowerColor      NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString evalPointsColor      MEMBER    m_evalPointsColor         NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString sessionEnergyColor   MEMBER    m_sessionEnergyColor      NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString chargedEnergyColor   MEMBER    m_chargedEnergyColor      NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString batteryPowerColor    MEMBER    m_batteryPowerPowerColor  NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString battTempColor        MEMBER    m_battTempPowerColor      NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString battPercentageColor  MEMBER    m_battPercentageColor     NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString gridPowerColor       MEMBER    m_gridPowerColor          NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString gridEnergyExportColor MEMBER   m_gridEnergyExportColor   NOTIFY setBackgroundColor)
 
     // color of power values (red/white if no/connection to MBMD on RasPi)
     Q_PROPERTY(QString MBMDfigures MEMBER  m_MBMDfigures  NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString generatorPowerTotalColor MEMBER  m_generatorPowerTotalColor  NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString generatorPowerDachColor  MEMBER  m_generatorPowerDachColor   NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString generatorPowerGaubeColor MEMBER  m_generatorPowerGaubeColor  NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString generatorPowerGarageColor MEMBER m_generatorPowerGarageColor NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString generatorTotalEnergyColor MEMBER  m_generatorTotalEnergyColor NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString consumptionPowerColor    MEMBER  m_consumptionPowerColor     NOTIFY setBackgroundColor)
-//    Q_PROPERTY(QString gridEnergyImportColor    MEMBER  m_gridEnergyImportColor     NOTIFY setBackgroundColor)
 
     // arrow properties - all arrows are updated in one call to "arrowsDataChanged"
     Q_PROPERTY(bool batt2house      MEMBER m_batt2house     NOTIFY arrowsChanged)
@@ -118,6 +106,8 @@ Q_SIGNALS:
     void setMBMDWarning();
     void setBackgroundColor();
 
+    void rotateSun();
+
 private:
     void getXMLdata(void);
     void getJSONdata(void);
@@ -128,10 +118,11 @@ private:
     void consumptionHandling(void);
     void arrowsHandling(void);
     void shadeHandling(void);
-    void loadSmChXML();               //
-    void setMBMDText();
-    void setEDLDText();
-    void setBGColor();
+    void loadSmChXML(void);               //
+    void setMBMDText(void);
+    void setEDLDText(void);
+    void setBGColor(void);
+    void setSunAngle(void);
 
 // generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
@@ -140,6 +131,7 @@ private:
     double m_generatorPowerGarage = 0.0;    // Momentanleistung String Garage
     double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
     QString m_generatorColor = VLIGHTGRAY;
+    double m_sunAngle = 22.5;                  // Sonne langsam rotieren ;)
 
 // battery, Akku
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]

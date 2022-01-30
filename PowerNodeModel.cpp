@@ -25,7 +25,7 @@ using namespace std::chrono_literals;
 PowerNodeModel::PowerNodeModel() {
 
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
-    m_dataTimer.start(5000);
+    m_dataTimer.start(500);
 }
 
 PowerNodeModel::~PowerNodeModel() {
@@ -34,33 +34,43 @@ PowerNodeModel::~PowerNodeModel() {
 // cyclically retrieve data from converters and wallbox
 void PowerNodeModel::onDataTimer() {
 
-// Update the different values in C++
-    getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
-    getJSONdata();          // extract values from JSON string, read from RPi MBMD Daemon
-    generatorHandling();    // PV generator handling
-    batteryHandling();      // battery handling
-    gridHandling();         // grid handling
-    wallboxHandling();      // wallbox handling
-    arrowsHandling();       // arrows handling
-    consumptionHandling();  // consumption handling
-    shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
-    setEDLDText();          // emit warning message if connection to EDL Daemon on RPi ceases
-    setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
-    setBGColor();
+    static int timerCounter = 0;
 
-// Update the different values in QML
-    emit arrowsChanged();
-    emit gridDataChanged();
-    emit generatorDataChanged();
-    emit batteryDataChanged();
-    emit chargingDataChanged();
-    emit consumptionDataChanged();
-    emit shadeDataChanged();
-    emit gridDataChanged();
-    emit arrowsChanged();
-    emit setEDLDWarning();
-    emit setMBMDWarning();
-    emit setBackgroundColor();
+    if ((timerCounter++ % 6) == 0)  // alle 3 Sekunden den RPi abfragen (6 * 500 ms)
+    {
+    // Update the different values in C++
+        getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
+        getJSONdata();          // extract values from JSON string, read from RPi MBMD Daemon
+        generatorHandling();    // PV generator handling
+        batteryHandling();      // battery handling
+        gridHandling();         // grid handling
+        wallboxHandling();      // wallbox handling
+        arrowsHandling();       // arrows handling
+        consumptionHandling();  // consumption handling
+        shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
+        setEDLDText();          // emit warning message if connection to EDL Daemon on RPi ceases
+        setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
+        setBGColor();
+
+    // Update the different values in QML
+        emit arrowsChanged();
+        emit gridDataChanged();
+        emit generatorDataChanged();
+        emit batteryDataChanged();
+        emit chargingDataChanged();
+        emit consumptionDataChanged();
+        emit shadeDataChanged();
+        emit gridDataChanged();
+        emit arrowsChanged();
+        emit setEDLDWarning();
+        emit setMBMDWarning();
+        emit setBackgroundColor();
+    }
+    else    // jede Sekunde die Sonne etwas drehen
+    {
+        setSunAngle();
+        emit rotateSun();
+    }
 }
 
 // handling routines, may be called from MQTT routines (comment rand() calls then ;)
@@ -139,6 +149,12 @@ void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern 
     {
         m_MBMDfigures  = "white";
     }
+}
+
+void PowerNodeModel::setSunAngle(void)
+{
+    m_sunAngle += .5;
+    if (m_sunAngle > 360.0) m_sunAngle = 0.0;
 }
 
 // PV generator handling -----------------------------------------------------
