@@ -39,6 +39,7 @@ void PowerNodeModel::onDataTimer() {
     if ((timerCounter++ % 10) == 0)  // alle 3 Sekunden den RPi abfragen (6 * 500 ms)
     {
     // Update the different values in C++
+        setComm();              // switch on communication visu
         getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
         getJSONdata();          // extract values from JSON string, read from RPi MBMD Daemon
         generatorHandling();    // PV generator handling
@@ -50,9 +51,8 @@ void PowerNodeModel::onDataTimer() {
         shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
         setEDLDText();          // emit warning message if connection to EDL Daemon on RPi ceases
         setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
-        setBGColor();
-        setSunAngle();
-        setComm();
+        setBGColor();           // on comm error make background light red
+        setSunAngle();          // slowly rotate sun incon
 
     // Update the different values in QML
         emit arrowsChanged();
@@ -72,9 +72,9 @@ void PowerNodeModel::onDataTimer() {
     }
     else    // zyklisch die Sonne etwas drehen
     {
+        resetComm();             // switch off communication visu
         setSunAngle();
         emit rotateSun();
-        resetComm();
         emit showComm();
     }
 }
