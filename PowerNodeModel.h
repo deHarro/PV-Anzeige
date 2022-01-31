@@ -58,11 +58,11 @@ public:
     Q_PROPERTY(int homeBotRedH MEMBER m_homeBotRedH NOTIFY shadeDataChanged)
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
-    Q_PROPERTY(QString gridText MEMBER m_gridText NOTIFY gridDataChanged)
-    Q_PROPERTY(QString gridColor MEMBER m_gridColor NOTIFY gridDataChanged)
-    Q_PROPERTY(double gridPower MEMBER m_gridPowerAnzeige NOTIFY gridDataChanged)
-    Q_PROPERTY(double gridEnergyImport MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                    // Verbrauchszähler [kWh]
-    Q_PROPERTY(double gridEnergyExport MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                    // Einspeisezähler [kWh]
+    Q_PROPERTY(QString gridText         MEMBER m_gridText         NOTIFY gridDataChanged)
+    Q_PROPERTY(QString gridColor        MEMBER m_gridColor        NOTIFY gridDataChanged)
+    Q_PROPERTY(double gridPower         MEMBER m_gridPowerAnzeige NOTIFY gridDataChanged)
+    Q_PROPERTY(double gridEnergyImport  MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                    // Verbrauchszähler [kWh]
+    Q_PROPERTY(double gridEnergyExport  MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                    // Einspeisezähler [kWh]
 
     // wallbox properties - all wallbox values are updated in one call to "chargingDataChanged"
     Q_PROPERTY(double chargingPower MEMBER m_chargingPower NOTIFY chargingDataChanged)                      // current power [kW]
@@ -70,24 +70,25 @@ public:
     Q_PROPERTY(double sessionEnergy MEMBER m_sessionEnergy NOTIFY chargingDataChanged)                      // last session energy [kWh]
     Q_PROPERTY(double evalPoints    MEMBER m_evalPoints    NOTIFY chargingDataChanged)
     Q_PROPERTY(QString wallboxColor MEMBER m_wallboxColor  NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxCar MEMBER m_wallboxCar  NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxCar   MEMBER m_wallboxCar    NOTIFY chargingDataChanged)
     Q_PROPERTY(QString wallboxScoot MEMBER m_wallboxScoot  NOTIFY chargingDataChanged)
+    Q_PROPERTY(bool visibleComm     MEMBER m_visibleComm   NOTIFY showComm)
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
-    Q_PROPERTY(QString EDLDfigures MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
+    Q_PROPERTY(QString EDLDfigures  MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
 
     // color of power values (red/white if no/connection to MBMD on RasPi)
-    Q_PROPERTY(QString MBMDfigures MEMBER  m_MBMDfigures  NOTIFY setBackgroundColor)
+    Q_PROPERTY(QString MBMDfigures  MEMBER  m_MBMDfigures  NOTIFY setBackgroundColor)
 
     // arrow properties - all arrows are updated in one call to "arrowsDataChanged"
-    Q_PROPERTY(bool batt2house      MEMBER m_batt2house     NOTIFY arrowsChanged)
-    Q_PROPERTY(bool house2batt      MEMBER m_house2batt     NOTIFY arrowsChanged)
-    Q_PROPERTY(bool grid2house      MEMBER m_grid2house     NOTIFY arrowsChanged)
-    Q_PROPERTY(bool house2grid      MEMBER m_house2grid     NOTIFY arrowsChanged)
-    Q_PROPERTY(bool pv2house        MEMBER m_pv2house       NOTIFY arrowsChanged)
-    Q_PROPERTY(bool pv2batt         MEMBER m_pv2batt        NOTIFY arrowsChanged)
-    Q_PROPERTY(bool pv2grid         MEMBER m_pv2grid        NOTIFY arrowsChanged)
-    Q_PROPERTY(bool house2charger   MEMBER m_house2charger  NOTIFY arrowsChanged)
+    Q_PROPERTY(bool batt2house      MEMBER m_batt2house    NOTIFY arrowsChanged)
+    Q_PROPERTY(bool house2batt      MEMBER m_house2batt    NOTIFY arrowsChanged)
+    Q_PROPERTY(bool grid2house      MEMBER m_grid2house    NOTIFY arrowsChanged)
+    Q_PROPERTY(bool house2grid      MEMBER m_house2grid    NOTIFY arrowsChanged)
+    Q_PROPERTY(bool pv2house        MEMBER m_pv2house      NOTIFY arrowsChanged)
+    Q_PROPERTY(bool pv2batt         MEMBER m_pv2batt       NOTIFY arrowsChanged)
+    Q_PROPERTY(bool pv2grid         MEMBER m_pv2grid       NOTIFY arrowsChanged)
+    Q_PROPERTY(bool house2charger   MEMBER m_house2charger NOTIFY arrowsChanged)
 
     Q_PROPERTY(QString EDLDProblemText MEMBER m_EDLDProblemText NOTIFY setEDLDWarning)
     Q_PROPERTY(QString MBMDProblemText MEMBER m_MBMDProblemText NOTIFY setMBMDWarning)
@@ -107,6 +108,7 @@ Q_SIGNALS:
     void setBackgroundColor();
 
     void rotateSun();
+    void showComm();
 
 private:
     void getXMLdata(void);
@@ -123,6 +125,8 @@ private:
     void setEDLDText(void);
     void setBGColor(void);
     void setSunAngle(void);
+    void setComm(void);
+    void resetComm(void);
 
 // generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]
@@ -164,6 +168,7 @@ private:
     QString m_wallboxColor = VLIGHTGRAY;
     QString m_wallboxCar =      "Icons/electric-car-icon_weiss_transparent.png";            // default mit Stecker in der Luft
     QString m_wallboxScoot =    "Icons/electric-scooter_icon_weiss_transparent_rad.png";    // default mit Stecker in der Luft
+    bool m_visibleComm = false;             // WLAN marker shown if RPi is interrogated
 
 // Error Messages
     QString m_MBMDProblemText = "";

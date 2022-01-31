@@ -466,17 +466,18 @@ Window {
             fillMode: Image.PreserveAspectFit
             mirror: true
         }
+
         Image {
             id: image4
             x: 8
             y: 26
             width: 68
             height: 39
-//            source: "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png"
+    //            source: "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png"
             source: PowerNodeModel.wallboxScoot
-            rotation: 0
             fillMode: Image.PreserveAspectFit
         }
+
         Text {
             id: text16
             x: 12
@@ -550,11 +551,23 @@ Window {
             width: 16
             height: 14
             color: PowerNodeModel.EDLDfigures
-//            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"   // "#f9bbcbc"
             text: PowerNodeModel.evalPoints.toFixed(0)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
+
+        Image {
+            id: image14
+            x: 292
+            y: 4
+            width: 20
+            height: 18
+            source: "Icons/WLAN_weiss_transparent.png"
+            fillMode: Image.PreserveAspectFit
+            visible: PowerNodeModel.visibleComm
+        }
+
     }
 
     Rectangle {

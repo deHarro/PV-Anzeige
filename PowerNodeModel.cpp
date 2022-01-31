@@ -36,7 +36,7 @@ void PowerNodeModel::onDataTimer() {
 
     static int timerCounter = 0;
 
-    if ((timerCounter++ % 6) == 0)  // alle 3 Sekunden den RPi abfragen (6 * 500 ms)
+    if ((timerCounter++ % 10) == 0)  // alle 3 Sekunden den RPi abfragen (6 * 500 ms)
     {
     // Update the different values in C++
         getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
@@ -51,6 +51,8 @@ void PowerNodeModel::onDataTimer() {
         setEDLDText();          // emit warning message if connection to EDL Daemon on RPi ceases
         setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
         setBGColor();
+        setSunAngle();
+        setComm();
 
     // Update the different values in QML
         emit arrowsChanged();
@@ -65,11 +67,15 @@ void PowerNodeModel::onDataTimer() {
         emit setEDLDWarning();
         emit setMBMDWarning();
         emit setBackgroundColor();
+        emit rotateSun();
+        emit showComm();
     }
-    else    // jede Sekunde die Sonne etwas drehen
+    else    // zyklisch die Sonne etwas drehen
     {
         setSunAngle();
         emit rotateSun();
+        resetComm();
+        emit showComm();
     }
 }
 
@@ -151,11 +157,23 @@ void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern 
     }
 }
 
+// rotate sun icon
 void PowerNodeModel::setSunAngle(void)
 {
     m_sunAngle += .5;
     if (m_sunAngle > 360.0) m_sunAngle = 0.0;
 }
+
+// visualize interrogation of RPi for new values
+void PowerNodeModel::setComm(void)
+{
+        m_visibleComm = true;
+}
+void PowerNodeModel::resetComm(void)
+{
+        m_visibleComm = false;
+}
+
 
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
