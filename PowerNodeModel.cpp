@@ -376,8 +376,8 @@ void PowerNodeModel::wallboxHandling()
     // all conditions true for charging but no current flowing -> EV state is "fully charged"
     if ((smchaXML.getEVPlug() >= 5) && (smchaXML.getEVState() == 2) && (m_chargingPower == 0))
     {
-        m_wallboxCar = "Icons/electric-car-icon_gruen_transparent.png";
-        m_wallboxScoot  = "Icons/electric-scooter_icon_gruen_transparent_rad.png";
+        m_wallboxCar = "Icons/electric-car-icon_steckt_gruen_transparent.png";
+        m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_gruen_transparent_rad.png";
     }
 
 #endif
