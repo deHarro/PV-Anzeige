@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import QtGraphicalEffects 1.0
+import QtGraphicalEffects 1.0           // use this line when working with Qt 5
+// import Qt5Compat.GraphicalEffects    // use this line when working with Qt 6
 
 import PowerNodeModel 1.0
 
@@ -12,7 +13,8 @@ Window {
     opacity: 1
     visible: true
     color: PowerNodeModel.backgroundColor    // sehr helles Grau oder helles Rosa (bei Fehler) für Fensterhintergrund
-    title: qsTr("PV-Anzeige")
+    title: PowerNodeModel.windowTitle
+//    title: qsTr("PV-Anzeige")
 
     property alias rectangle1: rectangle1
     property alias rectangle4: rectangle4
