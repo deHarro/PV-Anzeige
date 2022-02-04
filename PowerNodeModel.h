@@ -21,6 +21,7 @@ class StringData;
 //#define LIGHTBLUE       "#00C3FF"       // sehr helles Blau
 //#define LIGHTBLUE       "#A3D1FF"       // sehr helles Blau
 #define LIGHTBLUE       "#72BBFF"       // sehr helles Blau
+#define LIGHTHRED       "#FFE5E5"       // sehr helles Rot
 
 
 class PowerNodeModel : public QObject {
@@ -94,6 +95,8 @@ public:
     Q_PROPERTY(QString MBMDProblemText MEMBER m_MBMDProblemText NOTIFY setMBMDWarning)
     Q_PROPERTY(QString backgroundColor MEMBER m_backgroundColor NOTIFY setBackgroundColor)
 
+    Q_PROPERTY(QString windowTitle MEMBER m_windowTitle NOTIFY displayWindowTitle)
+
 Q_SIGNALS:
     void generatorDataChanged();
     void batteryDataChanged();
@@ -109,6 +112,7 @@ Q_SIGNALS:
 
     void rotateSun();
     void showComm();
+    void displayWindowTitle();
 
 private:
     void getXMLdata(void);
@@ -127,6 +131,10 @@ private:
     void setSunAngle(void);
     void setComm(void);
     void resetComm(void);
+    void setWindowTitle(void);
+
+// window title with version & build date
+    QString m_windowTitle = "PV-Anzeige - V1.0 - ";
 
 // generators, PV-Paneele
     double m_generatorPowerTotal = 0.0;     // Momentanleistung gesamt [kW]

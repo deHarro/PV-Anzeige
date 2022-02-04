@@ -8,6 +8,37 @@
 #include "SmartChargerXML.h"
 #include "WechselrichterJSON.h"
 
+// BUILDDATE	wird automatisch erzeugt:
+// Build Datum der Form "Mar 9 2021" aus __DATE__ ummodeln in ISO Darstellung "2021-03-09"
+constexpr unsigned int compileYear = (__DATE__[7] - '0') * 1000 + (__DATE__[8] - '0') * 100 + (__DATE__[9] - '0') * 10 + (__DATE__[10] - '0');
+constexpr unsigned int compileMonth = (__DATE__[0] == 'J') ? ((__DATE__[1] == 'a') ? 1 : ((__DATE__[2] == 'n') ? 6 : 7))    // Jan, Jun or Jul
+    : (__DATE__[0] == 'F') ? 2                                                              // Feb
+    : (__DATE__[0] == 'M') ? ((__DATE__[2] == 'r') ? 3 : 5)                                 // Mar or May
+    : (__DATE__[0] == 'A') ? ((__DATE__[2] == 'p') ? 4 : 8)                                 // Apr or Aug
+    : (__DATE__[0] == 'S') ? 9                                                              // Sep
+    : (__DATE__[0] == 'O') ? 10                                                             // Oct
+    : (__DATE__[0] == 'N') ? 11                                                             // Nov
+    : (__DATE__[0] == 'D') ? 12                                                             // Dec
+    : 0;
+constexpr unsigned int compileDay = (__DATE__[4] == ' ') ? (__DATE__[5] - '0') : (__DATE__[4] - '0') * 10 + (__DATE__[5] - '0');
+
+#if defined (MITSTRICH)					// ergibt ISO "2021-03-09"
+constexpr char IsoDate[] =
+{ compileYear / 1000 + '0', (compileYear % 1000) / 100 + '0', (compileYear % 100) / 10 + '0', compileYear % 10 + '0',
+    '-',  compileMonth / 10 + '0', compileMonth % 10 + '0',
+    '-',  compileDay / 10 + '0', compileDay % 10 + '0',
+    0
+};
+#else									// ergibt deutsche Darstellung "09.03.2021"
+constexpr char IsoDate[] =
+{ compileDay / 10 + '0', compileDay % 10 + '0',
+    '.',  compileMonth / 10 + '0', compileMonth % 10 + '0',
+    '.',  compileYear / 1000 + '0', (compileYear % 1000) / 100 + '0', (compileYear % 100) / 10 + '0', compileYear % 10 + '0',
+    0
+};
+#endif
+
+
 Downloader downler;
 SmartChargerXML smchaXML;
 WechselrichterJSON smchaJSON;
@@ -25,7 +56,10 @@ using namespace std::chrono_literals;
 PowerNodeModel::PowerNodeModel() {
 
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
-    m_dataTimer.start(500);
+    m_dataTimer.start(500);     // 1/2 s timer for smooth display of rotating sun
+
+    setWindowTitle();           // set window title with name and build date
+    emit displayWindowTitle();
 }
 
 PowerNodeModel::~PowerNodeModel() {
@@ -40,6 +74,7 @@ void PowerNodeModel::onDataTimer() {
     {
     // Update the different values in C++
         setComm();              // switch on communication visu
+        setSunAngle();          // slowly rotate sun incon
         getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
         getJSONdata();          // extract values from JSON string, read from RPi MBMD Daemon
         generatorHandling();    // PV generator handling
@@ -52,23 +87,23 @@ void PowerNodeModel::onDataTimer() {
         setEDLDText();          // emit warning message if connection to EDL Daemon on RPi ceases
         setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
         setBGColor();           // on comm error make background light red
-        setSunAngle();          // slowly rotate sun incon
 
-    // Update the different values in QML
-        emit arrowsChanged();
-        emit gridDataChanged();
+    // Update the different values in QML -> show on GUI
+        emit showComm();
+        emit rotateSun();
+//        emit arrowsChanged();
         emit generatorDataChanged();
+        emit gridDataChanged();
         emit batteryDataChanged();
         emit chargingDataChanged();
         emit consumptionDataChanged();
         emit shadeDataChanged();
-        emit gridDataChanged();
+//        emit gridDataChanged();
         emit arrowsChanged();
+
         emit setEDLDWarning();
         emit setMBMDWarning();
         emit setBackgroundColor();
-        emit rotateSun();
-        emit showComm();
     }
     else    // zyklisch die Sonne etwas drehen
     {
@@ -130,7 +165,7 @@ void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern 
 {
     if (m_messageFlag & (EDLDFlag | MBMDFlag))      // EDLD oder MBMD
     {
-        m_backgroundColor = "#FFC8C8";              // sehr helles Rot
+        m_backgroundColor = LIGHTHRED;              // sehr helles Rot
     }
     else
     {
@@ -174,6 +209,11 @@ void PowerNodeModel::resetComm(void)
         m_visibleComm = false;
 }
 
+// set window title
+void PowerNodeModel::setWindowTitle(void)
+{
+    m_windowTitle =  m_windowTitle + QString(IsoDate);
+}
 
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
@@ -442,7 +482,7 @@ void PowerNodeModel::arrowsHandling(void)
 
     // battery to house
     if(((m_batteryPower < -9) && (m_generatorPowerTotal == 0)) ||     // PV keine Leistung
-            ((m_batteryPower < -9) && (m_totalPowerConsumption > 0))) // Haus braucht Energie
+            ((m_batteryPower < -9) && (m_totalPowerConsumption > 0))) // Haus braucht Energie -> Batterieentladung
     {
         m_batt2house = true;
     }
@@ -452,8 +492,9 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // house to battery (battery conditioning when PV is off for long time)
-    if((m_batteryPower > 9) && (m_generatorPowerTotal == 0) &&
-            (m_totalPowerConsumption > 0) && (m_gridPower < 0))
+//    if((m_batteryPower > 9) && (m_generatorPowerTotal == 0) &&
+    if((m_batteryPower > 9) && (m_generatorPowerTotal < m_batteryPower) &&  // Batterieladung > PV-Leistung -> kommt aus Netz
+            (m_totalPowerConsumption > 0) && (m_gridPower < 0))             //  und Hausverbrauch u. Netzbezug
     {
         m_house2batt = true;
     }
