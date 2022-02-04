@@ -37,18 +37,11 @@ constexpr char IsoDate[] =
     0
 };
 #endif
-
+// \BUILDDATE
 
 Downloader downler;
 SmartChargerXML smchaXML;
 WechselrichterJSON smchaJSON;
-
-// Ausgabe von Warnungen über die Services auf dem Raspberry Pi
-// gesteuert über globales Flag Byte
-// Flag: Bit 0 = 1 -> EDLD antwortet nicht korrekt
-// Flag: Bit 1 = 1 -> MBMD antwortet nicht korrekt
-extern quint8 m_messageFlag;
-
 
 using namespace std::chrono_literals;
 
@@ -91,14 +84,14 @@ void PowerNodeModel::onDataTimer() {
     // Update the different values in QML -> show on GUI
         emit showComm();
         emit rotateSun();
-//        emit arrowsChanged();
+        emit arrowsChanged();
         emit generatorDataChanged();
         emit gridDataChanged();
         emit batteryDataChanged();
         emit chargingDataChanged();
         emit consumptionDataChanged();
         emit shadeDataChanged();
-//        emit gridDataChanged();
+        emit gridDataChanged();
         emit arrowsChanged();
 
         emit setEDLDWarning();
@@ -114,7 +107,7 @@ void PowerNodeModel::onDataTimer() {
     }
 }
 
-// handling routines, may be called from MQTT routines (comment rand() calls then ;)
+// handling routines
 void PowerNodeModel::getXMLdata(void)
 {
     // download XML data from SmartCharger XML page into **global**  m_XMLfiledata
@@ -139,7 +132,13 @@ void PowerNodeModel::getJSONdata(void)
 
 void PowerNodeModel::setMBMDText(void)              // Fehlermeldung wenn MBMD Daemon Probleme hat
 {
-    if (m_messageFlag & MBMDFlag)
+    // check downloaded XML data for correct version
+    // Ich verwende den MBMD-Text mit, damit die Meldung auf der linken Seite erscheint (wird nur gesetzt, nie gelöscht)
+    if (m_messageFlag & VERSIONFlag)
+    {
+        m_MBMDProblemText = "EDLD XML Version stimmt nicht!";
+    }
+    else if (m_messageFlag & MBMDFlag)
     {
         m_MBMDProblemText = "MBMD hat Probleme!";
     }
@@ -163,13 +162,13 @@ void PowerNodeModel::setEDLDText(void)              // Fehlermeldung wenn EDLD D
 
 void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern wenn auf dem RPi Probleme auftreten
 {
-    if (m_messageFlag & (EDLDFlag | MBMDFlag))      // EDLD oder MBMD
+    if (m_messageFlag & (EDLDFlag | MBMDFlag | VERSIONFlag))      // EDLD oder MBMD oder falsche Version
     {
         m_backgroundColor = LIGHTHRED;              // sehr helles Rot
     }
     else
     {
-        m_backgroundColor = "whitesmoke";
+        m_backgroundColor = "whitesmoke";           // sehr helles Grau
     }
 
     // zusätzlich Zahlen in Rot darstellen, wenn sie als ungültig zu betrachten sind

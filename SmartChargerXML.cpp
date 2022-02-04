@@ -57,6 +57,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
         std::cout << "              SettingsVersion = " << node.firstChild().toText().data().toStdString().c_str() << std::endl;
         if ((node.firstChild().toText().data().toStdString() != "2.6.107") && (node.firstChild().toText().data().toStdString() != "1.6"))
         {
+            m_messageFlag |= VERSIONFlag;
             std::cout << "              Caution!  Wrong settings version - Parser is for '1.6 or '2.6.107' and has to be checked" << std::endl;
         }
     }
@@ -448,54 +449,54 @@ SmartChargerXML::~SmartChargerXML()
 double SmartChargerXML::getSmartMeterActualPower(void)
 {
     return m_SmartMeterActualPower;
-};
+}
 double SmartChargerXML::getSmartMeterConsumption(void)
 {
     return m_SmartMeterConsumption;
-};
+}
 double SmartChargerXML::getSmartMeterSurplus(void)
 {
     return m_SmartMeterSurplus;
-};
+}
 
 double SmartChargerXML::getEVEvaluationPoints(void)
 {
     return m_EVEvaluationPoints;
-};
+}
 double SmartChargerXML::getEVState(void)
 {
     return m_EVState;
-};
+}
 double SmartChargerXML::getEVPlug(void)
 {
     return m_EVPlug;
-};
+}
 double SmartChargerXML::getEVSystemEnabled(void)
 {
     return m_EVSystemEnabled;
-};
+}
 double SmartChargerXML::getEVActualPower(void)
 {
     return m_EVActualPower;
-};
+}
 double SmartChargerXML::getEVSessionEnergy(void)
 {
     return m_EVSessionEnergy;
-};
+}
 ulong SmartChargerXML::getEVTotalEnergy(void)
 {
     return m_EVTotalEnergy;
-};
+}
 
 double SmartChargerXML::getStorageSystemSOC(void)
 {
     return m_StorageSystemSOC;
-};
+}
 double SmartChargerXML::getStorageSystemTemperature(void)
 {
     return m_StorageSystemTemperature;
-};
+}
 double SmartChargerXML::getStorageSystemActualPower(void)
 {
     return m_StorageSystemActualPower;
-};
+}
