@@ -37,6 +37,7 @@ private:
 
     QNetworkAccessManager *jsonManager;
     QNetworkAccessManager *xmlManager;
+
     QString m_smartChargerIP;
     QString m_smartChargerPort;
     QString m_mbmdPort;
