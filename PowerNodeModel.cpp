@@ -51,6 +51,8 @@ PowerNodeModel::PowerNodeModel() {
     connect(&m_dataTimer, &QTimer::timeout, this, &PowerNodeModel::onDataTimer);
     m_dataTimer.start(500);     // 1/2 s timer for smooth display of rotating sun
 
+    getIconType();              // get type of EV icons
+
     setWindowTitle();           // set window title with name and build date
     emit displayWindowTitle();
 }
@@ -334,7 +336,8 @@ void PowerNodeModel::wallboxHandling()
     if(m_evAttached == true)                        // cable attached to ev (car/bike)
     {
         m_wallboxCar = "Icons/electric-car-icon_steckt_weiss_transparent.png";
-        m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png";
+//        m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png";
+        m_wallboxScoot  = "Icons/electric-scooter_real_steckt_transparent.png";
 
         if(m_chargingPower > 1){                    // keine Ladung aktiv ->
             m_wallboxColor = DODGERBLUE;            // schickes Blau
@@ -403,20 +406,44 @@ void PowerNodeModel::wallboxHandling()
 
     if (smchaXML.getEVPlug() >= 5)              // Stecker an EV und Wallbox sind eingesteckt
     {
-        m_wallboxCar = "Icons/electric-car-icon_steckt_weiss_transparent.png";
-        m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png";
+        if(m_realPics == 0)
+        {
+            m_wallboxCar = "Icons/electric-car-icon_steckt_weiss_transparent.png";
+            m_wallboxScoot = "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png";
+        }
+        else
+        {
+            m_wallboxCar = "Icons/electric-car_real_steckt_transparent.png";
+            m_wallboxScoot = "Icons/electric-scooter_real_steckt_transparent.png";
+        }
     }
     else
     {
-        m_wallboxCar = "Icons/electric-car-icon_weiss_transparent.png";
-        m_wallboxScoot  = "Icons/electric-scooter_icon_weiss_transparent_rad.png";
+        if(m_realPics == 0)
+        {
+            m_wallboxCar = "Icons/electric-car-icon_weiss_transparent.png";
+            m_wallboxScoot = "Icons/electric-scooter_icon_weiss_transparent_rad.png";
+        }
+        else
+        {
+            m_wallboxCar = "Icons/electric-car_real_transparent.png";
+            m_wallboxScoot = "Icons/electric-scooter_real_transparent.png";
+        }
     }
 
     // all conditions true for charging but no current flowing -> EV state is "fully charged"
     if ((smchaXML.getEVPlug() >= 5) && (smchaXML.getEVState() == 2) && (m_chargingPower == 0))
     {
-        m_wallboxCar = "Icons/electric-car-icon_steckt_gruen_transparent.png";
-        m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_gruen_transparent_rad.png";
+        if(m_realPics == 0)
+        {
+            m_wallboxCar = "Icons/electric-car-icon_steckt_gruen_transparent.png";
+            m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_gruen_transparent_rad.png";
+        }
+        else
+        {
+            m_wallboxCar = "Icons/electric-car_real_steckt_gruen_transparent.png";
+            m_wallboxScoot  = "Icons/electric-scooter_real_steckt_gruen_transparent.png";
+        }
     }
 
 #endif
@@ -553,5 +580,48 @@ void PowerNodeModel::shadeHandling(void)
     else
     {
         m_homeTopGreenH = 0;
+    }
+}
+
+// get type of icon for car/scooter
+void PowerNodeModel::getIconType()
+{
+    // open PVconfig.ini
+    QDir dir("./");
+    QString filepath = dir.absoluteFilePath("./");              // path of PV-Anzeige.exe _at runtime_ (_not_ in Qt Creator!!)
+    QFile file;
+
+    // catch running in QT Creator
+    if (filepath.contains("-Debug"))
+        file.setFileName(filepath + "debug/PVconfig.ini");      // add filename to path
+    else if (filepath.contains("-Release"))
+        file.setFileName(filepath + "release/PVconfig.ini");    // add filename to path
+    else
+        file.setFileName(filepath + "PVconfig.ini");            // add filename to path
+
+    if(file.exists())                                           // check file access
+    {
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            // Error while loading file
+            std::cerr << "Error while loading PVconfig.ini" << std::endl;
+        }
+        else
+        {
+            while (!file.atEnd())
+            {
+                QString line = file.readLine();
+                if (line.contains("[REALPICS]"))
+                {
+                    m_realPics = QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n')).toInt();     // Icon Flag
+                }
+            }
+        }
+        file.close();
+    }
+    else
+    {
+        // Error while loading file
+        std::cerr << "Error: PVconfig.ini doesn't exist (at the given path)" << std::endl;
     }
 }

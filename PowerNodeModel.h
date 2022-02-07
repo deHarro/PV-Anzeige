@@ -124,6 +124,7 @@ private:
     void consumptionHandling(void);
     void arrowsHandling(void);
     void shadeHandling(void);
+    void getIconType(void);
     void loadSmChXML(void);               //
     void setMBMDText(void);
     void setEDLDText(void);
@@ -177,6 +178,8 @@ private:
     QString m_wallboxCar =      "Icons/electric-car-icon_weiss_transparent.png";            // default mit Stecker in der Luft
     QString m_wallboxScoot =    "Icons/electric-scooter_icon_weiss_transparent_rad.png";    // default mit Stecker in der Luft
     bool m_visibleComm = false;             // WLAN marker shown if RPi is interrogated
+    int m_realPics = 0;                     // no real pictures of EVs
+
 
 // Error Messages
     QString m_MBMDProblemText = "";
