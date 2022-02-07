@@ -459,10 +459,10 @@ Window {
         }
         Image {
             id: image5
-            x: 229
-            y: 22
-            width: 82
-            height: 48
+            x: 207
+            y: 21
+            width: 104
+            height: 49
 //            source: "Icons/electric-car-icon_steckt_weiss_transparent.png"
             source: PowerNodeModel.wallboxCar
             fillMode: Image.PreserveAspectFit
@@ -472,9 +472,9 @@ Window {
         Image {
             id: image4
             x: 8
-            y: 26
-            width: 68
-            height: 39
+            y: 32
+            width: 76
+            height: 33
     //            source: "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png"
             source: PowerNodeModel.wallboxScoot
             fillMode: Image.PreserveAspectFit
