@@ -22,6 +22,9 @@ class StringData;
 //#define LIGHTBLUE       "#A3D1FF"       // sehr helles Blau
 #define LIGHTBLUE       "#72BBFF"       // sehr helles Blau
 #define LIGHTHRED       "#FFE5E5"       // sehr helles Rot
+#define SUNWHITE        0               // "WHITE"         // weiß
+#define SUNLTYELLOW     1               // "#FFFFA8"       // helles Gelb
+#define SUNYELLOW       2               // "YELLOW"        // Gelb
 
 
 class PowerNodeModel : public QObject {
@@ -39,6 +42,7 @@ public:
     Q_PROPERTY(double generatorTotalEnergy MEMBER m_generatorTotalEnergy NOTIFY generatorDataChanged)
     Q_PROPERTY(QString generatorColor MEMBER m_generatorColor NOTIFY generatorDataChanged)
     Q_PROPERTY(double sunAngle MEMBER m_sunAngle NOTIFY rotateSun)
+    Q_PROPERTY(QString sunColor MEMBER m_sunColor NOTIFY sunColor)
 
     // battery properties - all battery values are updated in one call to "batteryDataChanged"
     Q_PROPERTY(double batteryPower MEMBER m_battPowerAnzeige NOTIFY batteryDataChanged)
@@ -111,6 +115,7 @@ Q_SIGNALS:
     void setBackgroundColor();
 
     void rotateSun();
+    void sunColor();
     void showComm();
     void displayWindowTitle();
 
@@ -130,6 +135,7 @@ private:
     void setEDLDText(void);
     void setBGColor(void);
     void setSunAngle(void);
+    void setSunColor(int8_t);
     void setComm(void);
     void resetComm(void);
     void setWindowTitle(void);
@@ -144,7 +150,8 @@ private:
     double m_generatorPowerGarage = 0.0;    // Momentanleistung String Garage
     double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
     QString m_generatorColor = VLIGHTGRAY;
-    double m_sunAngle = 22.5;                  // Sonne langsam rotieren ;)
+    double m_sunAngle = 22.5;               // Sonne langsam rotieren ;)
+    QString m_sunColor = "/Icons/Sonne_weiss_transparent.png";          // icon der Sonne auswählen, weiss, hellgelb, gelb
 
 // battery, Akku
     double m_batteryPower = 0.0;            // Batterieladung/-Entladung [kW]

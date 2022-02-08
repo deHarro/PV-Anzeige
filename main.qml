@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
+import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.0           // use this line when working with Qt 5
 // import Qt5Compat.GraphicalEffects    // use this line when working with Qt 6
 
@@ -274,10 +275,26 @@ Window {
             y: 6
             width: 83
             height: 78
-            source: "Icons/Sonne_weiss_transparent.png"
+//            source: "Icons/Sonne_weiss_transparent.png"
+            source: PowerNodeModel.sunColor
             fillMode: Image.PreserveAspectFit
-//            rotation: 22.5
+//            rotation: 22.5    // Startwert
             rotation: PowerNodeModel.sunAngle
+
+            RoundButton {
+                width: 70
+                height: 70
+                text: ""
+                anchors.verticalCenter: parent.verticalCenter
+                z: 1
+                flat: true
+                anchors.horizontalCenter: parent.horizontalCenter
+                activeFocusOnTab: false
+                hoverEnabled: false // Unicode Character 'CHECK MARK'
+                visible: true
+//                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_gelb_transparent.png"
+                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_gelb_transparent.png"
+            }
         }
         Text {
             id: text22
@@ -1001,6 +1018,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:1.33}
+    D{i:0;formeditorZoom:1.75}
 }
 ##^##*/

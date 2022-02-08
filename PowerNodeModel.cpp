@@ -69,7 +69,8 @@ void PowerNodeModel::onDataTimer() {
     {
     // Update the different values in C++
         setComm();              // switch on communication visu
-        setSunAngle();          // slowly rotate sun incon
+        setSunAngle();          // slowly rotate sun icon
+        setSunColor(SUNWHITE);  // change sun icon color
         getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
         getJSONdata();          // extract values from JSON string, read from RPi MBMD Daemon
         generatorHandling();    // PV generator handling
@@ -86,6 +87,7 @@ void PowerNodeModel::onDataTimer() {
     // Update the different values in QML -> show on GUI
         emit showComm();
         emit rotateSun();
+        emit sunColor();
         emit arrowsChanged();
         emit generatorDataChanged();
         emit gridDataChanged();
@@ -200,6 +202,18 @@ void PowerNodeModel::setSunAngle(void)
     if (m_sunAngle > 360.0) m_sunAngle = 0.0;
 }
 
+// change sun icon
+void PowerNodeModel::setSunColor(int8_t newColor)
+{
+    switch( newColor)
+    {
+        case 0: m_sunColor =  "/Icons/Sonne_weiss_transparent.png"; break;
+        case 1: m_sunColor =  "/Icons/Sonne_hellgelb_transparent.png"; break;
+        case 2: m_sunColor =  "/Icons/Sonne_gelb_transparent.png"; break;
+        default: m_sunColor =  "/Icons/Sonne_weiss_transparent.png";
+    }
+}
+
 // visualize interrogation of RPi for new values
 void PowerNodeModel::setComm(void)
 {
@@ -234,6 +248,10 @@ void PowerNodeModel::generatorHandling(void)
     m_generatorPowerTotal   =   m_generatorPowerDach
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
+
+    if(m_generatorPowerTotal <= 3000) setSunColor(0);       // Weiß
+    else if(m_generatorPowerTotal > 3000) setSunColor(1);   // Hellgelb
+    else if(m_generatorPowerTotal > 5000) setSunColor(2);   // Gelb
 
     m_generatorTotalEnergy = (smchaJSON.getPVGesamtErtrag());
 

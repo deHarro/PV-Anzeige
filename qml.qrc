@@ -20,5 +20,7 @@
         <file>Icons/electric-car_real_steckt_transparent.png</file>
         <file>Icons/electric-scooter_real_steckt_gruen_transparent.png</file>
         <file>Icons/electric-car_real_steckt_gruen_transparent.png</file>
+        <file>Icons/Sonne_gelb_transparent.png</file>
+        <file>Icons/Sonne_hellgelb_transparent.png</file>
     </qresource>
 </RCC>
