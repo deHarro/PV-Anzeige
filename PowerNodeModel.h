@@ -119,6 +119,9 @@ Q_SIGNALS:
     void showComm();
     void displayWindowTitle();
 
+public slots:
+    void switchEVIcons();
+
 private:
     void getXMLdata(void);
     void getJSONdata(void);
@@ -185,7 +188,7 @@ private:
     QString m_wallboxCar =      "Icons/electric-car-icon_weiss_transparent.png";            // default mit Stecker in der Luft
     QString m_wallboxScoot =    "Icons/electric-scooter_icon_weiss_transparent_rad.png";    // default mit Stecker in der Luft
     bool m_visibleComm = false;             // WLAN marker shown if RPi is interrogated
-    int m_realPics = 0;                     // no real pictures of EVs
+    bool m_realPics = false;                // no real pictures of EVs
 
 
 // Error Messages

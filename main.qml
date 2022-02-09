@@ -15,7 +15,7 @@ Window {
     visible: true
     color: PowerNodeModel.backgroundColor    // sehr helles Grau oder helles Rosa (bei Fehler) für Fensterhintergrund
     title: PowerNodeModel.windowTitle
-//    title: qsTr("PV-Anzeige")
+    //    title: qsTr("PV-Anzeige")
 
     property alias rectangle1: rectangle1
     property alias rectangle4: rectangle4
@@ -58,6 +58,7 @@ Window {
         }
 
         Rectangle {
+            objectName: "House"
             id: rectangle3
             x: 0
             y: 0
@@ -89,12 +90,12 @@ Window {
                 Rectangle {
                     id: rectangleGreen
                     anchors.left: parent.left
-//                    anchors.top: parent.top
+                    //                    anchors.top: parent.top
                     anchors.margins: 0
                     height: PowerNodeModel.homeTopGreenH
                     x: coordHouseX              // 157
                     y: 270 - PowerNodeModel.homeBotRedH - PowerNodeModel.homeTopGreenH
-//                    y: coordHouseY              // 140
+                    //                    y: coordHouseY              // 140
                     width: coordHouseW          //  90
                     visible: true
                     color: "FORESTGREEN"
@@ -175,7 +176,7 @@ Window {
                         width: 77
                         height: 26
                         color: PowerNodeModel.MBMDfigures
-//                        color: "#ffffff"
+                        //                        color: "#ffffff"
                         text: (PowerNodeModel.consumptionPower / 1000.0).toFixed(2)
                         font.pixelSize: 23
                         horizontalAlignment: Text.AlignHCenter
@@ -189,7 +190,7 @@ Window {
                         width: 74
                         height: 14
                         color: PowerNodeModel.EDLDfigures
-//                        color: "#ffffff"   // "#f9bbcbc"
+                        //                        color: "#ffffff"   // "#f9bbcbc"
                         // eine Nachkommastellen, zentriert
                         text: (PowerNodeModel.gridEnergyImport).toFixed(1)
                         font.pixelSize: 12
@@ -215,7 +216,7 @@ Window {
 
 
     Rectangle {
-        objectName: "rectangle5"
+        objectName: "PV-Generators"
         id: rectangle5
         x: 42
         y: 25
@@ -263,7 +264,7 @@ Window {
             width: 92
             height: 26
             color: PowerNodeModel.MBMDfigures
-//            color: "#ffffff"
+            //            color: "#ffffff"
             text: (PowerNodeModel.generatorPowerTotal / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
@@ -275,10 +276,10 @@ Window {
             y: 6
             width: 83
             height: 78
-//            source: "Icons/Sonne_weiss_transparent.png"
+            //            source: "Icons/Sonne_weiss_transparent.png"
             source: PowerNodeModel.sunColor
             fillMode: Image.PreserveAspectFit
-//            rotation: 22.5    // Startwert
+            //            rotation: 22.5    // Startwert
             rotation: PowerNodeModel.sunAngle
 
             RoundButton {
@@ -292,7 +293,7 @@ Window {
                 activeFocusOnTab: false
                 hoverEnabled: false // Unicode Character 'CHECK MARK'
                 visible: true
-//                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_gelb_transparent.png"
+                //                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_gelb_transparent.png"
                 onClicked: PowerNodeModel.sunColor = "Icons/Sonne_gelb_transparent.png"
             }
         }
@@ -327,7 +328,7 @@ Window {
             width: 33
             height: 14
             color: PowerNodeModel.MBMDfigures
-//            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorPowerDach / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -339,7 +340,7 @@ Window {
             width: 33
             height: 14
             color: PowerNodeModel.MBMDfigures
-//            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorPowerGaube / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -351,7 +352,7 @@ Window {
             width: 33
             height: 14
             color: PowerNodeModel.MBMDfigures
-//            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorPowerGarage / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -403,7 +404,7 @@ Window {
             width: 45
             height: 14
             color: PowerNodeModel.MBMDfigures
-//            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.generatorTotalEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -424,6 +425,7 @@ Window {
 
 
     Rectangle {
+        objectName: "Wallbox"
         id: rectangle1              // WallBox
         x: 42
         y: 435
@@ -435,6 +437,7 @@ Window {
         //color: "#0A7CEB"          // um -20 dunkleres "dogerblue"
         radius: 15
         border.width: 0
+
         Text {
             id: text5
             x: 120
@@ -466,7 +469,7 @@ Window {
             width: 77
             height: 26
             color: PowerNodeModel.EDLDfigures
-//            color: "#ffffff"
+            //            color: "#ffffff"
             text: (PowerNodeModel.chargingPower / 1000.0).toFixed(3)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
@@ -480,7 +483,7 @@ Window {
             y: 21
             width: 104
             height: 49
-//            source: "Icons/electric-car-icon_steckt_weiss_transparent.png"
+            //            source: "Icons/electric-car-icon_steckt_weiss_transparent.png"
             source: PowerNodeModel.wallboxCar
             fillMode: Image.PreserveAspectFit
             mirror: true
@@ -492,7 +495,7 @@ Window {
             y: 32
             width: 76
             height: 33
-    //            source: "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png"
+            //            source: "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png"
             source: PowerNodeModel.wallboxScoot
             fillMode: Image.PreserveAspectFit
         }
@@ -512,7 +515,7 @@ Window {
             width: 40
             height: 14
             color: PowerNodeModel.EDLDfigures
-//            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"   // "#f9bbcbc"
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
             text: (PowerNodeModel.sessionEnergy / 1000.0).toFixed(3)
@@ -540,7 +543,7 @@ Window {
             width: 50
             height: 14
             color: PowerNodeModel.EDLDfigures
-//            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"   // "#f9bbcbc"
             text: (PowerNodeModel.chargedEnergy / 1000.0).toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -587,9 +590,25 @@ Window {
             visible: PowerNodeModel.visibleComm
         }
 
+        Button {
+            x: 12
+            y: 4
+            width: 298
+            height: 82
+            text: ""
+            anchors.verticalCenter: parent.verticalCenter
+            z: 1
+            flat: true
+            anchors.horizontalCenter: parent.horizontalCenter
+            activeFocusOnTab: false
+            hoverEnabled: false
+            visible: true
+            onClicked: PowerNodeModel.switchEVIcons()
+        }
     }
 
     Rectangle {
+        objectName: "Battery"
         id: rectangle2              // Battery
         x: 42
         y: 140
@@ -633,7 +652,7 @@ Window {
             width: 77
             height: 26
             color: PowerNodeModel.EDLDfigures
-//            color: "#ffffff"
+            //            color: "#ffffff"
             text: (PowerNodeModel.batteryPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
@@ -672,7 +691,7 @@ Window {
             width: 45
             height: 26
             color: PowerNodeModel.EDLDfigures
-//            color: "#ffffff"
+            //            color: "#ffffff"
             // ohne Nachkommastellen, rechtsbündig
             text: (PowerNodeModel.batteryPercentage).toFixed(0)
             font.pixelSize: 23
@@ -727,7 +746,7 @@ Window {
             width: 16
             height: 14
             color: PowerNodeModel.EDLDfigures
-//            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"   // "#f9bbcbc"
             text: PowerNodeModel.battTemp.toFixed(1)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -749,6 +768,7 @@ Window {
 
 
     Rectangle {
+        objectName: "Grid"
         id: rectangle4                      // Grid
         x: 272
         y: 140
@@ -797,7 +817,7 @@ Window {
             width: 77
             height: 26
             color: PowerNodeModel.EDLDfigures
-//            color: "#ffffff"
+            //            color: "#ffffff"
             text: (PowerNodeModel.gridPower / 1000.0).toFixed(2)
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
@@ -830,7 +850,7 @@ Window {
             width: 74
             height: 14
             color: PowerNodeModel.EDLDfigures
-//            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"   // "#f9bbcbc"
             // eine Nachkommastellen, zentriert
             text: (PowerNodeModel.gridEnergyExport).toFixed(1)
             font.pixelSize: 12
@@ -1016,8 +1036,4 @@ Window {
 
 
 
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:1.75}
-}
-##^##*/
+

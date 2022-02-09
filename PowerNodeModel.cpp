@@ -319,12 +319,12 @@ void PowerNodeModel::gridHandling(void)
 //    m_gridPowerAnzeige = m_gridPower;                   // für die Anzeige eine extra Var benutzen wegen abs()
     m_gridPowerAnzeige = abs(m_gridPower);              // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
 
-    if (m_gridPower < -9)                              // Netzbezug
+    if (m_gridPower < -9)                               // Netzbezug
     {
         m_gridColor = FIREBRICK;                        // Dunkelrot
         m_gridText = "Netzbezug";
     }
-    else if (m_gridPower >= 9)                         // Einspeisung
+    else if (m_gridPower >= 9)                          // Einspeisung
     {
         m_gridColor = LIMEGREEN;                        // Hellgrün
         m_gridText = "Netz-einspeisung";
@@ -334,6 +334,14 @@ void PowerNodeModel::gridHandling(void)
         m_gridColor = VLIGHTGRAY;                       // helles Hellgrau, keine QML Basic/SVG color
         m_gridText = "";                                // kein Strom  -> kein Text
     }
+}
+
+// EV icon handling
+void PowerNodeModel::switchEVIcons()
+{
+    m_realPics = !m_realPics;                           // toggle icon versions
+    wallboxHandling();                                  // update EV icons
+    emit chargingDataChanged();                         // refresh GUI
 }
 
 // wallbox handling ----------------------------------------------------------
@@ -424,7 +432,7 @@ void PowerNodeModel::wallboxHandling()
 
     if (smchaXML.getEVPlug() >= 5)              // Stecker an EV und Wallbox sind eingesteckt
     {
-        if(m_realPics == 0)
+        if(m_realPics == false)
         {
             m_wallboxCar = "Icons/electric-car-icon_steckt_weiss_transparent.png";
             m_wallboxScoot = "Icons/electric-scooter_icon_steckt_weiss_transparent_rad.png";
@@ -437,7 +445,7 @@ void PowerNodeModel::wallboxHandling()
     }
     else
     {
-        if(m_realPics == 0)
+        if(m_realPics == false)
         {
             m_wallboxCar = "Icons/electric-car-icon_weiss_transparent.png";
             m_wallboxScoot = "Icons/electric-scooter_icon_weiss_transparent_rad.png";
@@ -452,7 +460,7 @@ void PowerNodeModel::wallboxHandling()
     // all conditions true for charging but no current flowing -> EV state is "fully charged"
     if ((smchaXML.getEVPlug() >= 5) && (smchaXML.getEVState() == 2) && (m_chargingPower == 0))
     {
-        if(m_realPics == 0)
+        if(m_realPics == false)
         {
             m_wallboxCar = "Icons/electric-car-icon_steckt_gruen_transparent.png";
             m_wallboxScoot  = "Icons/electric-scooter_icon_steckt_gruen_transparent_rad.png";
@@ -631,7 +639,7 @@ void PowerNodeModel::getIconType()
                 QString line = file.readLine();
                 if (line.contains("[REALPICS]"))
                 {
-                    m_realPics = QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n')).toInt();     // Icon Flag
+                    m_realPics = (QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n')).toInt() == 0) ? false : true;     // Icon Flag
                 }
             }
         }
