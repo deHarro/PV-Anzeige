@@ -250,8 +250,8 @@ void PowerNodeModel::generatorHandling(void)
                             +   m_generatorPowerGarage;
 
     if(m_generatorPowerTotal <= 3000) setSunColor(0);       // Weiß
-    else if(m_generatorPowerTotal > 3000) setSunColor(1);   // Hellgelb
     else if(m_generatorPowerTotal > 5000) setSunColor(2);   // Gelb
+    else setSunColor(1);                                    // Hellgelb
 
     m_generatorTotalEnergy = (smchaJSON.getPVGesamtErtrag());
 
