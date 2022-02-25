@@ -65,7 +65,7 @@ void PowerNodeModel::onDataTimer() {
 
     static int timerCounter = 0;
 
-    if ((timerCounter++ % 10) == 0)  // alle 3 Sekunden den RPi abfragen (6 * 500 ms)
+    if ((timerCounter++ % 10) == 0)  // alle 5 Sekunden den RPi abfragen (10 * 500 ms)
     {
     // Update the different values in C++
         setComm();              // switch on communication visu
