@@ -399,7 +399,7 @@ void PowerNodeModel::wallboxHandling()
         5 : authorization rejected
     */
 
-    if (smchaXML.getEVState() == 2)             // state ready for charging (alles vorbereitet)
+    if ((smchaXML.getEVState() == 2)  && (m_chargingPower == 0))     // state ready for charging (alles vorbereitet)
     {
         m_wallboxColor = DODGERBLUE;            // Ladung vorbereitet -> schickes helles Blau
     }
