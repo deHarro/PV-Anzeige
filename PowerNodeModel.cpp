@@ -399,17 +399,18 @@ void PowerNodeModel::wallboxHandling()
         5 : authorization rejected
     */
 
-    if ((smchaXML.getEVState() == 2)  && (m_chargingPower == 0))     // state ready for charging (alles vorbereitet)
+    if (((smchaXML.getEVState() == 2) || (smchaXML.getEVState() == 3))  // ready for or actually charging
+      && (m_chargingPower == 0))                // state ready for charging (alles vorbereitet)
     {
-        m_wallboxColor = DODGERBLUE;            // Ladung vorbereitet -> schickes helles Blau
+        m_wallboxColor = DODGERBLUE;            // Ladung vorbereitet -> schickes mittleres Blau
     }
     else if ((smchaXML.getEVState() == 3) && (m_chargingPower > 0))  // state=charging && power>0
     {
-        m_wallboxColor = DARKBLUE;              // Ladung startet oder ist beendet -> dunkles Blau
+        m_wallboxColor = DARKBLUE;              // Ladung startet oder läuft -> dunkles Blau
     }
     else if (smchaXML.getEVState() == 4)        // Error oder rejected
     {
-        m_wallboxColor = FIREBRICK ;            // dunkles Rot
+        m_wallboxColor = FIREBRICK ;            // -> dunkles Rot
     }
     else if (((smchaXML.getEVState() <= 2) || (smchaXML.getEVState() == 5))
          && ((smchaXML.getEVPlug() == 5) || (smchaXML.getEVPlug() == 7)))   // Stecker steckt aber Wallbox not ready
