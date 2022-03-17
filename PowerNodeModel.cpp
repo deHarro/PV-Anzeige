@@ -362,7 +362,7 @@ void PowerNodeModel::gridHandling(void)
         m_gridColor = FIREBRICK;                        // Dunkelrot
         m_gridText = "Netzbezug";
     }
-    else if (m_gridPower >= 9)                          // Einspeisung
+    else if (m_gridPower > 9)                          // Einspeisung
     {
         m_gridColor = LIMEGREEN;                        // Hellgrün
         m_gridText = "Netz-einspeisung";
@@ -604,7 +604,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // house to grid        // generator is off (night) and battery feeds house and temporarily the grid
-    if((m_gridPower > 9) && (m_generatorPowerTotal == 0))    // m_gridPowerAnzeige >= 10
+    if((m_gridPower > 9) /*&& (m_generatorPowerTotal == 0)*/)    // m_gridPowerAnzeige >= 10
     {
         m_house2grid = true;
     }
