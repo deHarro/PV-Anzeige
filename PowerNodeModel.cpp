@@ -102,13 +102,20 @@ void PowerNodeModel::onDataTimer() {
         emit setMBMDWarning();
         emit setBackgroundColor();
     }
-    else    // zyklisch die Sonne etwas drehen
+    else    // zyklisch die Sonne etwas drehen (wird jede 500 ms aufgerufen)
     {
         resetComm();             // switch off communication visu
         setSunAngle();
         emit rotateSun();
         emit showComm();
     }
+
+    if ((timerCounter % 2) == 0)     // jede Sekunde aufrufen (2 * 500 ms)
+    {
+        countDown();
+        emit showComm();
+    }
+
 }
 
 // handling routines
@@ -230,6 +237,38 @@ void PowerNodeModel::setWindowTitle(void)
     m_windowTitle =  m_windowTitle + QString(IsoDate);
 }
 
+// countDown handling
+void PowerNodeModel::countDown(void)
+{
+    static uint8_t cdState = 0;
+    switch (cdState)
+    {
+        case 0:                     // default state, waiting for change from evalstate 0 to 1
+            if (m_evalCountDown > 0) {
+                m_evalCountDown--;
+            }
+            cdState = 1;
+        break;
+
+        case 1:
+//            if ((m_evalPoints > 0) && (m_evalPoints < 10))  // only do something from 1..9
+            {
+                if (m_evalCountDown > 0) {
+                    m_evalCountDown--;
+                }
+                else {
+                    m_evalCountDown = 59;   // start over from 59, counting down to 0,
+                                            // 59 because of 1 s loss from statemachine handling
+                    cdState = 0;
+                }
+            }
+            break;
+
+        default:
+            cdState = 0;
+    }
+}
+
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
 {
@@ -241,11 +280,11 @@ void PowerNodeModel::generatorHandling(void)
 #endif
 
 
-    m_generatorPowerDach = (smchaJSON.getPVDachActualPower());
-    m_generatorPowerGarage = (smchaJSON.getPVGarageActualPower());
-    m_generatorPowerGaube = (smchaJSON.getPVGaubeActualPower());
+    m_generatorPowerDach = (smchaJSON.getPVDachActualPower());      // [W] integer, no fraction
+    m_generatorPowerGarage = (smchaJSON.getPVGarageActualPower());  // [W] integer, no fraction
+    m_generatorPowerGaube = (smchaJSON.getPVGaubeActualPower());    // [W] integer, no fraction
 
-    m_generatorPowerTotal   =   m_generatorPowerDach
+    m_generatorPowerTotal   =   m_generatorPowerDach                // [W] integer, no fraction
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
 
@@ -253,7 +292,7 @@ void PowerNodeModel::generatorHandling(void)
     else if(m_generatorPowerTotal > 5000) setSunColor(2);   // Gelb
     else setSunColor(1);                                    // Hellgelb
 
-    m_generatorTotalEnergy = (smchaJSON.getPVGesamtErtrag());
+    m_generatorTotalEnergy = (smchaJSON.getPVGesamtErtrag());       // [W] integer, no fraction
 
 //        m_generatorPowerTotal = 230;                    // test
 
@@ -275,9 +314,9 @@ void PowerNodeModel::batteryHandling(void)
     m_battTemp = 30.0 + (rand() % 30) - 15;
 #else
     extern SmartChargerXML smchaXML;
-    m_batteryPower = -(smchaXML.getStorageSystemActualPower());
-    m_batteryPercentage = smchaXML.getStorageSystemSOC();
-    m_battTemp = smchaXML.getStorageSystemTemperature();
+    m_batteryPower = -(smchaXML.getStorageSystemActualPower());  // [W] integer, no fraction
+    m_batteryPercentage = smchaXML.getStorageSystemSOC();        // [%] integer, no fraction
+    m_battTemp = smchaXML.getStorageSystemTemperature();         // [°] double, fraction (27.1)
 #endif
 
     m_battPowerAnzeige = m_batteryPower;
@@ -311,12 +350,11 @@ void PowerNodeModel::gridHandling(void)
 //    m_gridPower = 0;
 #else
     extern SmartChargerXML smchaXML;
-    m_gridEnergyImport = smchaXML.getSmartMeterConsumption();
-    m_gridEnergyExport = smchaXML.getSmartMeterSurplus();
-    m_gridPower = -(smchaXML.getSmartMeterActualPower());
+    m_gridEnergyImport = smchaXML.getSmartMeterConsumption();   // [kW] double, fraction (7322.8)
+    m_gridEnergyExport = smchaXML.getSmartMeterSurplus();       // [kW] double, fraction (43852.6)
+    m_gridPower = -(smchaXML.getSmartMeterActualPower());       // [W] integer, no fraction
 #endif
 
-//    m_gridPowerAnzeige = m_gridPower;                   // für die Anzeige eine extra Var benutzen wegen abs()
     m_gridPowerAnzeige = abs(m_gridPower);              // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
 
     if (m_gridPower < -9)                               // Netzbezug
@@ -382,10 +420,10 @@ void PowerNodeModel::wallboxHandling()
     }
 #else
     extern SmartChargerXML smchaXML;
-    m_evalPoints = smchaXML.getEVEvaluationPoints();
-    m_chargingPower = smchaXML.getEVActualPower();
-    m_chargedEnergy = smchaXML.getEVTotalEnergy();
-    m_sessionEnergy = smchaXML.getEVSessionEnergy();
+    m_evalPoints = smchaXML.getEVEvaluationPoints();    // [] integer, no fraction
+    m_chargingPower = smchaXML.getEVActualPower();      // [W] integer, no fraction
+    m_chargedEnergy = smchaXML.getEVTotalEnergy();      // [W] integer, no fraction
+    m_sessionEnergy = smchaXML.getEVSessionEnergy();    // [W] integer, no fraction
 
     // derive attach state and charging state from wallbox states
 
@@ -484,7 +522,6 @@ void PowerNodeModel::consumptionHandling(void)
     //m_totalPowerConsumption = 0;
 #else
     extern SmartChargerXML smchaXML;
-    // die Null steht für die PV-Leistung vom Dach
     m_totalPowerConsumption = m_generatorPowerTotal     - (  (m_gridPower)
                                                         + (m_chargingPower)
                                                         + (m_batteryPower) );
@@ -546,7 +583,7 @@ void PowerNodeModel::arrowsHandling(void)
 
     // house to battery (battery conditioning when PV is off for long time)
 //    if((m_batteryPower > 9) && (m_generatorPowerTotal == 0) &&
-    if((m_batteryPower > 9) && (m_generatorPowerTotal < m_batteryPower) &&  // Batterieladung > PV-Leistung -> kommt aus Netz
+    if((m_batteryPower > 1) && (m_generatorPowerTotal < m_batteryPower) &&  // Batterieladung > PV-Leistung -> kommt aus Netz
             (m_totalPowerConsumption > 0) && (m_gridPower < 0))             //  und Hausverbrauch u. Netzbezug
     {
         m_house2batt = true;
@@ -592,8 +629,8 @@ void PowerNodeModel::arrowsHandling(void)
 void PowerNodeModel::shadeHandling(void)
 {
     // Anteil Netzbezug in ROT von unten kommend einblenden
-    if(m_gridPower < 0){                            // Netzbezug
-        m_homeBotRedH   = std::min((abs(m_gridPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
+    if(m_gridPower < 0){                                // Netzbezug
+        m_homeBotRedH = std::min((abs(m_gridPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
     {
