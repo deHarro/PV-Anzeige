@@ -5,6 +5,7 @@ QT += svg
 QT += gui
 QT += network
 QT += xml
+QT += charts
 
 CONFIG += c++14
 CONFIG += NO_UNIT_TESTS
