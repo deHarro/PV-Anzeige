@@ -54,7 +54,7 @@ public:
     Q_PROPERTY(double battTemp MEMBER m_battTemp NOTIFY batteryDataChanged)
 
     // home consumption properties - all home consumption values are updated in one call to "consumptionDataChanged"
-    Q_PROPERTY(double consumptionPower     MEMBER m_totalPowerConsumption NOTIFY consumptionDataChanged)
+    Q_PROPERTY(int consumptionPower     MEMBER m_totalPowerConsumption NOTIFY consumptionDataChanged)
     Q_PROPERTY(int consumptionEnergy    MEMBER m_totalEnergyConsumption NOTIFY consumptionDataChanged)
     Q_PROPERTY(QString homeColor        MEMBER m_homeColor NOTIFY consumptionDataChanged)
 
@@ -168,7 +168,7 @@ private:
     int m_batteryFill = 0;                  // analoge Balkenanzeige des Betteriefüllstands
     double m_battTemp = 0.0;                // Temperatur des Akkus
 // consumption, home, Hausverbrauch
-    double m_totalPowerConsumption = 0.0;        // Gesamtverbrauch [kW]
+    int m_totalPowerConsumption = 0;        // Gesamtverbrauch [kW]
     int m_totalEnergyConsumption = 0;       // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
     QString m_homeColor = VLIGHTGRAY;
     int m_homeBotRedH = 0;                  // anteilige Energie aus Netzbezug (roter Balken von oben wachsend)

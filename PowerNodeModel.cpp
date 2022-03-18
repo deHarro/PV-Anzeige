@@ -594,7 +594,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // grid to house
-    if((m_gridPower < -9) /*&& (m_totalPowerConsumption > 10)*/)
+    if((m_gridPower < -9) /*&& (m_totalPowerConsumption > 9)*/)
     {
         m_grid2house = true;
     }
@@ -604,7 +604,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // house to grid        // generator is off (night) and battery feeds house and temporarily the grid
-    if((m_gridPower > 9) /*&& (m_generatorPowerTotal == 0)*/)    // m_gridPowerAnzeige >= 10
+    if((m_gridPower > 9) && (m_generatorPowerTotal == 0))    // m_gridPowerAnzeige >= 10
     {
         m_house2grid = true;
     }
@@ -630,7 +630,7 @@ void PowerNodeModel::shadeHandling(void)
 {
     // Anteil Netzbezug in ROT von unten kommend einblenden
     if(m_gridPower < 0){                                // Netzbezug
-        m_homeBotRedH = std::min((abs(m_gridPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
+        m_homeBotRedH = std::min((abs(m_gridPower) / m_totalPowerConsumption), 1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
     {
@@ -639,7 +639,7 @@ void PowerNodeModel::shadeHandling(void)
 
     // Anteil Akkubezug in GRÜN von unten kommend einblenden
     if(m_batteryPower < 0){                            // Batteriebezug
-        m_homeTopGreenH = std::min((abs(m_batteryPower) / m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
+        m_homeTopGreenH = std::min((abs(m_batteryPower) / m_totalPowerConsumption), 1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
     {
