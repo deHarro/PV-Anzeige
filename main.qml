@@ -177,7 +177,8 @@ Window {
                         height: 26
                         color: PowerNodeModel.MBMDfigures
                         //                        color: "#ffffff"
-                        text: (PowerNodeModel.consumptionPower / 1000).toFixed(2)
+//                        text: (PowerNodeModel.consumptionPower / 1000).toFixed(2)
+                        text: PowerNodeModel.consumptionPower
                         font.pixelSize: 23
                         horizontalAlignment: Text.AlignHCenter
                         font.family: "Arial"
@@ -191,7 +192,7 @@ Window {
                         height: 14
                         color: PowerNodeModel.EDLDfigures
                         //                        color: "#ffffff"   // "#f9bbcbc"
-                        // eine Nachkommastellen, zentriert
+                        // eine Nachkommastelle, zentriert
                         text: (PowerNodeModel.gridEnergyImport).toFixed(1)
                         font.pixelSize: 12
                         horizontalAlignment: Text.AlignHCenter
@@ -265,7 +266,8 @@ Window {
             height: 26
             color: PowerNodeModel.MBMDfigures
             //            color: "#ffffff"
-            text: (PowerNodeModel.generatorPowerTotal / 1000).toFixed(2)
+//            text: (PowerNodeModel.generatorPowerTotal / 1000).toFixed(2)
+            text: PowerNodeModel.generatorPowerTotal
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -329,7 +331,8 @@ Window {
             height: 14
             color: PowerNodeModel.MBMDfigures
             //            color: "#ffffff"   // "#f9bbcbc"
-            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
+//            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
+            text: PowerNodeModel.generatorPowerDach
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
@@ -341,7 +344,8 @@ Window {
             height: 14
             color: PowerNodeModel.MBMDfigures
             //            color: "#ffffff"   // "#f9bbcbc"
-            text: (PowerNodeModel.generatorPowerGaube / 1000).toFixed(2)
+//            text: (PowerNodeModel.generatorPowerGaube / 1000).toFixed(2)
+            text: PowerNodeModel.generatorPowerGaube
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
@@ -353,7 +357,8 @@ Window {
             height: 14
             color: PowerNodeModel.MBMDfigures
             //            color: "#ffffff"   // "#f9bbcbc"
-            text: (PowerNodeModel.generatorPowerGarage / 1000).toFixed(2)
+//            text: (PowerNodeModel.generatorPowerGarage / 1000).toFixed(2)
+            text: PowerNodeModel.generatorPowerGarage
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
@@ -405,7 +410,8 @@ Window {
             height: 14
             color: PowerNodeModel.MBMDfigures
             //            color: "#ffffff"   // "#f9bbcbc"
-            text: (PowerNodeModel.generatorTotalEnergy / 1000).toFixed(2)
+//            text: (PowerNodeModel.generatorTotalEnergy / 1000).toFixed(2)
+            text: PowerNodeModel.generatorTotalEnergy.toFixed(2)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
@@ -470,7 +476,8 @@ Window {
             height: 26
             color: PowerNodeModel.EDLDfigures
             //            color: "#ffffff"
-            text: (PowerNodeModel.chargingPower / 1000).toFixed(3)
+//            text: (PowerNodeModel.chargingPower / 1000).toFixed(3)
+            text: PowerNodeModel.chargingPower
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenterOffset: -1
@@ -518,7 +525,8 @@ Window {
             //            color: "#ffffff"   // "#f9bbcbc"
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
-            text: (PowerNodeModel.sessionEnergy / 1000).toFixed(3)
+//            text: (PowerNodeModel.sessionEnergy / 1000).toFixed(3)
+            text: PowerNodeModel.sessionEnergy
         }
         Text {
             id: text18
@@ -544,7 +552,8 @@ Window {
             height: 14
             color: PowerNodeModel.EDLDfigures
             //            color: "#ffffff"   // "#f9bbcbc"
-            text: (PowerNodeModel.chargedEnergy / 1000).toFixed(2)
+//            text: (PowerNodeModel.chargedEnergy / 1000).toFixed(2)
+            text: PowerNodeModel.chargedEnergy
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
@@ -664,7 +673,8 @@ Window {
             height: 26
             color: PowerNodeModel.EDLDfigures
             //            color: "#ffffff"
-            text: (PowerNodeModel.batteryPower / 1000).toFixed(2)
+//            text: (PowerNodeModel.batteryPower / 1000).toFixed(2)
+            text: PowerNodeModel.batteryPower
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
@@ -829,7 +839,8 @@ Window {
             height: 26
             color: PowerNodeModel.EDLDfigures
             //            color: "#ffffff"
-            text: (PowerNodeModel.gridPower / 1000).toFixed(2)
+//            text: (PowerNodeModel.gridPower / 1000).toFixed(2)
+            text: PowerNodeModel.gridPower
             font.pixelSize: 23
             horizontalAlignment: Text.AlignHCenter
             font.family: "Arial"
@@ -862,7 +873,7 @@ Window {
             height: 14
             color: PowerNodeModel.EDLDfigures
             //            color: "#ffffff"   // "#f9bbcbc"
-            // eine Nachkommastellen, zentriert
+            // eine Nachkommastelle, zentriert
             text: (PowerNodeModel.gridEnergyExport).toFixed(1)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter

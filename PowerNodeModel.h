@@ -35,50 +35,49 @@ public:
     ~PowerNodeModel();
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
-    Q_PROPERTY(int generatorPowerTotal MEMBER m_generatorPowerTotal NOTIFY generatorDataChanged)
-    Q_PROPERTY(int generatorPowerDach MEMBER m_generatorPowerDach NOTIFY generatorDataChanged)
-    Q_PROPERTY(int generatorPowerGaube MEMBER m_generatorPowerGaube NOTIFY generatorDataChanged)
-    Q_PROPERTY(int generatorPowerGarage MEMBER m_generatorPowerGarage NOTIFY generatorDataChanged)
-    Q_PROPERTY(double generatorTotalEnergy MEMBER m_generatorTotalEnergy NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorColor MEMBER m_generatorColor NOTIFY generatorDataChanged)
-    Q_PROPERTY(double sunAngle MEMBER m_sunAngle NOTIFY rotateSun)
-    Q_PROPERTY(QString sunColor MEMBER m_sunColor NOTIFY sunColor)
+    Q_PROPERTY(QString generatorPowerTotal  MEMBER m_genPowerTotal NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerDach   MEMBER m_genPowerDach NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerGaube  MEMBER m_genPowerGaube NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerGarage MEMBER m_genPowerGarage NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorTotalEnergy  MEMBER m_generatorTotalEnergy NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorColor       MEMBER m_generatorColor NOTIFY generatorDataChanged)
+    Q_PROPERTY(double sunAngle              MEMBER m_sunAngle NOTIFY rotateSun)
+    Q_PROPERTY(QString sunColor             MEMBER m_sunColor NOTIFY sunColor)
 
     // battery properties - all battery values are updated in one call to "batteryDataChanged"
-    Q_PROPERTY(double batteryPower MEMBER m_battPowerAnzeige NOTIFY batteryDataChanged)
-    Q_PROPERTY(double batteryPercentage MEMBER m_batteryPercentage NOTIFY batteryDataChanged)
-    Q_PROPERTY(QString batteryText MEMBER m_batteryText NOTIFY batteryDataChanged)
-    Q_PROPERTY(QString batteryColor MEMBER m_batteryColor NOTIFY batteryDataChanged)
-    Q_PROPERTY(QString batteryImage MEMBER m_batteryImage NOTIFY batteryDataChanged)
-    Q_PROPERTY(int batteryFill MEMBER m_batteryFill NOTIFY batteryDataChanged)
-    Q_PROPERTY(double battTemp MEMBER m_battTemp NOTIFY batteryDataChanged)
+    Q_PROPERTY(QString batteryPower         MEMBER m_battPowerAnzeige NOTIFY batteryDataChanged)
+    Q_PROPERTY(double batteryPercentage     MEMBER m_batteryPercentage NOTIFY batteryDataChanged)
+    Q_PROPERTY(QString batteryText          MEMBER m_batteryText NOTIFY batteryDataChanged)
+    Q_PROPERTY(QString batteryColor         MEMBER m_batteryColor NOTIFY batteryDataChanged)
+    Q_PROPERTY(QString batteryImage         MEMBER m_batteryImage NOTIFY batteryDataChanged)
+    Q_PROPERTY(int batteryFill              MEMBER m_batteryFill NOTIFY batteryDataChanged)
+    Q_PROPERTY(double battTemp              MEMBER m_battTemp NOTIFY batteryDataChanged)
 
     // home consumption properties - all home consumption values are updated in one call to "consumptionDataChanged"
-    Q_PROPERTY(int consumptionPower     MEMBER m_totalPowerConsumption NOTIFY consumptionDataChanged)
-    Q_PROPERTY(int consumptionEnergy    MEMBER m_totalEnergyConsumption NOTIFY consumptionDataChanged)
-    Q_PROPERTY(QString homeColor        MEMBER m_homeColor NOTIFY consumptionDataChanged)
+    Q_PROPERTY(QString consumptionPower     MEMBER m_totPowerConsumption NOTIFY consumptionDataChanged)
+    Q_PROPERTY(QString homeColor            MEMBER m_homeColor NOTIFY consumptionDataChanged)
 
     // shade properties
-    Q_PROPERTY(int homeTopGreenH MEMBER m_homeTopGreenH NOTIFY shadeDataChanged)
-    Q_PROPERTY(int homeBotRedH MEMBER m_homeBotRedH NOTIFY shadeDataChanged)
+    Q_PROPERTY(int homeTopGreenH            MEMBER m_homeTopGreenH NOTIFY shadeDataChanged)
+    Q_PROPERTY(int homeBotRedH              MEMBER m_homeBotRedH NOTIFY shadeDataChanged)
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
-    Q_PROPERTY(QString gridText         MEMBER m_gridText         NOTIFY gridDataChanged)
-    Q_PROPERTY(QString gridColor        MEMBER m_gridColor        NOTIFY gridDataChanged)
-    Q_PROPERTY(int gridPower            MEMBER m_gridPowerAnzeige NOTIFY gridDataChanged)
-    Q_PROPERTY(double gridEnergyImport  MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                    // Verbrauchszähler [kWh]
-    Q_PROPERTY(double gridEnergyExport  MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                    // Einspeisezähler [kWh]
+    Q_PROPERTY(QString gridText             MEMBER m_gridText         NOTIFY gridDataChanged)
+    Q_PROPERTY(QString gridColor            MEMBER m_gridColor        NOTIFY gridDataChanged)
+    Q_PROPERTY(QString gridPower            MEMBER m_gridPowerAnzeige NOTIFY gridDataChanged)                   // current power from/to grid
+    Q_PROPERTY(double gridEnergyImport      MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                   // Verbrauchszähler [kWh]
+    Q_PROPERTY(double gridEnergyExport      MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                   // Einspeisezähler [kWh]
 
     // wallbox properties - all wallbox values are updated in one call to "chargingDataChanged"
-    Q_PROPERTY(int chargingPower    MEMBER m_chargingPower NOTIFY chargingDataChanged)                      // current power [kW]
-    Q_PROPERTY(int chargedEnergy    MEMBER m_chargedEnergy NOTIFY chargingDataChanged)                      // total energy [kWh]
-    Q_PROPERTY(int sessionEnergy    MEMBER m_sessionEnergy NOTIFY chargingDataChanged)                      // last session energy [kWh]
-    Q_PROPERTY(int evalPoints       MEMBER m_evalPoints    NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxColor MEMBER m_wallboxColor  NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxCar   MEMBER m_wallboxCar    NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxScoot MEMBER m_wallboxScoot  NOTIFY chargingDataChanged)
-    Q_PROPERTY(bool visibleComm     MEMBER m_visibleComm   NOTIFY showComm)
-    Q_PROPERTY(char evalCountDown   MEMBER m_evalCountDown NOTIFY showComm)
+    Q_PROPERTY(QString chargingPower        MEMBER m_charPower     NOTIFY chargingDataChanged)                      // current power [kW]
+    Q_PROPERTY(QString chargedEnergy        MEMBER m_charEnergy    NOTIFY chargingDataChanged)                      // total energy [kWh]
+    Q_PROPERTY(QString sessionEnergy        MEMBER m_sessEnergy    NOTIFY chargingDataChanged)                      // last session energy [kWh]
+    Q_PROPERTY(int evalPoints               MEMBER m_evalPoints    NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxColor         MEMBER m_wallboxColor  NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxCar           MEMBER m_wallboxCar    NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxScoot         MEMBER m_wallboxScoot  NOTIFY chargingDataChanged)
+    Q_PROPERTY(bool visibleComm             MEMBER m_visibleComm   NOTIFY showComm)
+    Q_PROPERTY(char evalCountDown           MEMBER m_evalCountDown NOTIFY showComm)
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
     Q_PROPERTY(QString EDLDfigures  MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
@@ -146,47 +145,56 @@ private:
     void countDown(void);
 
 // window title with version & build date
-    QString m_windowTitle = "PV-Anzeige - V1.1 - ";
+// Version 1.0 - erster Wurf, Funktion soweit OK
+// Version 1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
+// Version 1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
+    QString m_windowTitle = "PV-Anzeige - V1.2 - ";
 
 // generators, PV-Paneele
-    int m_generatorPowerTotal = 0;          // Momentanleistung gesamt [kW]
-    int m_generatorPowerDach = 0;           // Momentanleistung String Dach
-    int m_generatorPowerGaube = 0;          // Momentanleistung String Gaube
-    int m_generatorPowerGarage = 0;         // Momentanleistung String Garage
+    QString m_genPowerTotal = 0;                // Momentanleistung gesamt [kW]
+    int m_generatorPowerTotal = 0;      // Momentanleistung gesamt [kW]
+    QString m_genPowerDach = 0;                 // Momentanleistung String Dach
+    int m_generatorPowerDach = 0;       // Momentanleistung String Dach
+    QString m_genPowerGaube = 0;                // Momentanleistung String Gaube
+    int m_generatorPowerGaube = 0;      // Momentanleistung String Gaube
+    QString m_genPowerGarage = 0;               // Momentanleistung String Garage
+    int m_generatorPowerGarage = 0;     // Momentanleistung String Garage
     double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
-    QString m_generatorColor = VLIGHTGRAY;
+    QString m_generatorColor = VLIGHTGRAY;  // Farbe der PV Generator Box
     double m_sunAngle = 22.5;               // Sonne langsam rotieren ;)
     QString m_sunColor = "/Icons/Sonne_weiss_transparent.png";          // icon der Sonne auswählen, weiss, hellgelb, gelb
 
 // battery, Akku
     int m_batteryPower = 0;                 // Batterieladung/-Entladung [kW]
-    int m_battPowerAnzeige = 0;             // Batterieladung/-Entladung zur Anzeige [kW]
+    QString m_battPowerAnzeige = 0;         // Batterieladung/-Entladung zur Anzeige [kW]
     int m_batteryPercentage = 0;            // Batterie Ladezustand [%]
-    QString m_batteryColor = VLIGHTGRAY;
+    QString m_batteryColor = VLIGHTGRAY;    // Farbe der Akku Box
     QString m_batteryText = "";             // Text in der Batterie Box, wechselt Ladung/Entladung
     QString m_batteryImage = "/Icons/Akku_weiss_transparent00.png";
     int m_batteryFill = 0;                  // analoge Balkenanzeige des Betteriefüllstands
     double m_battTemp = 0.0;                // Temperatur des Akkus
 // consumption, home, Hausverbrauch
     int m_totalPowerConsumption = 0;        // Gesamtverbrauch [kW]
-    int m_totalEnergyConsumption = 0;       // Gesamtverbrauch aus Netz und Akku und PV - woher kommt dieser Wert?
-    QString m_homeColor = VLIGHTGRAY;
+    QString m_totPowerConsumption = 0;      // Gesamtverbrauch [kW]
+    QString m_homeColor = VLIGHTGRAY;       // Farbe der Haus Box
     int m_homeBotRedH = 0;                  // anteilige Energie aus Netzbezug (roter Balken von oben wachsend)
     int m_homeTopGreenH = 0;                // anteilige Energie aus Akku (dunkelgrüner Balken von unten wachsend)
 // grid, Netz
     int m_gridPower = 0;                    // Netzbezug/Einspeisung [kW]
-    int m_gridPowerAnzeige = 0;             // Netzbezug für die Anzeige
+    QString m_gridPowerAnzeige = 0;         // Netzbezug für die Anzeige
     double m_gridEnergyImport = 0.0;        // Zähler [kWh]
     double m_gridEnergyExport = 0.0;        // Einspeisezähler [kWh]
-    QString m_gridColor = VLIGHTGRAY;
+    QString m_gridColor = VLIGHTGRAY;       // Farbe der Grid Box
     QString m_gridText = "";                // Text in der grid Box, wechselt Einspeisung/Bezug
 // Wallbox
-    bool m_evAttached = false;              // wallbox delivers the information whether any vehicle is attached to the outlet
     int m_chargingPower = 0;                // current power [kW]
+    QString m_charPower = 0;                // current power [kW]
     int m_chargedEnergy = 0;                // total energy [kWh]
+    QString m_charEnergy = 0;               // total energy [kWh]
     int m_sessionEnergy = 0;                // last session energy [kWh]
+    QString m_sessEnergy = 0;               // last session energy [kWh]
     int m_evalPoints = 0;                   // Evaluation Points (when to start charging)
-    QString m_wallboxColor = VLIGHTGRAY;
+    QString m_wallboxColor = VLIGHTGRAY;    // Farbe der Wallbox Box
     QString m_wallboxCar =      "Icons/electric-car-icon_weiss_transparent.png";            // default mit Stecker in der Luft
     QString m_wallboxScoot =    "Icons/electric-scooter_icon_weiss_transparent_rad.png";    // default mit Stecker in der Luft
     bool m_visibleComm = false;             // WLAN marker shown if RPi is interrogated

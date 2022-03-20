@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <iostream>
+#include <QTextStream>
 
 #include "Downloader.h"
 #include "SmartChargerXML.h"
@@ -288,11 +289,19 @@ void PowerNodeModel::generatorHandling(void)
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
 
+    // Werte für Anzeige berechnen und als QString ausgeben
+    m_genPowerTotal = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerTotal)/(double)1000))); // get rid of math in QML
+    m_genPowerDach = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerDach)/(double)1000))); // get rid of math in QML
+    m_genPowerGaube = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerGaube)/(double)1000))); // get rid of math in QML
+    m_genPowerGarage = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerGarage)/(double)1000))); // get rid of math in QML
+
     if(m_generatorPowerTotal <= 3000) setSunColor(0);       // Weiß
     else if(m_generatorPowerTotal > 5000) setSunColor(2);   // Gelb
     else setSunColor(1);                                    // Hellgelb
 
     m_generatorTotalEnergy = (smchaJSON.getPVGesamtErtrag());       // [W] integer, no fraction
+    // Werte für Anzeige berechnen und als QString ausgeben
+    m_generatorTotalEnergy = m_generatorTotalEnergy / 1000;
 
 //        m_generatorPowerTotal = 230;                    // test
 
@@ -320,17 +329,21 @@ void PowerNodeModel::batteryHandling(void)
 #endif
 
     m_battPowerAnzeige = m_batteryPower;
+
+    // Werte für Anzeige berechnen und als QString ausgeben
+    m_battPowerAnzeige = QString().asprintf("%0.2f", (double)((double)(abs(m_batteryPower)/(double)1000))); // get rid of math in QML
+
     // change text and color depending on power value
-    if(m_battPowerAnzeige == 0) {
+    if(m_batteryPower == 0) {
         m_batteryText = "";                             // kein Strom  -> kein Text
         m_batteryColor = VLIGHTGRAY;                    // helles Hellgrau, keine QML Basic/SVG color
     }
-    else if(m_battPowerAnzeige > 0) {
+    else if(m_batteryPower > 0) {
         m_batteryText = "Batterie-ladung";              // Batterie wird geladen
         m_batteryColor = LIMEGREEN;                     // Hellgrün
     }
     else {                                              // Batterie wird entladen
-        m_battPowerAnzeige = abs(m_battPowerAnzeige);           // auch negative Werte (bei Entladung) werden positiv dargestellt...
+//        m_batteryPower = abs(m_batteryPower);           // auch negative Werte (bei Entladung) werden positiv dargestellt...
         m_batteryText = "Batterie-entladung";           // ... nur der Text ändert sich
         m_batteryColor = FORESTGREEN;                   // Dunkelgrün
     }
@@ -355,14 +368,15 @@ void PowerNodeModel::gridHandling(void)
     m_gridPower = -(smchaXML.getSmartMeterActualPower());       // [W] integer, no fraction
 #endif
 
-    m_gridPowerAnzeige = abs(m_gridPower);              // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
+    // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
+    m_gridPowerAnzeige = QString().asprintf("%0.2f", (double)((double)(abs(m_gridPower)/(double)1000))); // get rid of math in QML
 
     if (m_gridPower < -9)                               // Netzbezug
     {
         m_gridColor = FIREBRICK;                        // Dunkelrot
         m_gridText = "Netzbezug";
     }
-    else if (m_gridPower > 9)                          // Einspeisung
+    else if (m_gridPower > 9)                           // Einspeisung
     {
         m_gridColor = LIMEGREEN;                        // Hellgrün
         m_gridText = "Netz-einspeisung";
@@ -425,8 +439,12 @@ void PowerNodeModel::wallboxHandling()
     m_chargedEnergy = smchaXML.getEVTotalEnergy();      // [W] integer, no fraction
     m_sessionEnergy = smchaXML.getEVSessionEnergy();    // [W] integer, no fraction
 
-    // derive attach state and charging state from wallbox states
+    // Werte für Anzeige berechnen und als QString ausgeben
+    m_charPower = QString().asprintf("%0.2f", (double)((double)(abs(m_chargingPower)/(double)1000))); // get rid of math in QML
+    m_charEnergy = QString().asprintf("%0.2f", (double)((double)(abs(m_chargedEnergy)/(double)1000))); // get rid of math in QML
+    m_sessEnergy = QString().asprintf("%0.2f", (double)((double)(abs(m_sessionEnergy)/(double)1000))); // get rid of math in QML
 
+    // derive attach state and charging state from wallbox states
     /*    // color selection
        "State" = Current state of the charging station
         0 : starting
@@ -527,9 +545,13 @@ void PowerNodeModel::consumptionHandling(void)
                                                         + (m_batteryPower) );
 
     m_totalPowerConsumption = abs(m_totalPowerConsumption);  // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
+
+    // Werte für Anzeige berechnen und als QString ausgeben
+    m_totPowerConsumption = QString().asprintf("%0.2f", (double)((double)(abs(m_totalPowerConsumption)/(double)1000))); // get rid of math in QML
+
 #endif
 
-    if(m_totalPowerConsumption == 0.0) {
+    if(m_totalPowerConsumption == 0) {
         m_homeColor = VLIGHTGRAY;                   // helles Hellgrau, keine QML Basic/SVG color
     }
     else {
@@ -561,7 +583,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // PV to grid
-    if((m_gridPower > 9) && (m_generatorPowerTotal > 0))
+    if((m_gridPower > 9) && (m_generatorPowerTotal > 9))
     {
         m_pv2grid = true;
     }
@@ -629,7 +651,7 @@ void PowerNodeModel::arrowsHandling(void)
 void PowerNodeModel::shadeHandling(void)
 {
     // Anteil Netzbezug in ROT von unten kommend einblenden
-    if(m_gridPower < 0){                                // Netzbezug
+    if(m_gridPower < -9){                                // Netzbezug
         m_homeBotRedH = std::min((double)(abs(m_gridPower) / (double)m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
