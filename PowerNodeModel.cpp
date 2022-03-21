@@ -371,7 +371,9 @@ void PowerNodeModel::gridHandling(void)
     // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
     m_gridPowerAnzeige = QString().asprintf("%0.2f", (double)((double)(abs(m_gridPower)/(double)1000))); // get rid of math in QML
 
-    if (m_gridPower < -9)                               // Netzbezug
+    qDebug() << "m_gridPower: " << m_gridPower;
+
+    if (m_gridPower < -5)                               // Netzbezug    (-5 weil gerundet wird)
     {
         m_gridColor = FIREBRICK;                        // Dunkelrot
         m_gridText = "Netzbezug";
@@ -616,7 +618,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // grid to house
-    if((m_gridPower < -9) /*&& (m_totalPowerConsumption > 9)*/)
+    if((m_gridPower < -5) /*&& (m_totalPowerConsumption > 9)*/)    // (-5 weil gerundet wird)
     {
         m_grid2house = true;
     }
