@@ -440,9 +440,9 @@ void PowerNodeModel::wallboxHandling()
     m_sessionEnergy = smchaXML.getEVSessionEnergy();    // [W] integer, no fraction
 
     // Werte für Anzeige berechnen und als QString ausgeben
-    m_charPower = QString().asprintf("%0.2f", (double)((double)(abs(m_chargingPower)/(double)1000))); // get rid of math in QML
+    m_charPower = QString().asprintf("%0.3f", (double)((double)(abs(m_chargingPower)/(double)1000))); // get rid of math in QML
     m_charEnergy = QString().asprintf("%0.2f", (double)((double)(abs(m_chargedEnergy)/(double)1000))); // get rid of math in QML
-    m_sessEnergy = QString().asprintf("%0.2f", (double)((double)(abs(m_sessionEnergy)/(double)1000))); // get rid of math in QML
+    m_sessEnergy = QString().asprintf("%0.3f", (double)((double)(abs(m_sessionEnergy)/(double)1000))); // get rid of math in QML
 
     // derive attach state and charging state from wallbox states
     /*    // color selection
