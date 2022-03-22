@@ -373,12 +373,12 @@ void PowerNodeModel::gridHandling(void)
 
     qDebug() << "m_gridPower: " << m_gridPower;
 
-    if (m_gridPower < -5)                               // Netzbezug    (-5 weil gerundet wird)
+    if (m_gridPower <= -5)                               // Netzbezug    (-5 weil gerundet wird)
     {
         m_gridColor = FIREBRICK;                        // Dunkelrot
         m_gridText = "Netzbezug";
     }
-    else if (m_gridPower > 9)                           // Einspeisung
+    else if (m_gridPower >= 5)                           // Einspeisung  (5 weil gerundet wird)
     {
         m_gridColor = LIMEGREEN;                        // Hellgrün
         m_gridText = "Netz-einspeisung";
@@ -585,7 +585,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // PV to grid
-    if((m_gridPower > 9) && (m_generatorPowerTotal > 9))
+    if((m_gridPower >= 5) && (m_generatorPowerTotal > 9))    // (5 weil gerundet wird)
     {
         m_pv2grid = true;
     }
@@ -618,7 +618,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // grid to house
-    if((m_gridPower < -5) /*&& (m_totalPowerConsumption > 9)*/)    // (-5 weil gerundet wird)
+    if((m_gridPower <= -5) /*&& (m_totalPowerConsumption > 9)*/)    // (-5 weil gerundet wird)
     {
         m_grid2house = true;
     }
@@ -628,7 +628,7 @@ void PowerNodeModel::arrowsHandling(void)
     }
 
     // house to grid        // generator is off (night) and battery feeds house and temporarily the grid
-    if((m_gridPower > 9) && (m_generatorPowerTotal == 0))    // m_gridPowerAnzeige >= 10
+    if((m_gridPower >= 5) && (m_generatorPowerTotal == 0))    // m_gridPowerAnzeige >= 10    // (5 weil gerundet wird)
     {
         m_house2grid = true;
     }
@@ -653,7 +653,7 @@ void PowerNodeModel::arrowsHandling(void)
 void PowerNodeModel::shadeHandling(void)
 {
     // Anteil Netzbezug in ROT von unten kommend einblenden
-    if(m_gridPower < -9){                                // Netzbezug
+    if(m_gridPower <= -5){                                // Netzbezug   (-5 weil gerundet wird)
         m_homeBotRedH = std::min((double)(abs(m_gridPower) / (double)m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
