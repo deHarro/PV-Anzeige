@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QString>
 #include <QQuickImageProvider>
+#include <QColor>
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -41,6 +42,7 @@ public:
     Q_PROPERTY(QString generatorPowerGarage MEMBER m_genPowerGarage NOTIFY generatorDataChanged)
     Q_PROPERTY(double generatorTotalEnergy  MEMBER m_generatorTotalEnergy NOTIFY generatorDataChanged)
     Q_PROPERTY(QString generatorColor       MEMBER m_generatorColor NOTIFY generatorDataChanged)
+    Q_PROPERTY(QColor sunBGColor            MEMBER m_SunBGColor NOTIFY generatorDataChanged)
     Q_PROPERTY(double sunAngle              MEMBER m_sunAngle NOTIFY rotateSun)
     Q_PROPERTY(QString sunColor             MEMBER m_sunColor NOTIFY sunColor)
 
@@ -163,6 +165,7 @@ private:
     QString m_generatorColor = VLIGHTGRAY;  // Farbe der PV Generator Box
     double m_sunAngle = 22.5;               // Sonne langsam rotieren ;)
     QString m_sunColor = "/Icons/Sonne_weiss_transparent.png";          // icon der Sonne auswählen, weiss, hellgelb, gelb
+    QColor m_SunBGColor = "#ffffff";
 
 // battery, Akku
     int m_batteryPower = 0;                 // Batterieladung/-Entladung [kW]

@@ -215,10 +215,9 @@ void PowerNodeModel::setSunColor(int8_t newColor)
 {
     switch( newColor)
     {
-        case 0: m_sunColor =  "/Icons/Sonne_weiss_transparent.png"; break;
-        case 1: m_sunColor =  "/Icons/Sonne_hellgelb_transparent.png"; break;
-        case 2: m_sunColor =  "/Icons/Sonne_gelb_transparent.png"; break;
-        default: m_sunColor =  "/Icons/Sonne_weiss_transparent.png";
+        case 0: m_sunColor =  "/Icons/Sonne_invers_hellgrau.png"; break;
+        case 1: m_sunColor =  "/Icons/Sonne_invers_gruen.png"; break;
+        default: m_sunColor = "/Icons/Sonne_invers_hellgrau.png";
     }
 }
 
@@ -289,21 +288,31 @@ void PowerNodeModel::generatorHandling(void)
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
 
+//    m_generatorPowerTotal = 9000;     // für Test
+
     // Werte für Anzeige berechnen und als QString ausgeben
     m_genPowerTotal = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerTotal)/(double)1000))); // get rid of math in QML
     m_genPowerDach = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerDach)/(double)1000))); // get rid of math in QML
     m_genPowerGaube = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerGaube)/(double)1000))); // get rid of math in QML
     m_genPowerGarage = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerGarage)/(double)1000))); // get rid of math in QML
 
-    if(m_generatorPowerTotal <= 3000) setSunColor(0);       // Weiß
-    else if(m_generatorPowerTotal > 5000) setSunColor(2);   // Gelb
-    else setSunColor(1);                                    // Hellgelb
+    if(m_generatorPowerTotal <= 5) setSunColor(0);          // Grauer SonnenHintergrund
+    else setSunColor(1);                                    // Grüner SonnenHintergrund
+
+    // Gelbsättigung der Sonne berechnen
+    m_SunBGColor = QRgb(0xFFFF00);                          // vorbelegen mit GELB
+
+    unsigned int blueVal = m_generatorPowerTotal/40;
+    blueVal = std::min((unsigned int)254, blueVal);
+//    std::cout << "blueVal  = " << blueVal << std::endl;    // Display blueVal
+
+    m_SunBGColor.setBlue(255 - (blueVal));                  // Weißanteil verringern -> Sättigung erhöhen
+//    std::cout << "m_generatorPowerTotal  = " << m_generatorPowerTotal << std::endl;    // Display total Power
 
     m_generatorTotalEnergy = (smchaJSON.getPVGesamtErtrag());       // [W] integer, no fraction
+
     // Werte für Anzeige berechnen und als QString ausgeben
     m_generatorTotalEnergy = m_generatorTotalEnergy / 1000;
-
-//        m_generatorPowerTotal = 230;                    // test
 
     if(m_generatorPowerTotal == 0) {
         m_generatorColor = VLIGHTGRAY;                  // helles Hellgrau, keine QML Basic/SVG color

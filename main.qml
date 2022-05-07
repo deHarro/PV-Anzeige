@@ -233,6 +233,17 @@ Window {
         border.width: 0
         clip: false
 
+        Rectangle {
+            id: rectangleHintergrundSonne
+            x: 9
+            y: 7
+            width: 74
+            height: 74
+            radius: 37
+            color: PowerNodeModel.sunBGColor
+            z: -0
+            clip: false
+        }
 
         Text {
             id: text1
@@ -295,7 +306,6 @@ Window {
                 activeFocusOnTab: false
                 hoverEnabled: false // Unicode Character 'CHECK MARK'
                 visible: true
-                //                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_gelb_transparent.png"
                 onClicked: PowerNodeModel.sunColor = "Icons/Sonne_gelb_transparent.png"
             }
         }
