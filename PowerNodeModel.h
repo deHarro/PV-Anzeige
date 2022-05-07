@@ -150,17 +150,18 @@ private:
 // Version 1.0 - erster Wurf, Funktion soweit OK
 // Version 1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
 // Version 1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
-    QString m_windowTitle = "PV-Anzeige - V1.2 - ";
+// Version 1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
+    QString m_windowTitle = "PV-Anzeige - V1.3 - ";
 
 // generators, PV-Paneele
-    QString m_genPowerTotal = 0;                // Momentanleistung gesamt [kW]
-    int m_generatorPowerTotal = 0;      // Momentanleistung gesamt [kW]
-    QString m_genPowerDach = 0;                 // Momentanleistung String Dach
-    int m_generatorPowerDach = 0;       // Momentanleistung String Dach
-    QString m_genPowerGaube = 0;                // Momentanleistung String Gaube
-    int m_generatorPowerGaube = 0;      // Momentanleistung String Gaube
-    QString m_genPowerGarage = 0;               // Momentanleistung String Garage
-    int m_generatorPowerGarage = 0;     // Momentanleistung String Garage
+    QString m_genPowerTotal = 0;            // Momentanleistung gesamt [kW]
+    int m_generatorPowerTotal = 0;          // Momentanleistung gesamt [kW]
+    QString m_genPowerDach = 0;             // Momentanleistung String Dach
+    int m_generatorPowerDach = 0;           // Momentanleistung String Dach
+    QString m_genPowerGaube = 0;            // Momentanleistung String Gaube
+    int m_generatorPowerGaube = 0;          // Momentanleistung String Gaube
+    QString m_genPowerGarage = 0;           // Momentanleistung String Garage
+    int m_generatorPowerGarage = 0;         // Momentanleistung String Garage
     double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
     QString m_generatorColor = VLIGHTGRAY;  // Farbe der PV Generator Box
     double m_sunAngle = 22.5;               // Sonne langsam rotieren ;)
