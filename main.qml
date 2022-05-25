@@ -175,7 +175,7 @@ Window {
                         y: 46
                         width: 77
                         height: 26
-                        color: PowerNodeModel.MBMDfigures
+                        color: PowerNodeModel.EDLDfigures       // consumptionPower hängt an EDLD, 2022-05-25
                         //                        color: "#ffffff"
 //                        text: (PowerNodeModel.consumptionPower / 1000).toFixed(2)
                         text: PowerNodeModel.consumptionPower

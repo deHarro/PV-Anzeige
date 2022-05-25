@@ -151,7 +151,8 @@ private:
 // Version 1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
 // Version 1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
 // Version 1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
-    QString m_windowTitle = "PV-Anzeige - V1.3 - ";
+// Version 1.4 - consumptionPower hängt an EDLD -> bei EDLD Probs. consumptionPower Rot färben
+    QString m_windowTitle = "PV-Anzeige - V1.4 - ";
 
 // generators, PV-Paneele
     QString m_genPowerTotal = 0;            // Momentanleistung gesamt [kW]
