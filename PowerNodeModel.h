@@ -87,6 +87,9 @@ public:
     // color of power values (red/white if no/connection to MBMD on RasPi)
     Q_PROPERTY(QString MBMDfigures  MEMBER  m_MBMDfigures  NOTIFY setBackgroundColor)
 
+    // color of consumptionPower (red/white if no/connection to SmartCharger on RasPi)
+    Q_PROPERTY(QString consumptionPowerfigures  MEMBER  m_consumptionPowerfigures  NOTIFY setBackgroundColor) // consumptionPower hängt an EDLD _und_ MBMD, 2022-05-26
+
     // arrow properties - all arrows are updated in one call to "arrowsDataChanged"
     Q_PROPERTY(bool batt2house      MEMBER m_batt2house    NOTIFY arrowsChanged)
     Q_PROPERTY(bool house2batt      MEMBER m_house2batt    NOTIFY arrowsChanged)
@@ -151,7 +154,7 @@ private:
 // Version 1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
 // Version 1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
 // Version 1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
-// Version 1.4 - consumptionPower hängt an EDLD -> bei EDLD Probs. consumptionPower Rot färben
+// Version 1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
     QString m_windowTitle = "PV-Anzeige - V1.4 - ";
 
 // generators, PV-Paneele
@@ -166,7 +169,7 @@ private:
     double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
     QString m_generatorColor = VLIGHTGRAY;  // Farbe der PV Generator Box
     double m_sunAngle = 22.5;               // Sonne langsam rotieren ;)
-    QString m_sunColor = "/Icons/Sonne_weiss_transparent.png";          // icon der Sonne auswählen, weiss, hellgelb, gelb
+    QString m_sunColor = "/Icons/Sonne_invers_hellgrau.png";          // 2022-05-26
     QColor m_SunBGColor = "#ffffff";
 
 // battery, Akku
@@ -214,6 +217,7 @@ private:
 // Figures color of values, RED if error on reading values, WHITE if readings are ok
     QString m_EDLDfigures = "red";
     QString m_MBMDfigures = "red";
+    QString m_consumptionPowerfigures = "red";  // consumptionPower hängt an EDLD _und_ MBMD, 2022-05-26
 
 // arrow handling
     bool m_pv2batt = false;

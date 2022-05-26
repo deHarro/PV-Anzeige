@@ -175,7 +175,8 @@ Window {
                         y: 46
                         width: 77
                         height: 26
-                        color: PowerNodeModel.EDLDfigures       // consumptionPower hängt an EDLD, 2022-05-25
+                        // consumptionPower hängt an EDLD _und_ MBMD, 2022-05-26
+                        color: PowerNodeModel.consumptionPowerfigures
                         //                        color: "#ffffff"
 //                        text: (PowerNodeModel.consumptionPower / 1000).toFixed(2)
                         text: PowerNodeModel.consumptionPower
@@ -306,7 +307,7 @@ Window {
                 activeFocusOnTab: false
                 hoverEnabled: false // Unicode Character 'CHECK MARK'
                 visible: true
-                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_gelb_transparent.png"
+                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_invers_hellgrau.png"  // 2022-05-26
             }
         }
         Text {
