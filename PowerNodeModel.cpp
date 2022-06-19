@@ -5,7 +5,7 @@
 #include <iostream>
 #include <QTextStream>
 
-#include "Downloader.h"
+#include "downloader.h"
 #include "SmartChargerXML.h"
 #include "WechselrichterJSON.h"
 
@@ -347,7 +347,7 @@ void PowerNodeModel::batteryHandling(void)
     m_battTemp = smchaXML.getStorageSystemTemperature();         // [°] double, fraction (27.1)
 #endif
 
-    m_battPowerAnzeige = m_batteryPower;
+    m_battPowerAnzeige = QString().asprintf("%0d", m_batteryPower);
 
     // Werte für Anzeige berechnen und als QString ausgeben
     m_battPowerAnzeige = QString().asprintf("%0.2f", (double)((double)(abs(m_batteryPower)/(double)1000))); // get rid of math in QML
