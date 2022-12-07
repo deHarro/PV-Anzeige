@@ -1,4 +1,5 @@
 #include "WechselrichterJSON.h"
+#include "Downloader.h"
 
 WechselrichterJSON::WechselrichterJSON() {}
 
@@ -38,6 +39,11 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
                 m_PVGarageActualPower = dPower;
             }
         }
+        else
+        {
+            qDebug() << "Wechselrichter Garage ist ausgefallen";
+            m_messageFlag |= WRFlag;
+        }
 
         if ((position = m_JSONfiledata.indexOf("SUNSPEC2")) != -1)        // "SUNSPEC2" gefunden
         {
@@ -63,7 +69,11 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
                 m_PVDachActualPower = dPower;
             }
         }
-
+        else
+        {
+            qDebug() << "Wechselrichter Dach ist ausgefallen";
+            m_messageFlag |= WRFlag;
+        }
 
         if ((position = m_JSONfiledata.indexOf("SUNSPEC3")) != -1)        // "SUNSPEC3" gefunden
         {
@@ -96,6 +106,12 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
                 m_PVGaubeActualPower = dPower;
             }
         }
+        else
+        {
+            qDebug() << "Wechselrichter Gaube ist ausgefallen";
+            m_messageFlag |= WRFlag;
+        }
+        // m_messageFlag |= WRFlag;                 // Test für Debug!!
     }
 }
 

@@ -35,7 +35,7 @@ void Downloader::replyFinishedXML (QNetworkReply *reply)
     }
     else
     {
-       extern QByteArray m_XMLfiledata;    // globally defined in main.cpp
+       extern QByteArray m_XMLfiledata;                         // globally defined in main.cpp
 
         m_XMLfiledata.clear();
         m_XMLfiledata.append(reply->readAll());

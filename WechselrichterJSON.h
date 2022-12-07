@@ -6,6 +6,9 @@
 #include <qjsonobject.h>
 #include <qjsonarray.h>
 
+// global flag memory for error messages
+extern quint8 m_messageFlag;
+
 class WechselrichterJSON : public QObject {
     Q_OBJECT
 

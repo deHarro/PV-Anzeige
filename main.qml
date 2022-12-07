@@ -926,6 +926,20 @@ Window {
             font.pixelSize: 12
             horizontalAlignment: Text.AlignLeft
         }
+
+        Text {
+            // "Ein Wechselrichter hat Probleme"
+            id: text50
+            x: -240
+            y: -133
+            width: 338
+            height: 14
+            color: "#000000"  // schwarz // "#ff0000" rot
+            text: PowerNodeModel.WRProblemText
+            font.bold : true
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignLeft
+        }
     }
 
 

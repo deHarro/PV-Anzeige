@@ -102,6 +102,7 @@ public:
 
     Q_PROPERTY(QString EDLDProblemText MEMBER m_EDLDProblemText NOTIFY setEDLDWarning)
     Q_PROPERTY(QString MBMDProblemText MEMBER m_MBMDProblemText NOTIFY setMBMDWarning)
+    Q_PROPERTY(QString WRProblemText   MEMBER m_WRProblemText   NOTIFY setWRWarning)
     Q_PROPERTY(QString backgroundColor MEMBER m_backgroundColor NOTIFY setBackgroundColor)
 
     Q_PROPERTY(QString windowTitle MEMBER m_windowTitle NOTIFY displayWindowTitle)
@@ -117,6 +118,7 @@ Q_SIGNALS:
 
     void setEDLDWarning();
     void setMBMDWarning();
+    void setWRWarning();
     void setBackgroundColor();
 
     void rotateSun();
@@ -141,6 +143,7 @@ private:
     void loadSmChXML(void);               //
     void setMBMDText(void);
     void setEDLDText(void);
+    void setWRText(void);
     void setBGColor(void);
     void setSunAngle(void);
     void setSunColor(int8_t);
@@ -155,7 +158,8 @@ private:
 // Version 1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
 // Version 1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
 // Version 1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
-    QString m_windowTitle = "PV-Anzeige - V1.4 - ";
+// Version 1.5 - Fehlermeldung wenn einer der Wechselrichter keine Daten liefert (Modbus Fehler)
+    QString m_windowTitle = "PV-Anzeige - V1.5 - ";
 
 // generators, PV-Paneele
     QString m_genPowerTotal = 0;            // Momentanleistung gesamt [kW]
@@ -212,6 +216,7 @@ private:
 // Error Messages
     QString m_MBMDProblemText = "";
     QString m_EDLDProblemText = "";
+    QString m_WRProblemText = "";
     QString m_backgroundColor = "whitesmoke";
 
 // Figures color of values, RED if error on reading values, WHITE if readings are ok

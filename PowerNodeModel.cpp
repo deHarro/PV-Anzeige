@@ -82,6 +82,7 @@ void PowerNodeModel::onDataTimer() {
         consumptionHandling();  // consumption handling
         shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
         setEDLDText();          // emit warning message if connection to EDL Daemon on RPi ceases
+        setWRText();            // emit warning message if one or more of the WR fail to send data (modbus error)
         setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
         setBGColor();           // on comm error make background light red
 
@@ -101,6 +102,7 @@ void PowerNodeModel::onDataTimer() {
 
         emit setEDLDWarning();
         emit setMBMDWarning();
+        emit setWRWarning();
         emit setBackgroundColor();
     }
     else    // zyklisch die Sonne etwas drehen (wird jede 500 ms aufgerufen)
@@ -172,9 +174,21 @@ void PowerNodeModel::setEDLDText(void)              // Fehlermeldung wenn EDLD D
     }
 }
 
+void PowerNodeModel::setWRText(void)                // Fehlermeldung wenn einer der Wechslrichter Probleme hat
+{
+    if (m_messageFlag & WRFlag)
+    {
+        m_WRProblemText = "Mindestens einer der Wechselrichter liefert keine Daten!";
+    }
+    else
+    {
+        m_WRProblemText = "";
+    }
+}
+
 void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern wenn auf dem RPi Probleme auftreten
 {
-    if (m_messageFlag & (EDLDFlag | MBMDFlag | VERSIONFlag))      // EDLD oder MBMD oder falsche Version
+    if (m_messageFlag & (EDLDFlag | MBMDFlag | VERSIONFlag | WRFlag))      // EDLD oder MBMD oder falsche Version oder WR Fehler
     {
         m_backgroundColor = LIGHTHRED;              // sehr helles Rot
     }
