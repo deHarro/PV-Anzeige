@@ -71,15 +71,16 @@ public:
     Q_PROPERTY(double gridEnergyExport      MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                   // Einspeisezähler [kWh]
 
     // wallbox properties - all wallbox values are updated in one call to "chargingDataChanged"
-    Q_PROPERTY(QString chargingPower        MEMBER m_charPower     NOTIFY chargingDataChanged)                      // current power [kW]
-    Q_PROPERTY(QString chargedEnergy        MEMBER m_charEnergy    NOTIFY chargingDataChanged)                      // total energy [kWh]
-    Q_PROPERTY(QString sessionEnergy        MEMBER m_sessEnergy    NOTIFY chargingDataChanged)                      // last session energy [kWh]
-    Q_PROPERTY(int evalPoints               MEMBER m_evalPoints    NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxColor         MEMBER m_wallboxColor  NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxCar           MEMBER m_wallboxCar    NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxScoot         MEMBER m_wallboxScoot  NOTIFY chargingDataChanged)
-    Q_PROPERTY(bool visibleComm             MEMBER m_visibleComm   NOTIFY showComm)
-    Q_PROPERTY(char evalCountDown           MEMBER m_evalCountDown NOTIFY showComm)
+    Q_PROPERTY(QString chargingPower        MEMBER m_charPower      NOTIFY chargingDataChanged)                 // current power [kW]
+    Q_PROPERTY(QString chargedEnergy        MEMBER m_charEnergy     NOTIFY chargingDataChanged)                 // total energy [kWh]
+    Q_PROPERTY(QString sessionEnergy        MEMBER m_sessEnergy     NOTIFY chargingDataChanged)                 // last session energy [kWh]
+    Q_PROPERTY(int evalPoints               MEMBER m_evalPoints     NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxColor         MEMBER m_wallboxColor   NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxCar           MEMBER m_wallboxCar     NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxScoot         MEMBER m_wallboxScoot   NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString chargeMode           MEMBER m_EVChargingMode NOTIFY chargingDataChanged)                 // current charge mode (String)
+    Q_PROPERTY(bool visibleComm             MEMBER m_visibleComm    NOTIFY showComm)
+    Q_PROPERTY(char evalCountDown           MEMBER m_evalCountDown  NOTIFY showComm)
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
     Q_PROPERTY(QString EDLDfigures  MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
@@ -159,7 +160,8 @@ private:
 // Version 1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
 // Version 1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
 // Version 1.5 - Fehlermeldung wenn einer der Wechselrichter keine Daten liefert (Modbus Fehler)
-    QString m_windowTitle = "PV-Anzeige - V1.5 - ";
+// Version 1.6 - Zusätzlicher Wechselrichter Dach Nord, Anzeige des ChargeMode der Wallbox
+    QString m_windowTitle = "PV-Anzeige - V1.6 - ";
 
 // generators, PV-Paneele
     QString m_genPowerTotal = 0;            // Momentanleistung gesamt [kW]
@@ -212,6 +214,7 @@ private:
     bool m_visibleComm = false;             // WLAN marker shown if RPi is interrogated
     bool m_realPics = false;                // no real pictures of EVs
     char m_evalCountDown = 60;              // count down 1 minute
+    QString m_EVChargingMode;               // ChargeMode (OFF, SURPLUS, QUICK, MANUAL)
 
 // Error Messages
     QString m_MBMDProblemText = "";

@@ -180,6 +180,25 @@ void SmartChargerXML::ReadSmartChargerXML() {
 #endif
         node = node.firstChild();
 
+        // 			Search node ChargingMode
+            // loopcount = 0;
+            while ((node.nodeName().compare("ChargingMode") != 0) && (!node.isNull()))
+            {
+#ifdef INTERMEDIATES
+                std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
+#endif
+                node=node.nextSibling();
+            }
+
+#ifdef INTERMEDIATES
+            std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
+#endif
+            if (node.nodeName().compare("ChargingMode")==0)
+            {
+                m_EVChargingMode = node.firstChild().toText().data(); // moegliche Werte: OFF, QUICK, SURPLUS, MANUAL
+                std::cout << "              ChargingMode = " << m_EVChargingMode.toStdString().c_str() << std::endl;
+            }
+
         // 			Search node EvaluationPoints
             // loopcount = 0;
             while ((node.nodeName().compare("EvaluationPoints") != 0) && (!node.isNull()))
@@ -499,4 +518,8 @@ double SmartChargerXML::getStorageSystemTemperature(void)
 double SmartChargerXML::getStorageSystemActualPower(void)
 {
     return m_StorageSystemActualPower;
+}
+QString SmartChargerXML::getEVChargeMode(void)
+{
+    return m_EVChargingMode;
 }

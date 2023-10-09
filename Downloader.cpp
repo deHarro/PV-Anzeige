@@ -13,6 +13,46 @@ Downloader::Downloader(QObject *parent) :
     getRPiParameter();
 }
 
+// set charging mode of SmartCharger ----------------------------------------
+// moegliche Charge Modes
+// http://192.168.xx.xx:18001/remote?mode=surplus
+// http://192.168.xx.xx:18001/remote?mode=quick
+// http://192.168.xx.xx:18001/remote?mode=manual
+// http://192.168.xx.xx:18001/remote?mode=off
+
+void Downloader::doSetChargeMode(void)
+{
+    xmlManager = new QNetworkAccessManager(this);
+
+    connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinishedSetMode(QNetworkReply*)));
+
+    QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?mode=surplus";
+    xmlManager->get(QNetworkRequest(SmartChargerAddr));
+}
+
+void Downloader::replyFinishedSetMode (QNetworkReply *reply)
+{
+    if(reply->error())
+    {
+        qDebug() << "ERROR with SmartCharger";
+        qDebug() << reply->errorString();
+        m_messageFlag |= SETMODEFlag;                           // Fehler bei der Verarbeitung des SetMode Befehls
+    }
+    else
+    {
+//       extern QByteArray m_XMLfiledata;                         // globally defined in main.cpp
+
+//        m_XMLfiledata.clear();
+//        m_XMLfiledata.append(reply->readAll());
+//        m_messageFlag &= !EDLDFlag;                             // EDL Daemon ist ok -> ausblenden
+    }
+
+    reply->deleteLater();
+    xmlManager->deleteLater();
+    xmlManager = nullptr;
+}
+
 // download XML data from SmartCharger ----------------------------------------
 void Downloader::doDownloadXML(void)
 {

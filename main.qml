@@ -315,13 +315,21 @@ Window {
             x: 216
             y: 6
             color: "#ffffff"   // "#f9bbcbc"
-            text: qsTr("Dach")
+            text: qsTr("Dach N")
+            font.pixelSize: 12
+        }
+        Text {
+            id: text52
+            x: 216
+            y: 21
+            color: "#ffffff"   // "#f9bbcbc"
+            text: qsTr("Dach S")
             font.pixelSize: 12
         }
         Text {
             id: text23
             x: 216
-            y: 27
+            y: 36
             color: "#ffffff"   // "#f9bbcbc"
             text: qsTr("Gaube")
             font.pixelSize: 12
@@ -329,7 +337,7 @@ Window {
         Text {
             id: text24
             x: 216
-            y: 47
+            y: 51
             color: "#ffffff"   // "#f9bbcbc"
             text: qsTr("Garage")
             font.pixelSize: 12
@@ -343,6 +351,19 @@ Window {
             color: PowerNodeModel.MBMDfigures
             //            color: "#ffffff"   // "#f9bbcbc"
 //            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
+            text: PowerNodeModel.generatorPowerDachN
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignRight
+        }
+        Text {
+            id: text53
+            x: 256
+            y: 21
+            width: 33
+            height: 14
+            color: PowerNodeModel.MBMDfigures
+            //            color: "#ffffff"   // "#f9bbcbc"
+//            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
             text: PowerNodeModel.generatorPowerDach
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -350,7 +371,7 @@ Window {
         Text {
             id: text27
             x: 256
-            y: 27
+            y: 36
             width: 33
             height: 14
             color: PowerNodeModel.MBMDfigures
@@ -363,7 +384,7 @@ Window {
         Text {
             id: text30
             x: 256
-            y: 47
+            y: 51
             width: 33
             height: 14
             color: PowerNodeModel.MBMDfigures
@@ -383,9 +404,18 @@ Window {
         }
 
         Text {
+            id: text54
+            x: 292
+            y: 21
+            color: "#ffffff"   // "#f9bbcbc"
+            text: qsTr("kW")
+            font.pixelSize: 12
+        }
+
+        Text {
             id: text29
             x: 292
-            y: 27
+            y: 36
             width: 17
             color: "#ffffff"   // "#f9bbcbc"
             text: qsTr("kW")
@@ -395,7 +425,7 @@ Window {
         Text {
             id: text32
             x: 292
-            y: 47
+            y: 51
             color: "#ffffff"   // "#f9bbcbc"
             text: qsTr("kW")
             font.pixelSize: 12
@@ -466,6 +496,17 @@ Window {
             font.pixelSize: 12
             wrapMode: Text.WordWrap
             font.bold: true
+        }
+
+        Text {          // ChargeMode (OFF, SURPLUS, QUICK, MANUAL)
+            id: text51
+            x: 212
+            y: 8
+            width: 70
+            color: "#ffffff"
+            text: PowerNodeModel.chargeMode
+            font.pixelSize: 10
+            horizontalAlignment: Text.AlignHCenter
         }
 
         Text {
@@ -1075,7 +1116,6 @@ Window {
             antialiasing: false
         }
     }
-
 }
 
 

@@ -473,6 +473,7 @@ void PowerNodeModel::wallboxHandling()
     m_chargingPower = smchaXML.getEVActualPower();      // [W] integer, no fraction
     m_chargedEnergy = smchaXML.getEVTotalEnergy();      // [W] integer, no fraction
     m_sessionEnergy = smchaXML.getEVSessionEnergy();    // [W] integer, no fraction
+    m_EVChargingMode = smchaXML.getEVChargeMode();      // QString
 
     // Werte für Anzeige berechnen und als QString ausgeben
     m_charPower = QString().asprintf("%0.3f", (double)((double)(abs(m_chargingPower)/(double)1000))); // get rid of math in QML

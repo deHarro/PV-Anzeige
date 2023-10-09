@@ -23,6 +23,7 @@ public:
     double getEVSystemEnabled(void);
     double getEVActualPower(void);
     double getEVSessionEnergy(void);
+    QString getEVChargeMode(void);
     ulong getEVTotalEnergy(void);
 
     double getStorageSystemSOC(void);
@@ -34,6 +35,7 @@ private:
     double m_SmartMeterConsumption = 0.0;
     double m_SmartMeterSurplus = 0.0;
 
+    QString m_EVChargingMode;
     double m_EVEvaluationPoints = 0.0;
     int m_EVState = 0;
     int m_EVPlug = 0;
