@@ -17,6 +17,9 @@ QString m_JSONfiledata;
 // Flag: Bit 0 = 1 -> EDLD antwortet nicht korrekt
 // Flag: Bit 1 = 1 -> MBMD antwortet nicht korrekt
 quint8 m_messageFlag = 0;
+
+// global value for changing the ChargeMode on SmartCharger RasPi
+QString m_setChargeModeString;                      // Befehl für remote control des SmartCharger (off, quick, surplus, manual);
 // globals ----------------------------------------
 
 

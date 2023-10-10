@@ -128,7 +128,12 @@ Q_SIGNALS:
     void displayWindowTitle();
 
 public slots:
-    void switchEVIcons();
+    void switchEVIcons();                   // change visualisation of car/scooter (icon or real picture)
+    void switchChargeMode();                // send (new) chargeMode setting to SmartCharger
+    void showChargeModeOFF();               // display (potentially new) chargeMode in GUI on hover
+    void showChargeModeQUICK();               // display (potentially new) chargeMode in GUI on hover
+    void showChargeModeSURPLUS();               // display (potentially new) chargeMode in GUI on hover
+    void showChargeModeMANUAL();               // display (potentially new) chargeMode in GUI on hover
 
 private:
     void getXMLdata(void);
@@ -141,7 +146,7 @@ private:
     void arrowsHandling(void);
     void shadeHandling(void);
     void getIconType(void);
-    void loadSmChXML(void);               //
+    void loadSmChXML(void);                 //
     void setMBMDText(void);
     void setEDLDText(void);
     void setWRText(void);
@@ -153,6 +158,9 @@ private:
     void setWindowTitle(void);
     void countDown(void);
 
+public:
+    QString getChargeModeString(void);
+
 // window title with version & build date
 // Version 1.0 - erster Wurf, Funktion soweit OK
 // Version 1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
@@ -161,7 +169,11 @@ private:
 // Version 1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
 // Version 1.5 - Fehlermeldung wenn einer der Wechselrichter keine Daten liefert (Modbus Fehler)
 // Version 1.6 - Zusätzlicher Wechselrichter Dach Nord, Anzeige des ChargeMode der Wallbox
-    QString m_windowTitle = "PV-Anzeige - V1.6 - ";
+// Version 1.7 - Die ChargeModes sind per Mausclick umstellbar. Per MouseHover auf der Anzeige des aktuellen ChargeMode in der Wallbox
+//                den gewuenschten Modus selektieren und per MausClick aktivieren.
+//                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Modus akzeptiert und zur Anzeige zurück geliefert wird.
+//
+    QString m_windowTitle = "PV-Anzeige - V1.7 - ";
 
 // generators, PV-Paneele
     QString m_genPowerTotal = 0;            // Momentanleistung gesamt [kW]
@@ -215,6 +227,9 @@ private:
     bool m_realPics = false;                // no real pictures of EVs
     char m_evalCountDown = 60;              // count down 1 minute
     QString m_EVChargingMode;               // ChargeMode (OFF, SURPLUS, QUICK, MANUAL)
+    char m_CurrChargeMode;
+    char m_nextChargeMode = 0;              // set ChargeMode der Wallbox via SmartCharger
+//    QString m_setChargeModeString;           // Befehl für remote control des SmartCharger (off, quick, surplus, manual)
 
 // Error Messages
     QString m_MBMDProblemText = "";

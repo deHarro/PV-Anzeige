@@ -44,6 +44,8 @@ Downloader downler;
 SmartChargerXML smchaXML;
 WechselrichterJSON smchaJSON;
 
+extern QString m_setChargeModeString;
+
 using namespace std::chrono_literals;
 
 
@@ -431,6 +433,45 @@ void PowerNodeModel::switchEVIcons()
     emit chargingDataChanged();                         // refresh GUI
 }
 
+// setting ChargeMode handling
+void PowerNodeModel::switchChargeMode()
+{
+    if      (m_EVChargingMode == "OFF")      m_setChargeModeString = "off";
+    else if (m_EVChargingMode == "QUICK")    m_setChargeModeString = "quick";
+    else if (m_EVChargingMode == "SURPLUS")  m_setChargeModeString = "surplus";
+    else if (m_EVChargingMode == "MANUAL")   m_setChargeModeString = "manual";
+    else                                     m_setChargeModeString = "surplus";  // default mode
+
+    downler.doSetChargeMode();
+    emit chargingDataChanged();                         // refresh GUI
+}
+
+void PowerNodeModel::showChargeModeOFF()
+{
+    m_EVChargingMode = "OFF";
+    emit chargingDataChanged();                         // refresh GUI
+}
+void PowerNodeModel::showChargeModeQUICK()
+{
+    m_EVChargingMode = "QUICK";
+    emit chargingDataChanged();                         // refresh GUI
+}
+void PowerNodeModel::showChargeModeSURPLUS()
+{
+    m_EVChargingMode = "SURPLUS";
+    emit chargingDataChanged();                         // refresh GUI
+}
+void PowerNodeModel::showChargeModeMANUAL()
+{
+    m_EVChargingMode = "MANUAL";
+    emit chargingDataChanged();                         // refresh GUI
+}
+
+//QString PowerNodeModel::getChargeModeString()
+//{
+//    return m_setChargeModeString;
+//}
+
 // wallbox handling ----------------------------------------------------------
 void PowerNodeModel::wallboxHandling()
 {
@@ -713,7 +754,7 @@ void PowerNodeModel::getIconType()
     QString filepath = dir.absoluteFilePath("./");              // path of PV-Anzeige.exe _at runtime_ (_not_ in Qt Creator!!)
     QFile file;
 
-    // catch running in QT Creator
+    // catch case "running in QT Creator"
     if (filepath.contains("-Debug"))
         file.setFileName(filepath + "debug/PVconfig.ini");      // add filename to path
     else if (filepath.contains("-Release"))

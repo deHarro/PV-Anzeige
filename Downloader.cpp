@@ -15,19 +15,21 @@ Downloader::Downloader(QObject *parent) :
 
 // set charging mode of SmartCharger ----------------------------------------
 // moegliche Charge Modes
-// http://192.168.xx.xx:18001/remote?mode=surplus
-// http://192.168.xx.xx:18001/remote?mode=quick
-// http://192.168.xx.xx:18001/remote?mode=manual
 // http://192.168.xx.xx:18001/remote?mode=off
+// http://192.168.xx.xx:18001/remote?mode=quick
+// http://192.168.xx.xx:18001/remote?mode=surplus
+// http://192.168.xx.xx:18001/remote?mode=manual
 
 void Downloader::doSetChargeMode(void)
 {
+    extern QString m_setChargeModeString;                       //
+
     xmlManager = new QNetworkAccessManager(this);
 
     connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedSetMode(QNetworkReply*)));
 
-    QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?mode=surplus";
+    QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?mode=" + m_setChargeModeString;  // PowerNodeModel.getChargeModeString();
     xmlManager->get(QNetworkRequest(SmartChargerAddr));
 }
 

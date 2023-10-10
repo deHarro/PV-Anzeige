@@ -500,7 +500,7 @@ Window {
 
         Text {          // ChargeMode (OFF, SURPLUS, QUICK, MANUAL)
             id: text51
-            x: 212
+            x: 217
             y: 8
             width: 70
             color: "#ffffff"
@@ -653,11 +653,13 @@ Window {
 
         Button {
             x: 12
-            y: 4
+            y: 5
             width: 298
-            height: 82
+            height: 34
             text: ""
             anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: 0
+            anchors.horizontalCenterOffset: 3
             z: 1
             flat: true
             anchors.horizontalCenter: parent.horizontalCenter
@@ -665,6 +667,67 @@ Window {
             hoverEnabled: false
             visible: true
             onClicked: PowerNodeModel.switchEVIcons()
+        }
+
+        Button {        // change ChargeMode der Wallbox
+            x: 227
+            y: 10
+            width: 15
+            height: 10
+            text: ""
+//            anchors.horizontalCenterOffset: 0
+            z: 1
+            flat: true
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showChargeModeOFF()
+            visible: true
+            onClicked: PowerNodeModel.switchChargeMode()
+        }
+        Button {        // change ChargeMode der Wallbox
+            x: 242
+            y: 10
+            width: 15
+            height: 10
+            text: ""
+//            anchors.horizontalCenterOffset: 0
+            z: 1
+            flat: true
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showChargeModeQUICK()
+            visible: true
+            onClicked: PowerNodeModel.switchChargeMode()
+        }
+        Button {        // change ChargeMode der Wallbox
+            x: 257
+            y: 10
+            width: 15
+            height: 10
+            text: ""
+//            anchors.horizontalCenterOffset: 0
+            z: 1
+            flat: true
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showChargeModeSURPLUS()
+            visible: true
+            onClicked: PowerNodeModel.switchChargeMode()
+        }
+        Button {        // change ChargeMode der Wallbox
+            x: 272
+            y: 10
+            width: 12
+            height: 10
+            text: ""
+//            anchors.horizontalCenterOffset: 0
+            z: 1
+            flat: true
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showChargeModeMANUAL()
+            visible: true
+            onClicked: PowerNodeModel.switchChargeMode()
         }
 
 //        Text {
