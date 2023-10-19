@@ -637,7 +637,7 @@ Window {
             //            color: "#ffffff"   // "#f9bbcbc"
             text: PowerNodeModel.evalPoints.toFixed(0)
             font.pixelSize: 12
-            horizontalAlignment: Text.AlignRight
+            horizontalAlignment: Text.AlignLeft
         }
 
         Image {
@@ -651,7 +651,7 @@ Window {
             visible: PowerNodeModel.visibleComm
         }
 
-        Button {
+        Button {        // change picture of car/scooter (real/icon)
             x: 12
             y: 5
             width: 298
@@ -717,7 +717,7 @@ Window {
         Button {        // change ChargeMode der Wallbox
             x: 272
             y: 10
-            width: 12
+            width: 15
             height: 10
             text: ""
 //            anchors.horizontalCenterOffset: 0
@@ -729,6 +729,89 @@ Window {
             visible: true
             onClicked: PowerNodeModel.switchChargeMode()
         }
+
+// Festlegung des Manual Charge Current in 3 Stufen (6, 12, 18 A)
+        Button {        // change ManualCurrent der Wallbox
+            x: 12
+            y: 10
+            width: 20
+            height: 10
+            text: ""
+            z: 1
+            flat: true
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showManualCurrent6000()    // set to 6A = 1380 W
+            visible: true
+            onClicked: PowerNodeModel.switchManualCurrent()
+        }
+
+        Button {        // change ManualCurrent der Wallbox
+            x: 32
+            y: 10
+            width: 20
+            height: 10
+            text: ""
+            z: 1
+            flat: true
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showManualCurrent12000()    // set to 12A = 2760 W
+            visible: true
+            onClicked: PowerNodeModel.switchManualCurrent()
+        }
+        Button {        // change ManualCurrent der Wallbox
+            x: 52
+            y: 10
+            width: 20
+            height: 10
+            text: ""
+            z: 1
+            flat: true
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showManualCurrent18000()    // set to 18A = 4140 W
+            visible: true
+            onClicked: PowerNodeModel.switchManualCurrent()
+        }
+        Text {          // manual Power (1380 W, 2760 W, 4140 W)
+            id: text55
+            x: 12
+            y: 18
+            width: 70
+            color: "#ffffff"
+            text: PowerNodeModel.manualCurrentS
+            font.pixelSize: 10
+            horizontalAlignment: Text.AlignHRight
+        }
+        Button {        // unterhalb der Buttons, clear ManualCurrent Text
+            x: 12
+            y: 27
+            width: 100
+            height: 2
+            text: ""
+            z: 1
+            flat: true
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.clearManualCurrent()    // clear text
+            visible: true
+        }
+        Button {        // oberhalb der Buttons, clear ManualCurrent Text
+            x: 12
+            y: 4
+            width: 100
+            height: 2
+            text: ""
+            z: 1
+            flat: true
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.clearManualCurrent()    // clear text
+            visible: true
+        }
+
+
 
 //        Text {
 //            id: text50
@@ -1187,3 +1270,9 @@ Window {
 
 
 
+
+/*##^##
+Designer {
+    D{i:0;formeditorZoom:1.33}
+}
+##^##*/

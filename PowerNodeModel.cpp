@@ -45,6 +45,8 @@ SmartChargerXML smchaXML;
 WechselrichterJSON smchaJSON;
 
 extern QString m_setChargeModeString;
+extern int m_setManualCurrent;
+extern QString m_EVChargingModeS;
 
 using namespace std::chrono_literals;
 
@@ -467,10 +469,36 @@ void PowerNodeModel::showChargeModeMANUAL()
     emit chargingDataChanged();                         // refresh GUI
 }
 
-//QString PowerNodeModel::getChargeModeString()
-//{
-//    return m_setChargeModeString;
-//}
+// setting Manual Current handling
+void PowerNodeModel::switchManualCurrent()
+{
+    m_setManualCurrent = m_EVManualCurrent;
+    downler.doSetManualCurrent();
+}
+void PowerNodeModel::showManualCurrent6000()
+{
+    m_EVManualCurrent = 6000;
+    m_EVManualCurrentS = "manual " + QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    emit chargingDataChanged();                         // refresh GUI
+}
+void PowerNodeModel::showManualCurrent12000()
+{
+    m_EVManualCurrent = 12000;
+    m_EVManualCurrentS = "manual " + QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    emit chargingDataChanged();                         // refresh GUI
+}
+void PowerNodeModel::showManualCurrent18000()
+{
+    m_EVManualCurrent = 18000;
+    m_EVManualCurrentS = "manual " + QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    emit chargingDataChanged();                         // refresh GUI
+}
+
+void PowerNodeModel::clearManualCurrent()
+{
+    m_EVManualCurrentS = "";
+    emit chargingDataChanged();                         // refresh GUI
+}
 
 // wallbox handling ----------------------------------------------------------
 void PowerNodeModel::wallboxHandling()
@@ -712,7 +740,7 @@ void PowerNodeModel::arrowsHandling(void)
         m_house2grid = false;
     }
 
-    // house to wallbox (charging of elctric vehicle)
+    // house to wallbox (charging of electric vehicle)
     if(m_chargingPower > 0)
     {
         m_house2charger = true;

@@ -55,6 +55,41 @@ void Downloader::replyFinishedSetMode (QNetworkReply *reply)
     xmlManager = nullptr;
 }
 
+// set manual current of SmartCharger ----------------------------------------
+// moegliche Ladeströme: 6000, 7020, 7980, 9000, 10020, 10980, 12000, 13020, 13980, 15000, 16020, 16980, 18000, 19020, 19980,
+//                       21000, 22020, 22980, 24000, 25020, 25980, 27000, 28020, 28980, 30000, 31020, 31980 (mA)
+// http://192.168.xx.xx:18001/remote?manualcurrent=6000
+// http://192.168.xx.xx:18001/remote?manualcurrent=12000
+// http://192.168.xx.xx:18001/remote?manualcurrent=18000
+
+void Downloader::doSetManualCurrent(void)
+{
+    extern int m_setManualCurrent;                       //
+    manualCurrentTmp = QString::number(m_setManualCurrent);
+
+    xmlManager = new QNetworkAccessManager(this);
+
+    connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinishedSetMode(QNetworkReply*)));
+
+    QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?manualcurrent=" + manualCurrentTmp;
+    xmlManager->get(QNetworkRequest(SmartChargerAddr));
+}
+
+void Downloader::replyFinishedSetManualCurrent (QNetworkReply *reply)
+{
+    if(reply->error())
+    {
+        qDebug() << "ERROR with SmartCharger";
+        qDebug() << reply->errorString();
+        m_messageFlag |= SETCURRENTlag;                           // Fehler bei der Verarbeitung des SetMode Befehls
+    }
+
+    reply->deleteLater();
+    xmlManager->deleteLater();
+    xmlManager = nullptr;
+}
+
 // download XML data from SmartCharger ----------------------------------------
 void Downloader::doDownloadXML(void)
 {

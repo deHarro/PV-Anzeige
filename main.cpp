@@ -20,6 +20,8 @@ quint8 m_messageFlag = 0;
 
 // global value for changing the ChargeMode on SmartCharger RasPi
 QString m_setChargeModeString;                      // Befehl für remote control des SmartCharger (off, quick, surplus, manual);
+int m_setManualCurrent;                             // Befehl für remote control des SmartCharger (manual current 6, 12, 18 A)
+QString m_EVChargingModeS;                          // Anzeige der manuell einzustellenden maximalen Ladeleistung
 // globals ----------------------------------------
 
 

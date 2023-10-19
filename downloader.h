@@ -15,11 +15,13 @@ extern quint8 m_messageFlag;
 // Flag: Bit 2 = 1 -> Version der EDLD XML Daten stimmt nicht -> muss geprüft werden!
 // Flag: Bit 3 = 1 -> Einer der WR liefert keine Daten -> muss rückgesetzt werden!
 // Flag: Bit 4 = 1 -> Fehler bei der Verarbeitung des SetMode Befehls im EDLD
+// Flag: Bit 5 = 1 -> Fehler bei der Verarbeitung des SetManualCurrent Befehls im EDLD
 #define EDLDFlag 1
 #define MBMDFlag 2
 #define VERSIONFlag 4
 #define WRFlag 8
 #define SETMODEFlag 10
+#define SETCURRENTlag 20
 
 class Downloader : public QObject
 {
@@ -31,6 +33,7 @@ public:
     void doDownloadJSON(void);
 
     void doSetChargeMode(void);
+    void doSetManualCurrent(void);
 
 signals:
 
@@ -39,6 +42,7 @@ public slots:
     void replyFinishedJSON (QNetworkReply *reply);
 
     void replyFinishedSetMode(QNetworkReply *reply);
+    void replyFinishedSetManualCurrent(QNetworkReply *reply);
 
 private:
     void getRPiParameter(void);
@@ -49,5 +53,6 @@ private:
     QString m_smartChargerIP;
     QString m_smartChargerPort;
     QString m_mbmdPort;
+    QString manualCurrentTmp;
 };
 

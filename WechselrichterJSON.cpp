@@ -62,7 +62,6 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
                 positionComma = m_JSONfiledata.indexOf(",", positionColon);
                 QString power = m_JSONfiledata.mid(positionColon + 1, positionComma - positionColon - 1);
 
-                qDebug() << "Power2: " << power;
                 double dPower = power.toDouble();
                 qDebug() << "Power2: " << dPower;
 
@@ -99,7 +98,6 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
                 positionComma = m_JSONfiledata.indexOf(",", positionColon);
                 QString power = m_JSONfiledata.mid(positionColon + 1, positionComma - positionColon - 1);
 
-                qDebug() << "Power3: " << power;
                 double dPower = power.toDouble();
                 qDebug() << "Power3: " << dPower;
 
