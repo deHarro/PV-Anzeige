@@ -364,7 +364,7 @@ Window {
             color: PowerNodeModel.MBMDfigures
             //            color: "#ffffff"   // "#f9bbcbc"
 //            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
-            text: PowerNodeModel.generatorPowerDach
+            text: PowerNodeModel.generatorPowerDachS
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
         }
