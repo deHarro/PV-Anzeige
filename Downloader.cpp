@@ -14,7 +14,7 @@ Downloader::Downloader(QObject *parent) :
 }
 
 // set charging mode of SmartCharger ----------------------------------------
-// moegliche Charge Modes
+// possible Charge Modes
 // http://192.168.xx.xx:18001/remote?mode=off
 // http://192.168.xx.xx:18001/remote?mode=quick
 // http://192.168.xx.xx:18001/remote?mode=surplus
