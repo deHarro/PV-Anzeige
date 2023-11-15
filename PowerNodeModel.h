@@ -6,6 +6,34 @@
 #include <QQuickImageProvider>
 #include <QColor>
 
+// Hinweis
+// Die Konfiguration der Wechselrichter erfolgt in der Datei mbmd.yaml auf dem RasPi
+//
+// change log
+// Version 1.0 - erster Wurf, Funktion soweit OK
+// Version 1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
+// Version 1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
+// Version 1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
+// Version 1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
+// Version 1.5 - Fehlermeldung wenn einer der Wechselrichter keine Daten liefert (Modbus Fehler)
+// Version 1.6 - Zusätzlicher Wechselrichter Dach Nord vorbereitet, Anzeige des ChargeMode der Wallbox
+// Version 1.7 - Die ChargeModes sind per Mausclick umstellbar.
+//                Per MouseHover auf der Anzeige des aktuellen ChargeMode in der Wallbox den gewuenschten Modus selektieren
+//                und per MausClick aktivieren.
+//                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Modus akzeptiert und zur Anzeige zurück geliefert wird.
+// Version 1.8 - Der maximale Strom bei manuellem Laden kann über die GUI eingestellt werden.
+//                Per MouseHover auf der Anzeige der Evaluation Points in der Wallbox den gewuenschten Wert selektieren.
+//                Der neue Wert wird unterhalb der "Eval. Points" angezeigt.
+//                Per MausClick wird der gerade angezeigte neue Wert aktiviert.
+//                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Wert umgesetzt wird.
+// Version 1.9 - Verabrbeitung der Daten von Wechselrichter 4 (DachN, V1.6) eingebaut aber per Define in WechslerichterJSON.h
+//                deaktiviert (sonst meldet PV-Anzeige einen Fehler "Mindestens einer der Wechselrichter liefert keine Daten").
+//
+
+// program version for window title
+#define VERSIONMAJOR    "1"
+#define VERSIONMINOR    "9"
+
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
 class StringData;
@@ -37,7 +65,8 @@ public:
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
     Q_PROPERTY(QString generatorPowerTotal  MEMBER m_genPowerTotal NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorPowerDach   MEMBER m_genPowerDach NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerDachS   MEMBER m_genPowerDachS NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerDachN   MEMBER m_genPowerDachN NOTIFY generatorDataChanged)
     Q_PROPERTY(QString generatorPowerGaube  MEMBER m_genPowerGaube NOTIFY generatorDataChanged)
     Q_PROPERTY(QString generatorPowerGarage MEMBER m_genPowerGarage NOTIFY generatorDataChanged)
     Q_PROPERTY(double generatorTotalEnergy  MEMBER m_generatorTotalEnergy NOTIFY generatorDataChanged)
@@ -170,30 +199,16 @@ public:
     QString getChargeModeString(void);
 
 // window title with version & build date
-// Version 1.0 - erster Wurf, Funktion soweit OK
-// Version 1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
-// Version 1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
-// Version 1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
-// Version 1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
-// Version 1.5 - Fehlermeldung wenn einer der Wechselrichter keine Daten liefert (Modbus Fehler)
-// Version 1.6 - Zusätzlicher Wechselrichter Dach Nord, Anzeige des ChargeMode der Wallbox
-// Version 1.7 - Die ChargeModes sind per Mausclick umstellbar.
-//                Per MouseHover auf der Anzeige des aktuellen ChargeMode in der Wallbox den gewuenschten Modus selektieren
-//                und per MausClick aktivieren.
-//                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Modus akzeptiert und zur Anzeige zurück geliefert wird.
-// Version 1.8 - Der maximale Strom bei manuellem Laden kann über die GUI eingestellt werden.
-//                Per MouseHover auf der Anzeige der Evaluation Points in der Wallbox den gewuenschten Wert selektieren.
-//                Der neue Wert wird unterhalb der "Eval. Points" angezeigt.
-//                Per MausClick wird der gerade angezeigte neue Wert aktiviert.
-//                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Wert umgesetzt wird.
-//
-    QString m_windowTitle = "PV-Anzeige - V1.8 - ";
+#define WINDOWTITLE "PV-Anzeige - V" VERSIONMAJOR "." VERSIONMINOR " - ";
+    QString m_windowTitle = WINDOWTITLE;
 
 // generators, PV-Paneele
     QString m_genPowerTotal = 0;            // Momentanleistung gesamt [kW]
     int m_generatorPowerTotal = 0;          // Momentanleistung gesamt [kW]
-    QString m_genPowerDach = 0;             // Momentanleistung String Dach
-    int m_generatorPowerDach = 0;           // Momentanleistung String Dach
+    QString m_genPowerDachS = 0;            // Momentanleistung String Dach Süd
+    QString m_genPowerDachN = 0;            // Momentanleistung String Dach Nord
+    int m_generatorPowerDachS = 0;          // Momentanleistung String Dach Süd
+    int m_generatorPowerDachN = 0;          // Momentanleistung String Dach Nord
     QString m_genPowerGaube = 0;            // Momentanleistung String Gaube
     int m_generatorPowerGaube = 0;          // Momentanleistung String Gaube
     QString m_genPowerGarage = 0;           // Momentanleistung String Garage
