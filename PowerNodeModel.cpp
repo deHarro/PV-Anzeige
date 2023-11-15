@@ -301,18 +301,21 @@ void PowerNodeModel::countDown(void)
 void PowerNodeModel::generatorHandling(void)
 {
 #if defined DEMOMODE
-    m_generatorPowerDach = rand() % 9000;
+    m_generatorPowerDachS = rand() % 9000;
+    m_generatorPowerDachN = rand() % 9000;
     m_generatorPowerGaube = rand() % 3600;
     m_generatorPowerGarage = rand() % 3000;
     m_generatorTotalEnergy = (rand() % 66000) + 30000;  // im Bereich ab 66 MWh
 #endif
 
 
-    m_generatorPowerDach = (smchaJSON.getPVDachActualPower());      // [W] integer, no fraction
+    m_generatorPowerDachS = (smchaJSON.getPVDachSActualPower());      // [W] integer, no fraction
+    m_generatorPowerDachN = (smchaJSON.getPVDachNActualPower());      // [W] integer, no fraction
     m_generatorPowerGarage = (smchaJSON.getPVGarageActualPower());  // [W] integer, no fraction
     m_generatorPowerGaube = (smchaJSON.getPVGaubeActualPower());    // [W] integer, no fraction
 
-    m_generatorPowerTotal   =   m_generatorPowerDach                // [W] integer, no fraction
+    m_generatorPowerTotal   =   m_generatorPowerDachS                // [W] integer, no fraction
+                            +   m_generatorPowerDachN
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
 
@@ -320,7 +323,8 @@ void PowerNodeModel::generatorHandling(void)
 
     // Werte für Anzeige berechnen und als QString ausgeben
     m_genPowerTotal = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerTotal)/(double)1000))); // get rid of math in QML
-    m_genPowerDach = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerDach)/(double)1000))); // get rid of math in QML
+    m_genPowerDachS = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerDachS)/(double)1000))); // get rid of math in QML
+    m_genPowerDachN = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerDachN)/(double)1000))); // get rid of math in QML
     m_genPowerGaube = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerGaube)/(double)1000))); // get rid of math in QML
     m_genPowerGarage = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerGarage)/(double)1000))); // get rid of math in QML
 
