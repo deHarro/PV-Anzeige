@@ -6,7 +6,7 @@ Its drawback is, you are kicked out after several minutes, after a given number 
 
 To circumvent those restrictions I make my own visualization. See my [homepage](http://harald-sattler.de/html/pv-anzeige.htm) for additional info (in german - use translation feature at the bottom of the page).
 
-As an addition the power flowing to the wallbox is displayed as well. The information for that comes from Nico Treffkorn's [SmartCharger](web.archive.org/web/20211018170240/www.eb-systeme.de/?page_id=1265) (original site is offline, links redirects to web.archive.org), working together with some KEBA wall boxes.
+As an addition the power flowing to the wallbox is displayed as well. The information for that comes from Nico Treffkorn's [SmartCharger](web.archive.org/web/20211018170240/www.eb-systeme.de/?page_id=1265) (original site is offline, link redirects to web.archive.org), working together with some KEBA wall boxes.
 
 There will be no statistics and no database, those are handled well by SunnyPortal.
 
