@@ -7,7 +7,7 @@
 #include <qjsonarray.h>
 
 // WR DachN in Verabrbeitung aufnehmen (raus nehmen durch auskommentieren)
-#define WRDACHN
+//#define WRDACHN
 
 // global flag memory for error messages
 extern quint8 m_messageFlag;
