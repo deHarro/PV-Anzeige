@@ -26,13 +26,14 @@
 //                Der neue Wert wird unterhalb der "Eval. Points" angezeigt.
 //                Per MausClick wird der gerade angezeigte neue Wert aktiviert.
 //                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Wert umgesetzt wird.
-// Version 1.9 - Verabrbeitung der Daten von Wechselrichter 4 (DachN, V1.6) eingebaut aber per Define in WechslerichterJSON.h
+// Version 1.9 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) eingebaut aber per Define in WechselrichterJSON.h
 //                deaktiviert (sonst meldet PV-Anzeige einen Fehler "Mindestens einer der Wechselrichter liefert keine Daten").
+// Version 1.10 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) aktiviert - läuft :)
 //
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "9"
+#define VERSIONMINOR    "10"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
