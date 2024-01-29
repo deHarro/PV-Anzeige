@@ -42,7 +42,7 @@ constexpr char IsoDate[] =
 
 Downloader downler;
 SmartChargerXML smchaXML;
-WechselrichterJSON smchaJSON;
+WechselrichterJSON wrJSON;
 
 extern QString m_setChargeModeString;
 extern int m_setManualCurrent;
@@ -144,8 +144,8 @@ void PowerNodeModel::getJSONdata(void)
     downler.doDownloadJSON();
 
     // decode JSON data from m_JSONfiledata into member variables of SmartChargerJSON
-    extern WechselrichterJSON smchaJSON;
-    smchaJSON.ReadWechselrichterJSON();
+    extern WechselrichterJSON wrJSON;
+    wrJSON.ReadWechselrichterJSON();
 }
 
 void PowerNodeModel::setMBMDText(void)              // Fehlermeldung wenn MBMD Daemon Probleme hat
@@ -241,13 +241,39 @@ void PowerNodeModel::setSunAngle(void)
 // change sun icon
 void PowerNodeModel::setSunColor(int8_t newColor)
 {
+    // Setzt den Hintergrund der Sonne abhängig von der Einstrahlung. Wird zyklisch aufgerufen
     switch( newColor)
     {
-        case 0: m_sunColor =  "/Icons/Sonne_invers_hellgrau.png"; break;
-        case 1: m_sunColor =  "/Icons/Sonne_invers_gruen.png"; break;
+        case 0: m_sunColor =  "/Icons/Sonne_invers_hellgrau.png"; break;    // ohne Sonne -> hellgrauer Hintergrund
+        case 1: m_sunColor =  "/Icons/Sonne_invers_gruen.png"; break;       // mit Sonne  -> grüner Hintergrund
         default: m_sunColor = "/Icons/Sonne_invers_hellgrau.png";
     }
 }
+
+void PowerNodeModel::openPopUpMsg() {
+    // Messagebox mit Ertragswerten der WR aufpoppen. Schließen mit OK
+    QMessageBox msgBox;
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setBaseSize(QSize(600, 120));
+    msgBox.setText("<b>Ertragswerte der Wechselrichter</b>");
+    msgBox.setInformativeText(
+                "Dach Nord:\t" +
+                    QString::number(m_generatorDachNEnergy) + " kWh<br>" +
+                "Dach Süd:\t" +
+                    QString::number(m_generatorDachSEnergy) + " kWh<br>" +
+                "Gaube:\t\t" +
+                    QString::number(m_generatorGaubeEnergy) + " kWh<br>" +
+                "Garage:\t\t" +
+                    QString::number(m_generatorGarageEnergy) + " kWh<br><br>"
+                "Gesamt:\t" +
+                    QString::number(m_generatorTotalEnergy * 1000) + " kWh");
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
+
+}
+
+
 
 // visualize interrogation of RPi for new values
 void PowerNodeModel::setComm(void)
@@ -309,12 +335,12 @@ void PowerNodeModel::generatorHandling(void)
 #endif
 
 
-    m_generatorPowerDachS = (smchaJSON.getPVDachSActualPower());      // [W] integer, no fraction
-    m_generatorPowerDachN = (smchaJSON.getPVDachNActualPower());      // [W] integer, no fraction
-    m_generatorPowerGarage = (smchaJSON.getPVGarageActualPower());  // [W] integer, no fraction
-    m_generatorPowerGaube = (smchaJSON.getPVGaubeActualPower());    // [W] integer, no fraction
+    m_generatorPowerDachS = (wrJSON.getPVDachSActualPower());        // [W] integer, no fraction
+    m_generatorPowerDachN = (wrJSON.getPVDachNActualPower());        // [W] integer, no fraction
+    m_generatorPowerGarage = (wrJSON.getPVGarageActualPower());      // [W] integer, no fraction
+    m_generatorPowerGaube = (wrJSON.getPVGaubeActualPower());        // [W] integer, no fraction
 
-    m_generatorPowerTotal   =   m_generatorPowerDachS                // [W] integer, no fraction
+    m_generatorPowerTotal   =   m_generatorPowerDachS                   // [W] integer, no fraction
                             +   m_generatorPowerDachN
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
@@ -341,7 +367,7 @@ void PowerNodeModel::generatorHandling(void)
     m_SunBGColor.setBlue(255 - (blueVal));                  // Weißanteil verringern -> Sättigung erhöhen
 //    std::cout << "m_generatorPowerTotal  = " << m_generatorPowerTotal << std::endl;    // Display total Power
 
-    m_generatorTotalEnergy = (smchaJSON.getPVGesamtErtrag());       // [W] integer, no fraction
+    m_generatorTotalEnergy = (wrJSON.getPVGesamtErtrag());       // [W] integer, no fraction
 
     // Werte für Anzeige berechnen und als QString ausgeben
     m_generatorTotalEnergy = m_generatorTotalEnergy / 1000;
@@ -352,6 +378,13 @@ void PowerNodeModel::generatorHandling(void)
     else {
         m_generatorColor = LIMEGREEN;                   // Hellgrün
     }
+
+    // Ertragswerte der einzelnen Wechselrichter in Membervariablen speichern
+    m_generatorDachNEnergy  = (wrJSON.getPVDachNErtrag());       // [W] integer, no fraction
+    m_generatorDachSEnergy  = (wrJSON.getPVDachSErtrag());       // [W] integer, no fraction
+    m_generatorGaubeEnergy  = (wrJSON.getPVGaubeErtrag());       // [W] integer, no fraction
+    m_generatorGarageEnergy = (wrJSON.getPVGarageErtrag());      // [W] integer, no fraction
+
 }
 
 // battery handling ----------------------------------------------------------

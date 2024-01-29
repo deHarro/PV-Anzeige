@@ -27,13 +27,21 @@ public:
     double getPVGaubeActualPower(void);
     double getPVGarageActualPower(void);
     double getPVGesamtErtrag(void);
+    double getPVDachNErtrag(void);
+    double getPVDachSErtrag(void);
+    double getPVGaubeErtrag(void);
+    double getPVGarageErtrag(void);
 
 private:
-    double m_PVDachSActualPower = 0.0;
-    double m_PVDachNActualPower = 0.0;
-    double m_PVGaubeActualPower = 0.0;
-    double m_PVGarageActualPower = 0.0;
-    double m_PVGesamtErtrag = 0.0;
+    double m_PVDachSActualPower = 0.0;      // Momentanwert Dach Süd
+    double m_PVDachNActualPower = 0.0;      // Momentanwert Dach Nord
+    double m_PVGaubeActualPower = 0.0;      // Momentanwert Gaube
+    double m_PVGarageActualPower = 0.0;     // Momentanwert Garage
+    double m_PVDachSErtrag = 0.0;           // Gesamtertrag Dach Süd
+    double m_PVDachNErtrag = 0.0;           // Gesamtertrag Dach Nord
+    double m_PVGaubeErtrag = 0.0;           // Gesamtertrag Gaube
+    double m_PVGarageErtrag = 0.0;          // Gesamtertrag Garage
+    double m_PVGesamtErtrag = 0.0;          // Gesamtertrag Anlage insgesamt
 
 };
 

@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.15
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.0           // use this line when working with Qt 5
@@ -28,6 +28,54 @@ Window {
     property real coordHouseW: 90
     property real coordHouseH: 270
 
+    // kleiner Pfeil als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
+    Image {
+        id: image15
+        x: 397
+        y: 59
+        width: 25
+        height: 25
+        opacity: 0.5
+        visible: true
+        source: "Icons/FF.png"
+        clip: true
+        fillMode: Image.PreserveAspectFit
+        smooth: true
+        antialiasing: false
+        rotation: 180
+    }
+    // Mit swipe Bewegung der Maus von rechts nach links die Ertragswerte einblenden
+    Drawer {
+        id: drawer
+        y: 13
+        width: 0.66 * window.width
+        height: 0.20 * window.height
+        dragMargin: 0.5 * window.width
+        edge: Qt.RightEdge
+
+        background: Rectangle {
+            Rectangle {
+                x: 1
+                width: parent.width - 2
+                y: 1
+                height: parent.height - 2
+                color: "#21be2b"
+            }
+        }
+        // <pre> bewirkt, dass mehrere Leerzeichen nicht zu Einem zusammengefasst werden -> Formatierung der Zeilen
+        Label {
+            color: "black" // whitesmoke
+            text: "<pre><br><b>" +
+                 "Ertragswerte der Wechselrichter" + "<br>" +
+                 "    Dach Nord: " + PowerNodeModel.generatorDachNEnergy.toFixed(0) + " kWh<br>" +
+                 "    Dach Süd:  " + PowerNodeModel.generatorDachSEnergy.toFixed(0) + " kWh<br>" +
+                 "    Gaube:     " + PowerNodeModel.generatorGaubeEnergy.toFixed(0) + " kWh<br>" +
+                 "    Garage:    " + PowerNodeModel.generatorGarageEnergy.toFixed(0) + " kWh<br>" +
+                 "    Gesamt:    " + PowerNodeModel.generatorTotalEnergy.toFixed(2) + " MWh" +
+                 "</b></pre>";
+            anchors.centerIn: parent
+        }
+    }
 
     // Überlagerte Farben in der Haus-Box mit Texten und Bild
     Item {
@@ -307,7 +355,8 @@ Window {
                 activeFocusOnTab: false
                 hoverEnabled: false // Unicode Character 'CHECK MARK'
                 visible: true
-                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_invers_hellgrau.png"  // 2022-05-26
+//                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_invers_hellgrau.png"  // 2022-05-26
+                onClicked: PowerNodeModel.openPopUpMsg()       // 2024-01-28
             }
         }
         Text {

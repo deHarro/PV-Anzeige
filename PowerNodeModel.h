@@ -5,35 +5,37 @@
 #include <QString>
 #include <QQuickImageProvider>
 #include <QColor>
+#include <QMessageBox>
 
 // Hinweis
 // Die Konfiguration der Wechselrichter erfolgt in der Datei mbmd.yaml auf dem RasPi
 //
 // change log
-// Version 1.0 - erster Wurf, Funktion soweit OK
-// Version 1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
-// Version 1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
-// Version 1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
-// Version 1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
-// Version 1.5 - Fehlermeldung wenn einer der Wechselrichter keine Daten liefert (Modbus Fehler)
-// Version 1.6 - Zusätzlicher Wechselrichter Dach Nord vorbereitet, Anzeige des ChargeMode der Wallbox
-// Version 1.7 - Die ChargeModes sind per Mausclick umstellbar.
-//                Per MouseHover auf der Anzeige des aktuellen ChargeMode in der Wallbox den gewuenschten Modus selektieren
-//                und per MausClick aktivieren.
-//                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Modus akzeptiert und zur Anzeige zurück geliefert wird.
-// Version 1.8 - Der maximale Strom bei manuellem Laden kann über die GUI eingestellt werden.
-//                Per MouseHover auf der Anzeige der Evaluation Points in der Wallbox den gewuenschten Wert selektieren.
-//                Der neue Wert wird unterhalb der "Eval. Points" angezeigt.
-//                Per MausClick wird der gerade angezeigte neue Wert aktiviert.
-//                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Wert umgesetzt wird.
-// Version 1.9 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) eingebaut aber per Define in WechselrichterJSON.h
-//                deaktiviert (sonst meldet PV-Anzeige einen Fehler "Mindestens einer der Wechselrichter liefert keine Daten").
+// Version  1.0 - erster Wurf, Funktion soweit OK
+// Version  1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
+// Version  1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
+// Version  1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
+// Version  1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
+// Version  1.5 - Fehlermeldung wenn einer der Wechselrichter keine Daten liefert (Modbus Fehler)
+// Version  1.6 - Zusätzlicher Wechselrichter Dach Nord vorbereitet, Anzeige des ChargeMode der Wallbox
+// Version  1.7 - Die ChargeModes sind per Mausclick umstellbar.
+//                 Per MouseHover auf der Anzeige des aktuellen ChargeMode in der Wallbox den gewuenschten Modus selektieren
+//                 und per MausClick aktivieren.
+//                 Achtung: Die Wallbox braucht einige Sekunden, bis der neue Modus akzeptiert und zur Anzeige zurück geliefert wird.
+// Version  1.8 - Der maximale Strom bei manuellem Laden kann über die GUI eingestellt werden.
+//                 Per MouseHover auf der Anzeige der Evaluation Points in der Wallbox den gewuenschten Wert selektieren.
+//                 Der neue Wert wird unterhalb der "Eval. Points" angezeigt.
+//                 Per MausClick wird der gerade angezeigte neue Wert aktiviert.
+//                 Achtung: Die Wallbox braucht einige Sekunden, bis der neue Wert umgesetzt wird.
+// Version  1.9 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) eingebaut aber per Define in WechselrichterJSON.h
+//                 deaktiviert (sonst meldet PV-Anzeige einen Fehler "Mindestens einer der Wechselrichter liefert keine Daten").
 // Version 1.10 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) aktiviert - läuft :)
+// Version 1.11 - Einblenden der (Gesamt-)Erträge aller Wechselrichter in einem Drawer (von rechts reinziehen)
 //
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "10"
+#define VERSIONMINOR    "11"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -65,33 +67,37 @@ public:
     ~PowerNodeModel();
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
-    Q_PROPERTY(QString generatorPowerTotal  MEMBER m_genPowerTotal NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorPowerDachS   MEMBER m_genPowerDachS NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorPowerDachN   MEMBER m_genPowerDachN NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorPowerGaube  MEMBER m_genPowerGaube NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorPowerGarage MEMBER m_genPowerGarage NOTIFY generatorDataChanged)
-    Q_PROPERTY(double generatorTotalEnergy  MEMBER m_generatorTotalEnergy NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorColor       MEMBER m_generatorColor NOTIFY generatorDataChanged)
-    Q_PROPERTY(QColor sunBGColor            MEMBER m_SunBGColor NOTIFY generatorDataChanged)
-    Q_PROPERTY(double sunAngle              MEMBER m_sunAngle NOTIFY rotateSun)
-    Q_PROPERTY(QString sunColor             MEMBER m_sunColor NOTIFY sunColor)
+    Q_PROPERTY(QString generatorPowerTotal  MEMBER m_genPowerTotal         NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerDachS  MEMBER m_genPowerDachS         NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerDachN  MEMBER m_genPowerDachN         NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerGaube  MEMBER m_genPowerGaube         NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerGarage MEMBER m_genPowerGarage        NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorTotalEnergy  MEMBER m_generatorTotalEnergy  NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorDachNEnergy  MEMBER m_generatorDachNEnergy  NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorDachSEnergy  MEMBER m_generatorDachSEnergy  NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorGaubeEnergy  MEMBER m_generatorGaubeEnergy  NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorGarageEnergy MEMBER m_generatorGarageEnergy NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorColor       MEMBER m_generatorColor        NOTIFY generatorDataChanged)
+    Q_PROPERTY(QColor sunBGColor            MEMBER m_SunBGColor            NOTIFY generatorDataChanged)
+    Q_PROPERTY(double sunAngle              MEMBER m_sunAngle              NOTIFY rotateSun)
+    Q_PROPERTY(QString sunColor             MEMBER m_sunColor              NOTIFY sunColor)
 
     // battery properties - all battery values are updated in one call to "batteryDataChanged"
-    Q_PROPERTY(QString batteryPower         MEMBER m_battPowerAnzeige NOTIFY batteryDataChanged)
-    Q_PROPERTY(double batteryPercentage     MEMBER m_batteryPercentage NOTIFY batteryDataChanged)
-    Q_PROPERTY(QString batteryText          MEMBER m_batteryText NOTIFY batteryDataChanged)
-    Q_PROPERTY(QString batteryColor         MEMBER m_batteryColor NOTIFY batteryDataChanged)
-    Q_PROPERTY(QString batteryImage         MEMBER m_batteryImage NOTIFY batteryDataChanged)
-    Q_PROPERTY(int batteryFill              MEMBER m_batteryFill NOTIFY batteryDataChanged)
-    Q_PROPERTY(double battTemp              MEMBER m_battTemp NOTIFY batteryDataChanged)
+    Q_PROPERTY(QString batteryPower         MEMBER m_battPowerAnzeige      NOTIFY batteryDataChanged)
+    Q_PROPERTY(double batteryPercentage     MEMBER m_batteryPercentage     NOTIFY batteryDataChanged)
+    Q_PROPERTY(QString batteryText          MEMBER m_batteryText           NOTIFY batteryDataChanged)
+    Q_PROPERTY(QString batteryColor         MEMBER m_batteryColor          NOTIFY batteryDataChanged)
+    Q_PROPERTY(QString batteryImage         MEMBER m_batteryImage          NOTIFY batteryDataChanged)
+    Q_PROPERTY(int batteryFill              MEMBER m_batteryFill           NOTIFY batteryDataChanged)
+    Q_PROPERTY(double battTemp              MEMBER m_battTemp              NOTIFY batteryDataChanged)
 
     // home consumption properties - all home consumption values are updated in one call to "consumptionDataChanged"
-    Q_PROPERTY(QString consumptionPower     MEMBER m_totPowerConsumption NOTIFY consumptionDataChanged)
-    Q_PROPERTY(QString homeColor            MEMBER m_homeColor NOTIFY consumptionDataChanged)
+    Q_PROPERTY(QString consumptionPower     MEMBER m_totPowerConsumption   NOTIFY consumptionDataChanged)
+    Q_PROPERTY(QString homeColor            MEMBER m_homeColor             NOTIFY consumptionDataChanged)
 
     // shade properties
-    Q_PROPERTY(int homeTopGreenH            MEMBER m_homeTopGreenH NOTIFY shadeDataChanged)
-    Q_PROPERTY(int homeBotRedH              MEMBER m_homeBotRedH NOTIFY shadeDataChanged)
+    Q_PROPERTY(int homeTopGreenH            MEMBER m_homeTopGreenH         NOTIFY shadeDataChanged)
+    Q_PROPERTY(int homeBotRedH              MEMBER m_homeBotRedH           NOTIFY shadeDataChanged)
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
     Q_PROPERTY(QString gridText             MEMBER m_gridText         NOTIFY gridDataChanged)
@@ -139,7 +145,7 @@ public:
     Q_PROPERTY(QString WRProblemText   MEMBER m_WRProblemText   NOTIFY setWRWarning)
     Q_PROPERTY(QString backgroundColor MEMBER m_backgroundColor NOTIFY setBackgroundColor)
 
-    Q_PROPERTY(QString windowTitle MEMBER m_windowTitle NOTIFY displayWindowTitle)
+    Q_PROPERTY(QString windowTitle  MEMBER m_windowTitle NOTIFY displayWindowTitle)
 
 Q_SIGNALS:
     void generatorDataChanged();
@@ -172,6 +178,7 @@ public slots:
     void showManualCurrent12000();          // display ManualChargeCurrent 12 A in GUI on hover
     void showManualCurrent18000();          // display ManualChargeCurrent 18 A in GUI on hover
     void clearManualCurrent();              // Text wieder löschen
+    void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt
 
 private:
     void getXMLdata(void);
@@ -200,7 +207,7 @@ public:
     QString getChargeModeString(void);
 
 // window title with version & build date
-#define WINDOWTITLE "PV-Anzeige - V" VERSIONMAJOR "." VERSIONMINOR " - ";
+#define WINDOWTITLE "PV-Anzeige - V" VERSIONMAJOR "." VERSIONMINOR " - "
     QString m_windowTitle = WINDOWTITLE;
 
 // generators, PV-Paneele
@@ -215,6 +222,10 @@ public:
     QString m_genPowerGarage = 0;           // Momentanleistung String Garage
     int m_generatorPowerGarage = 0;         // Momentanleistung String Garage
     double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
+    double m_generatorDachNEnergy = 0.0;    // Gesamtertrag des WR DachN
+    double m_generatorDachSEnergy = 0.0;    // Gesamtertrag des WR DachS
+    double m_generatorGaubeEnergy = 0.0;    // Gesamtertrag des WR Gaube
+    double m_generatorGarageEnergy = 0.0;   // Gesamtertrag des WR Garage
     QString m_generatorColor = VLIGHTGRAY;  // Farbe der PV Generator Box
     double m_sunAngle = 22.5;               // Sonne langsam rotieren ;)
     QString m_sunColor = "/Icons/Sonne_invers_hellgrau.png";          // 2022-05-26

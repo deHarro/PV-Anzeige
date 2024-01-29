@@ -3,6 +3,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QPieSlice>
+#include <QtWidgets>                // Für Messagebox
 
 #include "PowerNodeModel.h"
 
@@ -31,7 +32,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
-    QGuiApplication app(argc, argv);
+//    QGuiApplication app(argc, argv); // Für Messagebox muss QApplication verwendet werden
+    QApplication app(argc, argv);
 
     PowerNodeModel powerNodeModel;
     QQmlApplicationEngine engine;

@@ -26,7 +26,8 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
             QString exportGarage = m_JSONfiledata.mid(positionColon + 1, positionComma - positionColon - 1);
 
             qDebug() << "exportGarage: " << exportGarage;
-            m_PVGesamtErtrag = exportGarage.toDouble();
+            m_PVGarageErtrag = exportGarage.toDouble();
+            m_PVGesamtErtrag = m_PVGarageErtrag;
 
             if((position = m_JSONfiledata.indexOf("\"Power", position)) != -1)
             {
@@ -53,10 +54,11 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
             positionColon = m_JSONfiledata.indexOf(":", position);
             // if converters deliver 0 (zero), there is no "comma "," after "Export:", it's a "}"
             positionComma = std::min(m_JSONfiledata.indexOf(",", positionColon), m_JSONfiledata.indexOf("}", positionColon));
-            QString exportDach = m_JSONfiledata.mid(positionColon + 1, positionComma - positionColon - 1);
+            QString exportDachS = m_JSONfiledata.mid(positionColon + 1, positionComma - positionColon - 1);
 
-            qDebug() << "exportDach: " << exportDach;
-            m_PVGesamtErtrag += exportDach.toDouble();
+            qDebug() << "exportDach: " << exportDachS;
+            m_PVDachSErtrag = exportDachS.toDouble();
+            m_PVGesamtErtrag += exportDachS.toDouble();
 
             if((position = m_JSONfiledata.indexOf("\"Power", position)) != -1)
             {
@@ -93,7 +95,8 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
             QString exportGaube = m_JSONfiledata.mid(positionColon + 1, positionComma - positionColon - 1);
 
             qDebug() << "exportGaube: " << exportGaube;
-            m_PVGesamtErtrag += exportGaube.toDouble();
+            m_PVGaubeErtrag = exportGaube.toDouble();
+            m_PVGesamtErtrag += m_PVGaubeErtrag;
 
             if((position = m_JSONfiledata.indexOf("\"Power", position)) != -1)
             {
@@ -131,7 +134,8 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
             QString exportDachN = m_JSONfiledata.mid(positionColon + 1, positionComma - positionColon - 1);
 
             qDebug() << "exportDachN: " << exportDachN;
-            m_PVGesamtErtrag += exportDachN.toDouble();
+            m_PVDachNErtrag = exportDachN.toDouble();
+            m_PVGesamtErtrag += m_PVDachNErtrag;
 
             if((position = m_JSONfiledata.indexOf("\"Power", position)) != -1)
             {
@@ -180,4 +184,24 @@ double WechselrichterJSON::getPVGarageActualPower(void)
 double WechselrichterJSON::getPVGesamtErtrag(void)
 {
     return m_PVGesamtErtrag;
+};
+
+double WechselrichterJSON::getPVDachNErtrag(void)
+{
+    return m_PVDachNErtrag;
+};
+
+double WechselrichterJSON::getPVDachSErtrag(void)
+{
+    return m_PVDachSErtrag;
+};
+
+double WechselrichterJSON::getPVGaubeErtrag(void)
+{
+    return m_PVGaubeErtrag;
+};
+
+double WechselrichterJSON::getPVGarageErtrag(void)
+{
+    return m_PVGarageErtrag;
 };
