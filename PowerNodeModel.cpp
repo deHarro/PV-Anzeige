@@ -251,29 +251,23 @@ void PowerNodeModel::setSunColor(int8_t newColor)
 }
 
 void PowerNodeModel::openPopUpMsg() {
-    // Messagebox mit Ertragswerten der WR aufpoppen. Schließen mit OK
+    // Messagebox mit Ertragswerten der WR aufpoppen.
+    // Mit Klick auf "Details einblenden" können die Werte kopiert werden
+    // Schließen mit OK
     QMessageBox msgBox;
     msgBox.setTextFormat(Qt::RichText);
     msgBox.setBaseSize(QSize(600, 120));
     msgBox.setText("<b>Ertragswerte der Wechselrichter</b>");
-    msgBox.setInformativeText(
-                "Dach Nord:\t" +
-                    QString::number(m_generatorDachNEnergy) + " kWh<br>" +
-                "Dach Süd:\t" +
-                    QString::number(m_generatorDachSEnergy) + " kWh<br>" +
-                "Gaube:\t\t" +
-                    QString::number(m_generatorGaubeEnergy) + " kWh<br>" +
-                "Garage:\t\t" +
-                    QString::number(m_generatorGarageEnergy) + " kWh<br><br>"
-                "Gesamt:\t" +
-                    QString::number(m_generatorTotalEnergy * 1000) + " kWh");
+    msgBox.setDetailedText(
+           "Dach Nord: " + m_genEnergyDachN + " kWh\r\n" +
+           "Dach Süd:  " + m_genEnergyDachS + " kWh\r\n" +
+           "Gaube:     " + m_genEnergyGaube + " kWh\r\n" +
+           "Garage:    " + m_genEnergyGarage + " kWh\r\n\r\n" +
+           "Gesamt:     " + m_genEnergyTotal + " MWh");
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.exec();
-
 }
-
-
 
 // visualize interrogation of RPi for new values
 void PowerNodeModel::setComm(void)
@@ -380,10 +374,15 @@ void PowerNodeModel::generatorHandling(void)
     }
 
     // Ertragswerte der einzelnen Wechselrichter in Membervariablen speichern
-    m_generatorDachNEnergy  = (wrJSON.getPVDachNErtrag());       // [W] integer, no fraction
     m_generatorDachSEnergy  = (wrJSON.getPVDachSErtrag());       // [W] integer, no fraction
+    m_genEnergyDachS = QString().asprintf("%6.0f", abs(m_generatorDachSEnergy)); // get rid of math in QML
+    m_generatorDachNEnergy  = (wrJSON.getPVDachNErtrag());       // [W] integer, no fraction
+    m_genEnergyDachN = QString().asprintf("%6.0f", abs(m_generatorDachNEnergy)); // get rid of math in QML
     m_generatorGaubeEnergy  = (wrJSON.getPVGaubeErtrag());       // [W] integer, no fraction
+    m_genEnergyGaube = QString().asprintf("%6.0f", abs(m_generatorGaubeEnergy)); // get rid of math in QML
     m_generatorGarageEnergy = (wrJSON.getPVGarageErtrag());      // [W] integer, no fraction
+    m_genEnergyGarage = QString().asprintf("%6.0f", abs(m_generatorGarageEnergy)); // get rid of math in QML
+    m_genEnergyTotal = QString().asprintf("%3.2f", abs(m_generatorTotalEnergy)); // get rid of math in QML
 
 }
 

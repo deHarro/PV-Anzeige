@@ -31,11 +31,13 @@
 //                 deaktiviert (sonst meldet PV-Anzeige einen Fehler "Mindestens einer der Wechselrichter liefert keine Daten").
 // Version 1.10 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) aktiviert - läuft :)
 // Version 1.11 - Einblenden der (Gesamt-)Erträge aller Wechselrichter in einem Drawer (von rechts reinziehen)
+// Version 1.12 - Bei Klick auf die Sonne: Messagebox mit kopierbaren Ertragswerten der Wechselrichter - erspart abtippen :)
+//              - Ertragswerte für den Drawer in QString umgestellt -> Anzeige ausgerichtet und zentriert
 //
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "11"
+#define VERSIONMINOR    "12"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -67,20 +69,21 @@ public:
     ~PowerNodeModel();
 
     // generator properties - all generator values are updated in one call to "generatorDataChanged"
-    Q_PROPERTY(QString generatorPowerTotal  MEMBER m_genPowerTotal         NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorPowerDachS  MEMBER m_genPowerDachS         NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorPowerDachN  MEMBER m_genPowerDachN         NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorPowerGaube  MEMBER m_genPowerGaube         NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorPowerGarage MEMBER m_genPowerGarage        NOTIFY generatorDataChanged)
-    Q_PROPERTY(double generatorTotalEnergy  MEMBER m_generatorTotalEnergy  NOTIFY generatorDataChanged)
-    Q_PROPERTY(double generatorDachNEnergy  MEMBER m_generatorDachNEnergy  NOTIFY generatorDataChanged)
-    Q_PROPERTY(double generatorDachSEnergy  MEMBER m_generatorDachSEnergy  NOTIFY generatorDataChanged)
-    Q_PROPERTY(double generatorGaubeEnergy  MEMBER m_generatorGaubeEnergy  NOTIFY generatorDataChanged)
-    Q_PROPERTY(double generatorGarageEnergy MEMBER m_generatorGarageEnergy NOTIFY generatorDataChanged)
-    Q_PROPERTY(QString generatorColor       MEMBER m_generatorColor        NOTIFY generatorDataChanged)
-    Q_PROPERTY(QColor sunBGColor            MEMBER m_SunBGColor            NOTIFY generatorDataChanged)
-    Q_PROPERTY(double sunAngle              MEMBER m_sunAngle              NOTIFY rotateSun)
-    Q_PROPERTY(QString sunColor             MEMBER m_sunColor              NOTIFY sunColor)
+    Q_PROPERTY(QString generatorPowerTotal   MEMBER m_genPowerTotal         NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerDachS   MEMBER m_genPowerDachS         NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerDachN   MEMBER m_genPowerDachN         NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerGaube   MEMBER m_genPowerGaube         NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorPowerGarage  MEMBER m_genPowerGarage        NOTIFY generatorDataChanged)
+    Q_PROPERTY(double generatorTotalEnergy   MEMBER m_generatorTotalEnergy  NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString genTotalEnergy        MEMBER m_genEnergyTotal        NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorDachNEnergy  MEMBER m_genEnergyDachN        NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorDachSEnergy  MEMBER m_genEnergyDachS        NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorGaubeEnergy  MEMBER m_genEnergyGaube        NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorGarageEnergy MEMBER m_genEnergyGarage       NOTIFY generatorDataChanged)
+    Q_PROPERTY(QString generatorColor        MEMBER m_generatorColor        NOTIFY generatorDataChanged)
+    Q_PROPERTY(QColor sunBGColor             MEMBER m_SunBGColor            NOTIFY generatorDataChanged)
+    Q_PROPERTY(double sunAngle               MEMBER m_sunAngle              NOTIFY rotateSun)
+    Q_PROPERTY(QString sunColor              MEMBER m_sunColor              NOTIFY sunColor)
 
     // battery properties - all battery values are updated in one call to "batteryDataChanged"
     Q_PROPERTY(QString batteryPower         MEMBER m_battPowerAnzeige      NOTIFY batteryDataChanged)
@@ -211,21 +214,26 @@ public:
     QString m_windowTitle = WINDOWTITLE;
 
 // generators, PV-Paneele
-    QString m_genPowerTotal = 0;            // Momentanleistung gesamt [kW]
-    int m_generatorPowerTotal = 0;          // Momentanleistung gesamt [kW]
+    QString m_genPowerTotal = 0;            // Momentanleistung String gesamt [kW]
+    int m_generatorPowerTotal = 0;          // Momentanleistung int gesamt [kW]
     QString m_genPowerDachS = 0;            // Momentanleistung String Dach Süd
     QString m_genPowerDachN = 0;            // Momentanleistung String Dach Nord
-    int m_generatorPowerDachS = 0;          // Momentanleistung String Dach Süd
-    int m_generatorPowerDachN = 0;          // Momentanleistung String Dach Nord
+    int m_generatorPowerDachS = 0;          // Momentanleistung int Dach Süd
+    int m_generatorPowerDachN = 0;          // Momentanleistung int Dach Nord
     QString m_genPowerGaube = 0;            // Momentanleistung String Gaube
-    int m_generatorPowerGaube = 0;          // Momentanleistung String Gaube
+    int m_generatorPowerGaube = 0;          // Momentanleistung int Gaube
     QString m_genPowerGarage = 0;           // Momentanleistung String Garage
-    int m_generatorPowerGarage = 0;         // Momentanleistung String Garage
-    double m_generatorTotalEnergy = 0.0;    // Gesamtertrag der PV-Anlage
-    double m_generatorDachNEnergy = 0.0;    // Gesamtertrag des WR DachN
-    double m_generatorDachSEnergy = 0.0;    // Gesamtertrag des WR DachS
-    double m_generatorGaubeEnergy = 0.0;    // Gesamtertrag des WR Gaube
-    double m_generatorGarageEnergy = 0.0;   // Gesamtertrag des WR Garage
+    int m_generatorPowerGarage = 0;         // Momentanleistung int Garage
+    double m_generatorTotalEnergy = 0.0;    // Gesamtertrag PV-Anlage
+    QString m_genEnergyTotal = 0;           // Gesamtertrag String PV-Anlage
+    double m_generatorDachNEnergy = 0.0;    // Gesamtertrag WR DachN
+    QString m_genEnergyDachN = 0;           // Gesamtertrag String WR DachN
+    double m_generatorDachSEnergy = 0.0;    // Gesamtertrag WR DachS
+    QString m_genEnergyDachS = 0;           // Gesamtertrag String WR DachS
+    double m_generatorGaubeEnergy = 0.0;    // Gesamtertrag WR Gaube
+    QString m_genEnergyGaube = 0;           // Gesamtertrag String WR Gaube
+    double m_generatorGarageEnergy = 0.0;   // Gesamtertrag WR Garage
+    QString m_genEnergyGarage = 0;          // Gesamtertrag String WR Garage
     QString m_generatorColor = VLIGHTGRAY;  // Farbe der PV Generator Box
     double m_sunAngle = 22.5;               // Sonne langsam rotieren ;)
     QString m_sunColor = "/Icons/Sonne_invers_hellgrau.png";          // 2022-05-26

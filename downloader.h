@@ -21,7 +21,7 @@ extern quint8 m_messageFlag;
 #define VERSIONFlag 4
 #define WRFlag 8
 #define SETMODEFlag 10
-#define SETCURRENTlag 20
+#define SETCURRENTFlag 20
 
 class Downloader : public QObject
 {

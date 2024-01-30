@@ -82,7 +82,7 @@ void Downloader::replyFinishedSetManualCurrent (QNetworkReply *reply)
     {
         qDebug() << "ERROR with SmartCharger";
         qDebug() << reply->errorString();
-        m_messageFlag |= SETCURRENTlag;                           // Fehler bei der Verarbeitung des SetMode Befehls
+        m_messageFlag |= SETCURRENTFlag;                           // Fehler bei der Verarbeitung des SetMode Befehls
     }
 
     reply->deleteLater();

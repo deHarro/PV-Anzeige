@@ -56,7 +56,7 @@ void WechselrichterJSON::ReadWechselrichterJSON() {
             positionComma = std::min(m_JSONfiledata.indexOf(",", positionColon), m_JSONfiledata.indexOf("}", positionColon));
             QString exportDachS = m_JSONfiledata.mid(positionColon + 1, positionComma - positionColon - 1);
 
-            qDebug() << "exportDach: " << exportDachS;
+            qDebug() << "exportDachS: " << exportDachS;
             m_PVDachSErtrag = exportDachS.toDouble();
             m_PVGesamtErtrag += exportDachS.toDouble();
 

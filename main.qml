@@ -31,8 +31,8 @@ Window {
     // kleiner Pfeil als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
     Image {
         id: image15
-        x: 397
-        y: 59
+        x: 398
+        y: 56
         width: 25
         height: 25
         opacity: 0.5
@@ -46,12 +46,14 @@ Window {
     }
     // Mit swipe Bewegung der Maus von rechts nach links die Ertragswerte einblenden
     Drawer {
-        id: drawer
+        id: drawer1
         y: 13
         width: 0.66 * window.width
         height: 0.20 * window.height
         dragMargin: 0.5 * window.width
         edge: Qt.RightEdge
+        interactive: true
+        position: 0.5
 
         background: Rectangle {
             Rectangle {
@@ -64,16 +66,23 @@ Window {
         }
         // <pre> bewirkt, dass mehrere Leerzeichen nicht zu Einem zusammengefasst werden -> Formatierung der Zeilen
         Label {
-            color: "black" // whitesmoke
-            text: "<pre><br><b>" +
-                 "Ertragswerte der Wechselrichter" + "<br>" +
-                 "    Dach Nord: " + PowerNodeModel.generatorDachNEnergy.toFixed(0) + " kWh<br>" +
-                 "    Dach Süd:  " + PowerNodeModel.generatorDachSEnergy.toFixed(0) + " kWh<br>" +
-                 "    Gaube:     " + PowerNodeModel.generatorGaubeEnergy.toFixed(0) + " kWh<br>" +
-                 "    Garage:    " + PowerNodeModel.generatorGarageEnergy.toFixed(0) + " kWh<br>" +
-                 "    Gesamt:    " + PowerNodeModel.generatorTotalEnergy.toFixed(2) + " MWh" +
-                 "</b></pre>";
+            color: "black"
+            width: parent.width - 20        // kleiner Rand um den Text herum
+            height: parent.height - 20
+            minimumPointSize: 10
+            font.pointSize: 60
+            fontSizeMode: Text.Fit          // formatfüllend anzeigen
             anchors.centerIn: parent
+            horizontalAlignment: Text.AlignHCenter
+
+            text: "<pre><b>" +
+                 "Ertragswerte der Wechselrichter" + "<br>" +
+                 "Dach Nord: " + PowerNodeModel.generatorDachNEnergy  + " kWh<br>" +
+                 "Dach Süd:  " + PowerNodeModel.generatorDachSEnergy  + " kWh<br>" +
+                 "Gaube:     " + PowerNodeModel.generatorGaubeEnergy  + " kWh<br>" +
+                 "Garage:    " + PowerNodeModel.generatorGarageEnergy + " kWh<br>" +
+                 "Gesamt:     " + PowerNodeModel.genTotalEnergy + " MWh" +
+                 "</b></pre>";
         }
     }
 
@@ -1312,11 +1321,6 @@ Window {
         }
     }
 }
-
-
-
-
-
 
 
 
