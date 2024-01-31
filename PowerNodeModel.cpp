@@ -5,7 +5,7 @@
 #include <iostream>
 #include <QTextStream>
 
-#include "downloader.h"
+#include "Downloader.h"
 #include "SmartChargerXML.h"
 #include "WechselrichterJSON.h"
 
@@ -45,7 +45,7 @@ SmartChargerXML smchaXML;
 WechselrichterJSON wrJSON;
 
 extern QString m_setChargeModeString;
-extern int m_setManualCurrent;
+extern int m_ManualSetCurrent;
 extern QString m_EVChargingModeS;
 
 using namespace std::chrono_literals;
@@ -487,46 +487,66 @@ void PowerNodeModel::switchChargeMode()
 void PowerNodeModel::showChargeModeOFF()
 {
     m_EVChargingMode = "OFF";
+    switchChargeMode();
     emit chargingDataChanged();                         // refresh GUI
 }
 void PowerNodeModel::showChargeModeQUICK()
 {
     m_EVChargingMode = "QUICK";
+    switchChargeMode();
     emit chargingDataChanged();                         // refresh GUI
 }
 void PowerNodeModel::showChargeModeSURPLUS()
 {
     m_EVChargingMode = "SURPLUS";
+    switchChargeMode();
     emit chargingDataChanged();                         // refresh GUI
 }
 void PowerNodeModel::showChargeModeMANUAL()
 {
     m_EVChargingMode = "MANUAL";
+    switchChargeMode();
     emit chargingDataChanged();                         // refresh GUI
 }
-
+void PowerNodeModel::showChargeMode()
+{
+    emit chargingDataChanged();                         // refresh GUI
+}
 // setting Manual Current handling
 void PowerNodeModel::switchManualCurrent()
 {
-    m_setManualCurrent = m_EVManualCurrent;
+    m_ManualSetCurrent = m_EVManualCurrent;
     downler.doSetManualCurrent();
 }
 void PowerNodeModel::showManualCurrent6000()
 {
     m_EVManualCurrent = 6000;
-    m_EVManualCurrentS = "manual " + QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    switchManualCurrent();
     emit chargingDataChanged();                         // refresh GUI
 }
 void PowerNodeModel::showManualCurrent12000()
 {
     m_EVManualCurrent = 12000;
-    m_EVManualCurrentS = "manual " + QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    switchManualCurrent();
     emit chargingDataChanged();                         // refresh GUI
 }
 void PowerNodeModel::showManualCurrent18000()
 {
     m_EVManualCurrent = 18000;
-    m_EVManualCurrentS = "manual " + QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    switchManualCurrent();
+    emit chargingDataChanged();                         // refresh GUI
+}
+void PowerNodeModel::showManualCurrent()
+{
+    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    emit chargingDataChanged();                         // refresh GUI
+}
+void PowerNodeModel::manualCurrentS()
+{
+    m_EVManualCurrentS = QString::number(m_ManualSetCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     emit chargingDataChanged();                         // refresh GUI
 }
 

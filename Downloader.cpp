@@ -64,8 +64,8 @@ void Downloader::replyFinishedSetMode (QNetworkReply *reply)
 
 void Downloader::doSetManualCurrent(void)
 {
-    extern int m_setManualCurrent;                       //
-    manualCurrentTmp = QString::number(m_setManualCurrent);
+    extern int m_ManualSetCurrent;                       //
+    manualCurrentTmp = QString::number(m_ManualSetCurrent);
 
     xmlManager = new QNetworkAccessManager(this);
 

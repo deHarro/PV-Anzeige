@@ -33,11 +33,13 @@
 // Version 1.11 - Einblenden der (Gesamt-)Erträge aller Wechselrichter in einem Drawer (von rechts reinziehen)
 // Version 1.12 - Bei Klick auf die Sonne: Messagebox mit kopierbaren Ertragswerten der Wechselrichter - erspart abtippen :)
 //              - Ertragswerte für den Drawer in QString umgestellt -> Anzeige ausgerichtet und zentriert
+// Version 1.13 - Alle Einstellungen für den SmartCharger Raspberry Pi (V1.7 und V1.8) werden jetzt ebenfalls über
+//                 Drawer von links und rechts im unteren Drittel (Wallbox) eingestellt. Das Hover mit der Maus ist hinfällig.
 //
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "12"
+#define VERSIONMINOR    "13"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -176,10 +178,13 @@ public slots:
     void showChargeModeQUICK();             // display (potentially new) chargeMode in GUI on hover
     void showChargeModeSURPLUS();           // display (potentially new) chargeMode in GUI on hover
     void showChargeModeMANUAL();            // display (potentially new) chargeMode in GUI on hover
+    void showChargeMode();                  // display currently selected ChargeMode
     void switchManualCurrent();             // send (new) manual current to SmartCharger
     void showManualCurrent6000();           // display ManualChargeCurrent 6 A in GUI on hover
     void showManualCurrent12000();          // display ManualChargeCurrent 12 A in GUI on hover
     void showManualCurrent18000();          // display ManualChargeCurrent 18 A in GUI on hover
+    void showManualCurrent();               // display currently selected ManualChargeCurrent
+    void manualCurrentS();                  // display currently selected ManualChargeCurrent
     void clearManualCurrent();              // Text wieder löschen
     void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt
 
