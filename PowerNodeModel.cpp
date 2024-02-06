@@ -89,6 +89,7 @@ void PowerNodeModel::onDataTimer() {
         setWRText();            // emit warning message if one or more of the WR fail to send data (modbus error)
         setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
         setBGColor();           // on comm error make background light red
+        showManualCurrent();    // make Manual ChargeCurrent visible in Drawer
 
     // Update the different values in QML -> show on GUI
         emit showComm();
@@ -515,44 +516,30 @@ void PowerNodeModel::showChargeMode()
 // setting Manual Current handling
 void PowerNodeModel::switchManualCurrent()
 {
+    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    emit chargingDataChanged();                         // refresh GUI
+
     m_ManualSetCurrent = m_EVManualCurrent;
     downler.doSetManualCurrent();
 }
-void PowerNodeModel::showManualCurrent6000()
+void PowerNodeModel::setManualCurrent6000()
 {
     m_EVManualCurrent = 6000;
-    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     switchManualCurrent();
-    emit chargingDataChanged();                         // refresh GUI
 }
-void PowerNodeModel::showManualCurrent12000()
+void PowerNodeModel::setManualCurrent12000()
 {
     m_EVManualCurrent = 12000;
-    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     switchManualCurrent();
-    emit chargingDataChanged();                         // refresh GUI
 }
-void PowerNodeModel::showManualCurrent18000()
+void PowerNodeModel::setManualCurrent18000()
 {
     m_EVManualCurrent = 18000;
-    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     switchManualCurrent();
-    emit chargingDataChanged();                         // refresh GUI
 }
 void PowerNodeModel::showManualCurrent()
 {
     m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
-    emit chargingDataChanged();                         // refresh GUI
-}
-void PowerNodeModel::manualCurrentS()
-{
-    m_EVManualCurrentS = QString::number(m_ManualSetCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
-    emit chargingDataChanged();                         // refresh GUI
-}
-
-void PowerNodeModel::clearManualCurrent()
-{
-    m_EVManualCurrentS = "";
     emit chargingDataChanged();                         // refresh GUI
 }
 

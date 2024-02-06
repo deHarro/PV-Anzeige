@@ -35,11 +35,16 @@
 //              - Ertragswerte für den Drawer in QString umgestellt -> Anzeige ausgerichtet und zentriert
 // Version 1.13 - Alle Einstellungen für den SmartCharger Raspberry Pi (V1.7 und V1.8) werden jetzt ebenfalls über
 //                 Drawer von links und rechts im unteren Drittel (Wallbox) eingestellt. Das Hover mit der Maus ist hinfällig.
+// Version 1.14 - Pfeile am Rand für Drawer einblenden durch kleine graue Kreise ersetzt
+//              - dragMargin von 0,5 auf 0,25 windowWidth geändert (-> Button "Car/Bike Bilderwechsel" wieder erreichbar)
+//              - Farbe der Drawer auf das Grün der Boxen geändert
+//              - allgemein etwas aufgeräumt (auskommentierte Bereiche gelöscht, Kommentare angebracht, ...)
+//              - Drawer ManualCurrent: Initialwert für ManualCurrent beim Öffnen des Drawer sofort anzeigen
 //
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "13"
+#define VERSIONMINOR    "14"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -122,7 +127,6 @@ public:
     Q_PROPERTY(QString chargeMode           MEMBER m_EVChargingMode   NOTIFY chargingDataChanged)                // current charge mode (String)
     Q_PROPERTY(double manualCurrent         MEMBER m_EVManualCurrent  NOTIFY chargingDataChanged)                // charging current for manual
     Q_PROPERTY(QString manualCurrentS       MEMBER m_EVManualCurrentS NOTIFY chargingDataChanged)                // current charge mode (String)
-//    Q_PROPERTY(QString chargingPower       MEMBER m_EVManualCurrentS NOTIFY chargingDataChanged)                // current charge mode (String)
     Q_PROPERTY(bool visibleComm             MEMBER m_visibleComm      NOTIFY showComm)
     Q_PROPERTY(char evalCountDown           MEMBER m_evalCountDown    NOTIFY showComm)
 
@@ -180,12 +184,11 @@ public slots:
     void showChargeModeMANUAL();            // display (potentially new) chargeMode in GUI on hover
     void showChargeMode();                  // display currently selected ChargeMode
     void switchManualCurrent();             // send (new) manual current to SmartCharger
-    void showManualCurrent6000();           // display ManualChargeCurrent 6 A in GUI on hover
-    void showManualCurrent12000();          // display ManualChargeCurrent 12 A in GUI on hover
-    void showManualCurrent18000();          // display ManualChargeCurrent 18 A in GUI on hover
-    void showManualCurrent();               // display currently selected ManualChargeCurrent
-    void manualCurrentS();                  // display currently selected ManualChargeCurrent
-    void clearManualCurrent();              // Text wieder löschen
+    void setManualCurrent6000();           // display ManualChargeCurrent 6 A in GUI on hover
+    void setManualCurrent12000();          // display ManualChargeCurrent 12 A in GUI on hover
+    void setManualCurrent18000();          // display ManualChargeCurrent 18 A in GUI on hover
+//    void showManualCurrent();               // display currently selected ManualChargeCurrent
+    void showManualCurrent();                  // display currently selected ManualChargeCurrent
     void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt
 
 private:
