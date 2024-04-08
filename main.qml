@@ -64,7 +64,7 @@ Window {
         }
         // <pre> bewirkt, dass mehrere Leerzeichen nicht zu Einem zusammengefasst werden -> Formatierung der Zeilen
         Label {
-            color: "black"
+            color: "white"
             width: parent.width - 20        // kleiner Rand um den Text herum
             height: parent.height - 20
             minimumPointSize: 10
@@ -615,7 +615,7 @@ Window {
             x: 160
             y: 10
             width: 70
-            color: "black"
+            color: "white"
             text: "Charge Mode"
             font.pixelSize: 16
             font.weight: Font.DemiBold
@@ -626,7 +626,7 @@ Window {
             x: 160
             y: 40
             width: 70
-            color: "black"
+            color: "white"
             text: PowerNodeModel.chargeMode
             font.pixelSize: 16
             font.weight: Font.DemiBold
@@ -715,7 +715,7 @@ Window {
             x: 160
             y: 10
             width: 70
-            color: "black"
+            color: "white"
             text: "Manual Current"
             font.pixelSize: 16
             font.weight: Font.DemiBold
@@ -726,7 +726,7 @@ Window {
             x: 160
             y: 40
             width: 70
-            color: "black"
+            color: "white"
             font.pixelSize: 16
             font.weight: Font.DemiBold
             text: PowerNodeModel.manualCurrentS

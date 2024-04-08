@@ -40,11 +40,13 @@
 //              - Farbe der Drawer auf das Grün der Boxen geändert
 //              - allgemein etwas aufgeräumt (auskommentierte Bereiche gelöscht, Kommentare angebracht, ...)
 //              - Drawer ManualCurrent: Initialwert für ManualCurrent beim Öffnen des Drawer sofort anzeigen
+// Version 1.15 - Texte und Werte in den drei Drawer weiß statt schwarz
+//              - automatisches Build Datum für die Caption für "April" korrigiert (war im April falsch "August")
 //
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "14"
+#define VERSIONMINOR    "15"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
