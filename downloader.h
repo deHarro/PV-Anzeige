@@ -34,6 +34,7 @@ public:
 
     void doSetChargeMode(void);
     void doSetManualCurrent(void);
+    //void doSetEVPercent(void);
 
 signals:
 
@@ -43,6 +44,7 @@ public slots:
 
     void replyFinishedSetMode(QNetworkReply *reply);
     void replyFinishedSetManualCurrent(QNetworkReply *reply);
+    //void replyFinishedSetEVPercent(QNetworkReply *reply);
 
 private:
     void getRPiParameter(void);
@@ -54,5 +56,6 @@ private:
     QString m_smartChargerPort;
     QString m_mbmdPort;
     QString manualCurrentTmp;
+    //QString manualEVPercentTmp;
 };
 

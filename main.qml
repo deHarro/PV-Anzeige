@@ -672,7 +672,7 @@ Window {
             y: 10
             width: 100
             height: 16
-            text: "6A = 1380 W"
+            text: "  6A = 1380 W"
             z: 1
             flat: false
             activeFocusOnTab: false
@@ -732,6 +732,52 @@ Window {
             text: PowerNodeModel.manualCurrentS
             horizontalAlignment: Text.AlignHCenter
         }
+/*
+        Button {        // change EVPercent for EV/house battery
+            x: 20
+            y: 80
+            width: 34
+            height: 16
+            text: "0"
+            z: 1
+            flat: false
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
+            visible: true
+            onClicked: PowerNodeModel.setEVPercent10()
+        }
+
+        Button {        // change EVPercent for EV/house battery
+            x: 55
+            y: 80
+            width: 34
+            height: 16
+            text: "50"
+            z: 1
+            flat: false
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
+            visible: true
+            onClicked: PowerNodeModel.setEVPercent50()
+        }
+
+        Button {        // change EVPercent for EV/house battery
+            x: 90
+            y: 80
+            width: 34
+            height: 16
+            text: "100"
+            z: 1
+            flat: false
+            activeFocusOnTab: false
+            hoverEnabled: true
+            onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
+            visible: true
+            onClicked: PowerNodeModel.setEVPercent100()
+        }
+*/
     }   // \drawer3
 // \Drawer für Auswahl Manual ChargeCurrent
 

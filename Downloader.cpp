@@ -90,6 +90,35 @@ void Downloader::replyFinishedSetManualCurrent (QNetworkReply *reply)
     xmlManager = nullptr;
 }
 
+/*
+void Downloader::doSetEVPercent(void)
+{
+    extern int m_EVPercent;                       //
+    manualEVPercentTmp = QString::number(m_EVPercent);
+
+    xmlManager = new QNetworkAccessManager(this);
+
+    connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinishedSetMode(QNetworkReply*)));
+
+    QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?manualcurrent=" + manualEVPercentTmp;
+    xmlManager->get(QNetworkRequest(SmartChargerAddr));
+}
+
+void Downloader::replyFinishedSetEVPercent (QNetworkReply *reply)
+{
+    if(reply->error())
+    {
+        qDebug() << "ERROR with SmartCharger";
+        qDebug() << reply->errorString();
+        m_messageFlag |= SETCURRENTFlag;                           // Fehler bei der Verarbeitung des SetMode Befehls
+    }
+
+    reply->deleteLater();
+    xmlManager->deleteLater();
+    xmlManager = nullptr;
+}
+*/
 // download XML data from SmartCharger ----------------------------------------
 void Downloader::doDownloadXML(void)
 {

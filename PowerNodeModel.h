@@ -7,46 +7,53 @@
 #include <QColor>
 #include <QMessageBox>
 
-// Hinweis
-// Die Konfiguration der Wechselrichter erfolgt in der Datei mbmd.yaml auf dem RasPi
-//
-// change log
-// Version  1.0 - erster Wurf, Funktion soweit OK
-// Version  1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
-// Version  1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
-// Version  1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
-// Version  1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
-// Version  1.5 - Fehlermeldung wenn einer der Wechselrichter keine Daten liefert (Modbus Fehler)
-// Version  1.6 - Zusätzlicher Wechselrichter Dach Nord vorbereitet, Anzeige des ChargeMode der Wallbox
-// Version  1.7 - Die ChargeModes sind per Mausclick umstellbar.
-//                 Per MouseHover auf der Anzeige des aktuellen ChargeMode in der Wallbox den gewuenschten Modus selektieren
-//                 und per MausClick aktivieren.
-//                 Achtung: Die Wallbox braucht einige Sekunden, bis der neue Modus akzeptiert und zur Anzeige zurück geliefert wird.
-// Version  1.8 - Der maximale Strom bei manuellem Laden kann über die GUI eingestellt werden.
-//                 Per MouseHover auf der Anzeige der Evaluation Points in der Wallbox den gewuenschten Wert selektieren.
-//                 Der neue Wert wird unterhalb der "Eval. Points" angezeigt.
-//                 Per MausClick wird der gerade angezeigte neue Wert aktiviert.
-//                 Achtung: Die Wallbox braucht einige Sekunden, bis der neue Wert umgesetzt wird.
-// Version  1.9 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) eingebaut aber per Define in WechselrichterJSON.h
-//                 deaktiviert (sonst meldet PV-Anzeige einen Fehler "Mindestens einer der Wechselrichter liefert keine Daten").
-// Version 1.10 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) aktiviert - läuft :)
-// Version 1.11 - Einblenden der (Gesamt-)Erträge aller Wechselrichter in einem Drawer (von rechts reinziehen)
-// Version 1.12 - Bei Klick auf die Sonne: Messagebox mit kopierbaren Ertragswerten der Wechselrichter - erspart abtippen :)
-//              - Ertragswerte für den Drawer in QString umgestellt -> Anzeige ausgerichtet und zentriert
-// Version 1.13 - Alle Einstellungen für den SmartCharger Raspberry Pi (V1.7 und V1.8) werden jetzt ebenfalls über
-//                 Drawer von links und rechts im unteren Drittel (Wallbox) eingestellt. Das Hover mit der Maus ist hinfällig.
-// Version 1.14 - Pfeile am Rand für Drawer einblenden durch kleine graue Kreise ersetzt
-//              - dragMargin von 0,5 auf 0,25 windowWidth geändert (-> Button "Car/Bike Bilderwechsel" wieder erreichbar)
-//              - Farbe der Drawer auf das Grün der Boxen geändert
-//              - allgemein etwas aufgeräumt (auskommentierte Bereiche gelöscht, Kommentare angebracht, ...)
-//              - Drawer ManualCurrent: Initialwert für ManualCurrent beim Öffnen des Drawer sofort anzeigen
-// Version 1.15 - Texte und Werte in den drei Drawer weiß statt schwarz
-//              - automatisches Build Datum für die Caption für "April" korrigiert (war im April falsch "August")
-//
+/*
+Hinweis
+Die Konfiguration der Wechselrichter erfolgt in der Datei mbmd.yaml auf dem RasPi
+
+change log
+Version  1.0 - erster Wurf, Funktion soweit OK
+Version  1.1 - Werte im Programm an Werte aus Datenquellen angepasst (nur double wenn Kommazahlen übergeben werden, sonst int)
+Version  1.2 - keine Mathe in QML, alle Berechnungen in C++, Ausgaben als Text
+Version  1.3 - Sonne ändert die Farbe von Weiß nach Gelb kontinuierlich mit der Sonneneinstrahlung
+Version  1.4 - consumptionPower hängt an EDLD und MBMD -> bei EDLD Probs. consumptionPower Rot färben
+Version  1.5 - Fehlermeldung wenn einer der Wechselrichter keine Daten liefert (Modbus Fehler)
+Version  1.6 - Zusätzlicher Wechselrichter Dach Nord vorbereitet, Anzeige des ChargeMode der Wallbox
+Version  1.7 - Die ChargeModes sind per Mausclick umstellbar.
+                Per MouseHover auf der Anzeige des aktuellen ChargeMode in der Wallbox den gewuenschten Modus selektieren
+                und per MausClick aktivieren.
+                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Modus akzeptiert und zur Anzeige zurück geliefert wird.
+Version  1.8 - Der maximale Strom bei manuellem Laden kann über die GUI eingestellt werden.
+                Per MouseHover auf der Anzeige der Evaluation Points in der Wallbox den gewuenschten Wert selektieren.
+                Der neue Wert wird unterhalb der "Eval. Points" angezeigt.
+                Per MausClick wird der gerade angezeigte neue Wert aktiviert.
+                Achtung: Die Wallbox braucht einige Sekunden, bis der neue Wert umgesetzt wird.
+Version  1.9 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) eingebaut aber per Define in WechselrichterJSON.h
+                deaktiviert (sonst meldet PV-Anzeige einen Fehler "Mindestens einer der Wechselrichter liefert keine Daten").
+Version 1.10 - Verarbeitung der Daten von Wechselrichter 4 (DachN, V1.6) aktiviert - läuft :)
+Version 1.11 - Einblenden der (Gesamt-)Erträge aller Wechselrichter in einem Drawer (von rechts reinziehen)
+Version 1.12 - Bei Klick auf die Sonne: Messagebox mit kopierbaren Ertragswerten der Wechselrichter - erspart abtippen :)
+             - Ertragswerte für den Drawer in QString umgestellt -> Anzeige ausgerichtet und zentriert
+Version 1.13 - Alle Einstellungen für den SmartCharger Raspberry Pi (V1.7 und V1.8) werden jetzt ebenfalls über
+                Drawer von links und rechts im unteren Drittel (Wallbox) eingestellt. Das Hover mit der Maus ist hinfällig.
+Version 1.14 - Pfeile am Rand für Drawer einblenden durch kleine graue Kreise ersetzt
+             - dragMargin von 0,5 auf 0,25 windowWidth geändert (-> Button "Car/Bike Bilderwechsel" wieder erreichbar)
+             - Farbe der Drawer auf das Grün der Boxen geändert
+             - allgemein etwas aufgeräumt (auskommentierte Bereiche gelöscht, Kommentare angebracht, ...)
+             - Drawer ManualCurrent: Initialwert für ManualCurrent beim Öffnen des Drawer sofort anzeigen
+Version 1.15 - Texte und Werte in den drei Drawer weiß statt schwarz
+             - automatisches Build Datum für die Caption für "April" korrigiert (war im April falsch "August")
+Version 1.16 - Manual Current "6A" im Drawer auf "=" ausgerichtet
+             - Die voreilig eingebauten Änderungen für Remote Zugriff auf den Prozentsatz der "EV ChargeRate" sind nicht 
+                zielführend, der Prozentsatz kann nicht über das Remote Interface geändert werden. -> Auskommentiert
+                (Wer weiß, vielleicht baut Nico das ja irgendwann mal in seinen EDL/SmartCharger ein ;)
+             - Change log in Blockkommentar geändert
+             - Version auf V1.16 geändert
+*/
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "15"
+#define VERSIONMINOR    "16"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -131,6 +138,7 @@ public:
     Q_PROPERTY(QString manualCurrentS       MEMBER m_EVManualCurrentS NOTIFY chargingDataChanged)                // current charge mode (String)
     Q_PROPERTY(bool visibleComm             MEMBER m_visibleComm      NOTIFY showComm)
     Q_PROPERTY(char evalCountDown           MEMBER m_evalCountDown    NOTIFY showComm)
+    //Q_PROPERTY(QString EVChargePercentS     MEMBER m_EVChargePercentS NOTIFY chargingDataChanged)                // current EV percentage (String)
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
     Q_PROPERTY(QString EDLDfigures  MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
@@ -189,8 +197,14 @@ public slots:
     void setManualCurrent6000();           // display ManualChargeCurrent 6 A in GUI on hover
     void setManualCurrent12000();          // display ManualChargeCurrent 12 A in GUI on hover
     void setManualCurrent18000();          // display ManualChargeCurrent 18 A in GUI on hover
-//    void showManualCurrent();               // display currently selected ManualChargeCurrent
-    void showManualCurrent();                  // display currently selected ManualChargeCurrent
+    void showManualCurrent();              // display currently selected ManualChargeCurrent
+/*
+    void showEVPercent();                  // display currently selected ratio car battery/house battery (0..50.100%)
+    void switchEVChargePercent();           // send (new) manual current to SmartCharger
+    void setEVPercent10();                   // display EVPercent 0 GUI on hover
+    void setEVPercent50();                   // display EVPercent 0 GUI on hover
+    void setEVPercent100();                  // display EVPercent 0 GUI on hover
+*/
     void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt
 
 private:
@@ -288,8 +302,10 @@ public:
     QString m_EVChargingMode;               // ChargeMode (OFF, SURPLUS, QUICK, MANUAL)
     char m_CurrChargeMode;
     char m_nextChargeMode = 0;              // set ChargeMode der Wallbox via SmartCharger
-    double m_EVManualCurrent = 18000.0;          // set ManualCurrent der Wallbox via SmartCharger (default 18 A = 4140 W)
-    QString m_EVManualCurrentS;              //
+    double m_EVManualCurrent = 18000.0;     // set ManualCurrent der Wallbox via SmartCharger (default 18 A = 4140 W)
+    QString m_EVManualCurrentS;             // String für Anzeige in der GUI
+    //char m_EVChargePercent = 100;           // charge percentage into EV battery: 100..50..0 [%]
+    //QString m_EVChargePercentS;             // String für Anzeige in der GUI
 
 // Error Messages
     QString m_MBMDProblemText = "";

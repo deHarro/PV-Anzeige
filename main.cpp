@@ -23,6 +23,7 @@ quint8 m_messageFlag = 0;
 QString m_setChargeModeString;                      // Befehl für remote control des SmartCharger (off, quick, surplus, manual);
 int m_ManualSetCurrent;                             // Befehl für remote control des SmartCharger (manual current 6, 12, 18 A)
 QString m_EVChargingModeS;                          // Anzeige der manuell einzustellenden maximalen Ladeleistung
+//int m_EVPercent;                                    // Befehl für remote control des SmartCharger (0..50..100 %  Ladung -> EV)
 // globals ----------------------------------------
 
 

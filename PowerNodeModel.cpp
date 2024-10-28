@@ -47,6 +47,7 @@ WechselrichterJSON wrJSON;
 extern QString m_setChargeModeString;
 extern int m_ManualSetCurrent;
 extern QString m_EVChargingModeS;
+//extern int m_EVPercent;
 
 using namespace std::chrono_literals;
 
@@ -90,6 +91,7 @@ void PowerNodeModel::onDataTimer() {
         setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
         setBGColor();           // on comm error make background light red
         showManualCurrent();    // make Manual ChargeCurrent visible in Drawer
+//        showEVPercent();        // make percentage of power into car battery visible in Drawer (0..50..100)
 
     // Update the different values in QML -> show on GUI
         emit showComm();
@@ -542,6 +544,37 @@ void PowerNodeModel::showManualCurrent()
     m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     emit chargingDataChanged();                         // refresh GUI
 }
+
+/*
+// setting EV percentage handling
+void PowerNodeModel::switchEVChargePercent()
+{
+    m_EVChargePercentS = QString::number(m_EVChargePercent) + " % to EV";   // Prozentwert anzeigen
+    emit chargingDataChanged();                         // refresh GUI
+    m_EVPercent = m_EVChargePercent;
+    downler.doSetEVPercent();
+}
+void PowerNodeModel::showEVPercent()       // make percentage of power into car battery visible in Drawer (0..50..100%)
+{
+    m_EVChargePercentS = QString::number(m_EVChargePercent) + " % to EV";   // Prozentwert anzeigen
+    emit chargingDataChanged();                         // refresh GUI
+}
+void PowerNodeModel::setEVPercent0()
+{
+    m_EVChargePercent = 10;
+    switchEVChargePercent();
+}
+void PowerNodeModel::setEVPercent50()
+{
+    m_EVChargePercent = 50;
+    switchEVChargePercent();
+}
+void PowerNodeModel::setEVPercent100()
+{
+    m_EVChargePercent = 100;
+    switchEVChargePercent();
+}
+*/
 
 // wallbox handling ----------------------------------------------------------
 void PowerNodeModel::wallboxHandling()
