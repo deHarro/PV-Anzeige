@@ -1,6 +1,7 @@
 *.bak
 main.qml.autosave
 build-*
+build\*
 PV-Anzeige.pro.user
 icons/sources/*.*
 icons/sources/
