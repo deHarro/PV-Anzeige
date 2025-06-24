@@ -1,9 +1,11 @@
 #include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
-#include <QtCharts/QChartView>
-#include <QtCharts/QPieSeries>
-#include <QtCharts/QPieSlice>
-#include <QtWidgets>                // Für Messagebox
+//#include <QtCharts/QChartView>
+//#include <QtCharts/QPieSeries>
+//#include <QtCharts/QPieSlice>
+#include <QtWidgets/QMessageBox>                // Für Messagebox
+#include <QQmlContext>
 
 #include "PowerNodeModel.h"
 
@@ -24,17 +26,20 @@ QString m_setChargeModeString;                      // Befehl für remote contro
 int m_ManualSetCurrent;                             // Befehl für remote control des SmartCharger (manual current 6, 12, 18 A)
 QString m_EVChargingModeS;                          // Anzeige der manuell einzustellenden maximalen Ladeleistung
 //int m_EVPercent;                                    // Befehl für remote control des SmartCharger (0..50..100 %  Ladung -> EV)
-// globals ----------------------------------------
+// \globals ----------------------------------------
 
 
 int main(int argc, char *argv[])
 {
-//#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-//#endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
 
-//    QGuiApplication app(argc, argv); // Für Messagebox muss QApplication verwendet werden
-    QApplication app(argc, argv);
+    // to make the App adapt to various screen sizes
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Ceil);
+
+    //QGuiApplication app(argc, argv); // Für Messagebox muss QApplication verwendet werden
+    QApplication app(argc, argv); // Für Messagebox muss QApplication verwendet werden
 
     PowerNodeModel powerNodeModel;
     QQmlApplicationEngine engine;

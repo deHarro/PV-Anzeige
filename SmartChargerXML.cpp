@@ -1,5 +1,5 @@
-#include <QApplication>
-#include <QtXml>// Library needed for processing XML documents
+//#include <QApplication>
+#include <QtXML>// Library needed for processing XML documents
 #include <QFile>// Library needed for processing files
 
 #include <iostream>
@@ -199,6 +199,24 @@ void SmartChargerXML::ReadSmartChargerXML() {
                 std::cout << "              ChargingMode = " << m_EVChargingMode.toStdString().c_str() << std::endl;
             }
 
+// neu:
+//  MaxPhases
+            // 			Search node MaxPhases
+            // loopcount = 0;
+            while ((node.nodeName().compare("MaxPhases") != 0) && (!node.isNull()))
+            {
+#ifdef INTERMEDIATES
+                std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
+#endif
+                node=node.nextSibling();
+            }
+            if (node.nodeName().compare("MaxPhases")==0)
+            {
+                m_EVMaxPhases = node.firstChild().toText().data().toDouble(); // moegliche Werte: 1, 2, 3
+                std::cout << "              MaxPhases = " << m_EVMaxPhases << std::endl;
+            }
+//  \MaxPhases
+
         // 			Search node EvaluationPoints
             // loopcount = 0;
             while ((node.nodeName().compare("EvaluationPoints") != 0) && (!node.isNull()))
@@ -297,6 +315,24 @@ void SmartChargerXML::ReadSmartChargerXML() {
                     m_EVSystemEnabled = node.firstChild().toText().data().toDouble();
                     std::cout << "              SystemEnabled = " << m_EVSystemEnabled << std::endl;
                 }
+
+// neu:
+//  Output (Ansteuerung des Phasenumschaltrelais)
+                // 			Search node Output
+                // loopcount = 0;
+                while ((node.nodeName().compare("Output") != 0) && (!node.isNull()))
+                {
+#ifdef INTERMEDIATES
+                    std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
+#endif
+                    node=node.nextSibling();
+                }
+                if (node.nodeName().compare("Output")==0)
+                {
+                    m_EVOutput = node.firstChild().toText().data().toInt(); // moegliche Werte: 0, 1
+                    std::cout << "              Output = " << m_EVOutput << std::endl;
+                }
+ // \Output
 
     // 			Search node ActualPower
                 // loopcount = 0;
@@ -478,6 +514,10 @@ double SmartChargerXML::getSmartMeterSurplus(void)
     return m_SmartMeterSurplus;
 }
 
+double SmartChargerXML::getMaxPhases(void)
+{
+    return m_EVMaxPhases;
+}
 double SmartChargerXML::getEVEvaluationPoints(void)
 {
     return m_EVEvaluationPoints;
@@ -493,6 +533,10 @@ double SmartChargerXML::getEVPlug(void)
 double SmartChargerXML::getEVSystemEnabled(void)
 {
     return m_EVSystemEnabled;
+}
+int SmartChargerXML::getEVOutput(void)
+{
+    return m_EVOutput;
 }
 double SmartChargerXML::getEVActualPower(void)
 {

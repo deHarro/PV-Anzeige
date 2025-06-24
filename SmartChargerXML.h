@@ -19,8 +19,10 @@ public:
 
     double getEVEvaluationPoints(void);
     double getEVState(void);
+    double getMaxPhases(void);
     double getEVPlug(void);
     double getEVSystemEnabled(void);
+    int getEVOutput(void);
     double getEVActualPower(void);
     double getEVSessionEnergy(void);
     QString getEVChargeMode(void);
@@ -36,10 +38,12 @@ private:
     double m_SmartMeterSurplus = 0.0;
 
     QString m_EVChargingMode;
+    int m_EVMaxPhases = 0;
     double m_EVEvaluationPoints = 0.0;
     int m_EVState = 0;
     int m_EVPlug = 0;
     int m_EVSystemEnabled = 0;
+    int m_EVOutput = 0;
     double m_EVActualPower = 0.0;
     double m_EVSessionEnergy = 0.0;
     ulong m_EVTotalEnergy = 0;

@@ -1,10 +1,12 @@
 import QtQuick 2.15
-import QtQuick.Window 2.12
+import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
-// import QtGraphicalEffects 1.0                // use this line when working with Qt 5
-import Qt5Compat.GraphicalEffects         // use this line when working with Qt 6
+
+import QtGraphicalEffects 1.0            // use this line when working with Qt 5
+// import Qt5Compat.GraphicalEffects           // use this line when working with Qt 6
 
 import PowerNodeModel 1.0
+
 
 
 Window {
@@ -32,57 +34,7 @@ Window {
     property real coordHouseW: 90
     property real coordHouseH: 270
 
-    // kleiner grauer Punkt als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
-    Rectangle {
-        x: 379
-        y: 65
-        width: 10
-        height: width
-        color: "#d4d4d4"
-        radius: width*0.5
-    }
-
-    // Mit swipe Bewegung der Maus von rechts nach links die Ertragswerte einblenden
-    Drawer {
-        id: drawer1
-        y: 12                               // -- das muss zu window.height passen -> auf SonnenBox zentriert
-        width: 0.66 * window.width
-        height: 0.205 * window.height       // -- window.height -> und der Abstand zu den Markierungen passt
-        dragMargin: 0.25 * window.width
-        edge: Qt.RightEdge
-        interactive: true
-        position: 0.5
-
-        background: Rectangle {
-            Rectangle {
-                x: 1
-                width: parent.width - 2
-                y: 1
-                height: parent.height - 2
-                color: "#00ac00"            // LIMEGREEN
-            }
-        }
-        // <pre> bewirkt, dass mehrere Leerzeichen nicht zu Einem zusammengefasst werden -> Formatierung der Zeilen
-        Label {
-            color: "white"
-            width: parent.width - 20        // kleiner Rand um den Text herum
-            height: parent.height - 20
-            minimumPointSize: 10
-            font.pointSize: 60
-            fontSizeMode: Text.Fit          // formatfüllend anzeigen
-            anchors.centerIn: parent
-            horizontalAlignment: Text.AlignHCenter
-
-            text: "<pre><b>" +
-                 "Ertragswerte der Wechselrichter" + "<br>" +
-                 "Dach Nord: " + PowerNodeModel.generatorDachNEnergy  + " kWh<br>" +
-                 "Dach Süd:  " + PowerNodeModel.generatorDachSEnergy  + " kWh<br>" +
-                 "Gaube:     " + PowerNodeModel.generatorGaubeEnergy  + " kWh<br>" +
-                 "Garage:    " + PowerNodeModel.generatorGarageEnergy + " kWh<br>" +
-                 "Gesamt:     " + PowerNodeModel.genTotalEnergy + " MWh" +
-                 "</b></pre>";
-        }
-    }
+    property real captionTextSize: 12
 
     // Überlagerte Farben in der Haus-Box mit Texten und Bild
     Item {
@@ -187,7 +139,7 @@ Window {
                         height: 33
                         color: "#ffffff"
                         text: qsTr("Gesamt-verbrauch")
-                        font.pixelSize: 12
+                        font.pixelSize: captionTextSize
                         horizontalAlignment: Text.AlignHCenter
                         wrapMode: Text.WordWrap
                         font.bold: true
@@ -309,7 +261,7 @@ Window {
             height: 23
             color: "#ffffff"
             text: "PV-Erzeugung"
-            font.pixelSize: 12
+            font.pixelSize: captionTextSize
             horizontalAlignment: Text.AlignHCenter
             font.bold: true
             textFormat: Text.RichText
@@ -362,10 +314,22 @@ Window {
                 activeFocusOnTab: false
                 hoverEnabled: false // Unicode Character 'CHECK MARK'
                 visible: true
-//                onClicked: PowerNodeModel.sunColor = "Icons/Sonne_invers_hellgrau.png"  // 2022-05-26
-                onClicked: PowerNodeModel.openPopUpMsg()       // 2024-01-28
+                onClicked: PowerNodeModel.openVersionInfoMsg()       // 2024-01-28
+                opacity: 0
             }
         }
+        Button {    // Button auf den WR-Momentanwerten, startet PopUp MsgBox mit den Erträgen
+            x: 216
+            y: 6
+            width: 94
+            height: 78
+            text: ""
+            z: 1
+            flat: true
+            onClicked: PowerNodeModel.openPopUpMsg()
+            opacity: 0
+        }
+
         Text {
             id: text22
             x: 216
@@ -521,268 +485,75 @@ Window {
             text: qsTr("MWh")
             font.pixelSize: 12
         }
-    }
 
-// Drawer für Auswahl ChargeMode
-    // kleiner grauer Punkt als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
-    Rectangle {
-        x: 379
-        y: 476
-        width: 10
-        height: width
-        color: "#d4d4d4"
-        radius: width*0.5
-    }
 
-    // Mit swipe Bewegung der Maus von rechts nach links die ChargeMode Alternativen einblenden
-    Drawer {
-        id: drawer2
-        y: 435-12                           // -- das muss zu window.height passen -> auf WallboxBox zentriert
-        width: 0.66 * window.width
-        height: 0.205 * window.height       // -- window.height -> und der Abstand zu den Markierungen passt
-        dragMargin: 0.25 * window.width
-        edge: Qt.RightEdge
-        interactive: true
+        // kleiner grauer Punkt als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
+        Rectangle {
+            x: 339
+            y: 45 - width*0.5
+            width: 10
+            height: width
+            color: "#d4d4d4"
+            radius: width*0.5
+        }
 
-        background: Rectangle {
-            Rectangle {
-                x: 1
-                width: parent.width - 2
-                y: 1
-                height: parent.height - 2
-                color: "#00ac00"            // LIMEGREEN
+        // kleiner Kreis als Hint wo mit der Maus geklickt werden muss, damit der Drawer aufgeht
+        RoundButton {
+            width: 50
+            height: width
+            x: 339 - width*0.5
+            y: 45 - width*0.5
+            z: 1
+            flat: true
+            opacity: 0
+            onClicked: drawer1.open()
+        }
+
+        // Mit Mausklick die Ertragswerte einblenden
+        Drawer {
+            id: drawer1
+            y: rectangle5.y - 12                // -- das muss zu window.height passen -> auf SonnenBox zentriert
+            width: 0.66 * window.width
+            height: 0.205 * window.height       // -- window.height -> und der Abstand zu den Markierungen passt
+            dragMargin: 0       // 0.1 * window.width   // prevent drawer from being dragged
+            edge: Qt.RightEdge
+            interactive: true
+            dim: false                          // enable closing by clicking outside of drawer area
+
+            background: Rectangle {
+                Rectangle {
+                    x: 1
+                    width: parent.width - 2
+                    y: 1
+                    height: parent.height - 2
+                    color: "#00ac00"            // LIMEGREEN
+                }
             }
-        }
-        // Festlegung des Charge Mode (Off, Manual, Surplus, Quick)
-        Button {        // change ChargeMode der Wallbox
-            x: 20
-            y: 10
-            width: 100
-            height: 16
-            text: "OFF"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showChargeMode()
-            visible: true
-            onClicked: PowerNodeModel.showChargeModeOFF()
-        }
-        Button {        // change ChargeMode der Wallbox
-            x: 20
-            y: 30
-            width: 100
-            height: 16
-            text: "QUICK"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showChargeMode()
-            visible: true
-            onClicked: PowerNodeModel.showChargeModeQUICK()
-        }
-        Button {        // change ChargeMode der Wallbox
-            x: 20
-            y: 50
-            width: 100
-            height: 16
-            text: "SURPLUS"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showChargeMode()
-            visible: true
-            onClicked: PowerNodeModel.showChargeModeSURPLUS()
-        }
-        Button {        // change ChargeMode der Wallbox
-            x: 20
-            y: 70
-            width: 100
-            height: 16
-            text: "MANUAL"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showChargeMode()
-            visible: true
-            onClicked: PowerNodeModel.showChargeModeMANUAL()
-        }
-        Text {          // Überschrift
-            id: text51drawer
-            x: 160
-            y: 10
-            width: 70
-            color: "white"
-            text: "Charge Mode"
-            font.pixelSize: 16
-            font.weight: Font.DemiBold
-            horizontalAlignment: Text.AlignHCenter
-        }
-        Text {          // ChargeMode (OFF, SURPLUS, QUICK, MANUAL)
-            id: text51drawer1
-            x: 160
-            y: 40
-            width: 70
-            color: "white"
-            text: PowerNodeModel.chargeMode
-            font.pixelSize: 16
-            font.weight: Font.DemiBold
-            horizontalAlignment: Text.AlignHCenter
-        }
-    }   // \drawer2
-// \Drawer für Auswahl ChargeMode
+            // <pre> bewirkt, dass mehrere Leerzeichen nicht zu Einem zusammengefasst werden -> Formatierung der Zeilen
+            Label {
+                color: "white"
+                width: parent.width - 20        // kleiner Rand um den Text herum
+                height: parent.height - 20
+                minimumPointSize: 10
+                font.pointSize: 60
+                fontSizeMode: Text.Fit          // formatfüllend anzeigen
+                anchors.centerIn: parent
+                horizontalAlignment: Text.AlignHCenter
 
-// Drawer für Auswahl Manual ChargeCurrent
-    // kleiner grauer Punkt als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
-    Rectangle {
-        x: 15
-        y: 476
-        width: 10
-        height: width
-        color: "#d4d4d4"
-        radius: width*0.5
-    }
-
-    // Mit swipe Bewegung der Maus von links nach rechts die ManualCurrent Alternativen einblenden
-    Drawer {
-        id: drawer3
-        y: 435-12                           // -- das muss zu window.height passen -> auf WallboxBox zentriert
-        width: 0.66 * window.width
-        height: 0.205 * window.height       // -- window.height -> und der Abstand zu den Markierungen passt
-        dragMargin: 0.25 * window.width
-        edge: Qt.LeftEdge
-        interactive: true
-
-        background: Rectangle {
-            Rectangle {
-                x: 1
-                width: parent.width - 2
-                y: 1
-                height: parent.height - 2
-                color: "#00ac00"            // LIMEGREEN
+                text: "<pre><b>" +
+                     "Ertragswerte der Wechselrichter" + "<br>" +
+                     "Dach Nord: " + PowerNodeModel.generatorDachNEnergy  + " kWh<br>" +
+                     "Dach Süd:  " + PowerNodeModel.generatorDachSEnergy  + " kWh<br>" +
+                     "Gaube:     " + PowerNodeModel.generatorGaubeEnergy  + " kWh<br>" +
+                     "Garage:    " + PowerNodeModel.generatorGarageEnergy + " kWh<br>" +
+                     "Gesamt:     " + PowerNodeModel.genTotalEnergy + " MWh" +
+                     "</b></pre>";
             }
         }
 
-// Festlegung des Manual Charge Current in 3 Stufen (6, 12, 18 A)
-        Button {        // change ManualCurrent der Wallbox
-            x: 20
-            y: 10
-            width: 100
-            height: 16
-            text: "  6A = 1380 W"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 6A = 1380 W
-            visible: true
-            onClicked: PowerNodeModel.setManualCurrent6000()
-        }
-        Button {        // change ManualCurrent der Wallbox
-            x: 20
-            y: 30
-            width: 100
-            height: 16
-            text: "12A = 2760 W"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 12A = 2760 W
-            visible: true
-            onClicked: PowerNodeModel.setManualCurrent12000()
-        }
-        Button {        // change ManualCurrent der Wallbox
-            x: 20
-            y: 50
-            width: 100
-            height: 16
-            text: "18A = 4140 W"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 18A = 4140 W
-            visible: true
-            onClicked: PowerNodeModel.setManualCurrent18000()
-        }
+    }
 
-        Text {          // Überschrift
-            id: text51drawer3
-            x: 160
-            y: 10
-            width: 70
-            color: "white"
-            text: "Manual Current"
-            font.pixelSize: 16
-            font.weight: Font.DemiBold
-            horizontalAlignment: Text.AlignHCenter
-        }
-        Text {          // manual Power (1380 W, 2760 W, 4140 W)
-            id: text55drawer3
-            x: 160
-            y: 40
-            width: 70
-            color: "white"
-            font.pixelSize: 16
-            font.weight: Font.DemiBold
-            text: PowerNodeModel.manualCurrentS
-            horizontalAlignment: Text.AlignHCenter
-        }
-/*
-        Button {        // change EVPercent for EV/house battery
-            x: 20
-            y: 80
-            width: 34
-            height: 16
-            text: "0"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
-            visible: true
-            onClicked: PowerNodeModel.setEVPercent10()
-        }
-
-        Button {        // change EVPercent for EV/house battery
-            x: 55
-            y: 80
-            width: 34
-            height: 16
-            text: "50"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
-            visible: true
-            onClicked: PowerNodeModel.setEVPercent50()
-        }
-
-        Button {        // change EVPercent for EV/house battery
-            x: 90
-            y: 80
-            width: 34
-            height: 16
-            text: "100"
-            z: 1
-            flat: false
-            activeFocusOnTab: false
-            hoverEnabled: true
-            onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
-            visible: true
-            onClicked: PowerNodeModel.setEVPercent100()
-        }
-*/
-    }   // \drawer3
-// \Drawer für Auswahl Manual ChargeCurrent
-
-
-    Rectangle {
+    Rectangle {     // Wallbox
         objectName: "Wallbox"
         id: rectangle1              // WallBox
         x: 42
@@ -804,19 +575,31 @@ Window {
             height: 33
             color: "#ffffff"
             text: qsTr("Ladeleistung")
-            font.pixelSize: 12
+            font.pixelSize: captionTextSize
             wrapMode: Text.WordWrap
             font.bold: true
         }
 
         Text {          // ChargeMode (OFF, SURPLUS, QUICK, MANUAL)
             id: text51
-            x: 217
+            x: 220
             y: 8
             width: 70
             color: "#ffffff"
             text: PowerNodeModel.chargeMode
-            font.pixelSize: 10
+            font.pixelSize: 11
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        Text {          // usedPhases (1, 3)
+            id: text56
+            x: 180
+            y: 8
+            width: 70
+            color: "#ffffff"
+            text: PowerNodeModel.usedPhases
+            //text: "P"
+            font.pixelSize: 11
             horizontalAlignment: Text.AlignHCenter
         }
 
@@ -977,7 +760,307 @@ Window {
             hoverEnabled: false
             visible: true
             onClicked: PowerNodeModel.switchEVIcons()
+            opacity: 0
         }
+        // Drawer für Auswahl ChargeMode
+            // kleiner grauer Punkt als Hint wo mit der Maus geklickt werden muss, damit der Drawer aufgeht
+            Rectangle {
+                x: 339
+                y: 45 - width*0.5
+                width: 10
+                height: width
+                color: "#d4d4d4"
+                radius: width*0.5
+            }
+
+        // unsichtbarer Kreis für Mausklick damit der Drawer aufgeht
+            RoundButton {
+                width: 50
+                height: width
+                x: 339 - width*0.5
+                y: 45 - width*0.5
+                z: 1
+                flat: true
+                opacity: 0
+                onClicked: drawer2.open()
+            }
+
+            // Mit Mausklick die ChargeMode Alternativen einblenden
+            Drawer {
+                id: drawer2
+                x: 50
+                y: rectangle1.y - 12                // -- das muss zu window.height passen -> auf WallboxBox zentriert
+                width: 0.66 * window.width
+                height: 0.205 * window.height       // -- window.height -> und der Abstand zu den Markierungen passt
+                dragMargin: 0       // 0.1 * window.width   // prevent drawer from being dragged
+                edge: Qt.RightEdge
+                interactive: true
+                dim: false                          // enable closing by clicking outside of drawer area
+
+                background: Rectangle {
+                    Rectangle {
+                        x: 1
+                        width: parent.width - 2
+                        y: 1
+                        height: parent.height - 2
+                        color: "#00ac00"            // LIMEGREEN
+                    }
+                }
+                // Festlegung des Charge Mode (Off, Manual, Surplus, Quick)
+                Button {        // change ChargeMode der Wallbox
+                    x: 20
+                    y: 10
+                    width: 100
+                    height: 16
+                    text: "OFF"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showChargeMode()
+                    visible: true
+                    onClicked: PowerNodeModel.showChargeModeOFF()
+                }
+                Button {        // change ChargeMode der Wallbox
+                    x: 20
+                    y: 30
+                    width: 100
+                    height: 16
+                    text: "QUICK"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showChargeMode()
+                    visible: true
+                    onClicked: PowerNodeModel.showChargeModeQUICK()
+                }
+                Button {        // change ChargeMode der Wallbox
+                    x: 20
+                    y: 50
+                    width: 100
+                    height: 16
+                    text: "SURPLUS"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showChargeMode()
+                    visible: true
+                    onClicked: PowerNodeModel.showChargeModeSURPLUS()
+                }
+                Button {        // change ChargeMode der Wallbox
+                    x: 20
+                    y: 70
+                    width: 100
+                    height: 16
+                    text: "MANUAL"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showChargeMode()
+                    visible: true
+                    onClicked: PowerNodeModel.showChargeModeMANUAL()
+                }
+                Text {          // Überschrift
+                    id: text51drawer
+                    x: 160
+                    y: 10
+                    width: 70
+                    color: "white"
+                    text: "Charge Mode"
+                    font.pixelSize: 16
+                    font.weight: Font.DemiBold
+                    horizontalAlignment: Text.AlignHCenter
+                }
+                Text {          // ChargeMode (OFF, SURPLUS, QUICK, MANUAL)
+                    id: text51drawer1
+                    x: 160
+                    y: 40
+                    width: 70
+                    color: "white"
+                    text: PowerNodeModel.chargeMode
+                    font.pixelSize: 16
+                    font.weight: Font.DemiBold
+                    horizontalAlignment: Text.AlignHCenter
+                }
+            }   // \drawer2
+        // \Drawer für Auswahl ChargeMode
+
+        // Drawer für Auswahl Manual ChargeCurrent
+            // kleiner grauer Punkt als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
+            Rectangle {
+                x: -27
+                y: 45 - width*0.5
+                width: 10
+                height: width
+                color: "#d4d4d4"
+                radius: width*0.5
+            }
+
+            // kleiner Kreis als Hint wo mit der Maus geklickt werden muss, damit der Drawer aufgeht
+            RoundButton {
+                width: 50
+                height: width
+                x: -27 - width*0.5
+                y: 45 - width*0.5
+                z: 1
+                flat: true
+                opacity: 0
+                onClicked: drawer3.open()
+            }
+
+            // Mit Mausklick die ManualCurrent Alternativen einblenden
+            Drawer {
+                id: drawer3
+                y: rectangle1.y - 12                // -- das muss zu window.height passen -> auf WallboxBox zentriert
+                width: 0.66 * window.width
+                height: 0.205 * window.height       // -- window.height -> und der Abstand zu den Markierungen passt
+                dragMargin: 0       // 0.1 * window.width   // prevent drawer from being dragged
+                edge: Qt.LeftEdge
+                interactive: true
+                dim: false                          // enable closing by clicking outside of drawer area
+
+                background: Rectangle {
+                    Rectangle {
+                        x: 1
+                        width: parent.width - 2
+                        y: 1
+                        height: parent.height - 2
+                        color: "#00ac00"            // LIMEGREEN
+                    }
+                }
+
+        // Festlegung des Manual Charge Current in 3 Stufen (6, 12, 18 A), 2025-06-18 - in 4 Stufen (32 A -> 11 kW)
+                Button {        // change ManualCurrent der Wallbox
+                    x: 20
+                    y: 10
+                    width: 100
+                    height: 16
+                    text: "  6A = 1380 W"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 6A = 1380 W
+                    visible: true
+                    onClicked: PowerNodeModel.setManualCurrent6000()
+                }
+                Button {        // change ManualCurrent der Wallbox
+                    x: 20
+                    y: 30
+                    width: 100
+                    height: 16
+                    text: "12A = 2760 W"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 12A = 2760 W
+                    visible: true
+                    onClicked: PowerNodeModel.setManualCurrent12000()
+                }
+                Button {        // change ManualCurrent der Wallbox
+                    x: 20
+                    y: 50
+                    width: 100
+                    height: 16
+                    text: "18A = 4140 W"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 18A = 4140 W
+                    visible: true
+                    onClicked: PowerNodeModel.setManualCurrent18000()
+                }
+
+                Button {        // change ManualCurrent der Wallbox
+                    x: 20
+                    y: 70
+                    width: 100
+                    height: 16
+                    text: "32A = 7360 W"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 18A = 4140 W
+                    visible: true
+                    onClicked: PowerNodeModel.setManualCurrent32000()
+                }
+
+                Text {          // Überschrift
+                    id: text51drawer3
+                    x: 160
+                    y: 10
+                    width: 70
+                    color: "white"
+                    text: "Manual Current"
+                    font.pixelSize: 16
+                    font.weight: Font.DemiBold
+                    horizontalAlignment: Text.AlignHCenter
+                }
+                Text {          // manual Power (1380 W, 2760 W, 4140 W), 7360 W
+                    id: text55drawer3
+                    x: 160
+                    y: 40
+                    width: 70
+                    color: "white"
+                    font.pixelSize: 16
+                    font.weight: Font.DemiBold
+                    text: PowerNodeModel.manualCurrentS
+                    horizontalAlignment: Text.AlignHCenter
+                }
+        /*
+                Button {        // change EVPercent for EV/house battery
+                    x: 20
+                    y: 80
+                    width: 34
+                    height: 16
+                    text: "0"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
+                    visible: true
+                    onClicked: PowerNodeModel.setEVPercent10()
+                }
+
+                Button {        // change EVPercent for EV/house battery
+                    x: 55
+                    y: 80
+                    width: 34
+                    height: 16
+                    text: "50"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
+                    visible: true
+                    onClicked: PowerNodeModel.setEVPercent50()
+                }
+
+                Button {        // change EVPercent for EV/house battery
+                    x: 90
+                    y: 80
+                    width: 34
+                    height: 16
+                    text: "100"
+                    z: 1
+                    flat: false
+                    activeFocusOnTab: false
+                    hoverEnabled: true
+                    onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
+                    visible: true
+                    onClicked: PowerNodeModel.setEVPercent100()
+                }
+        */
+            }   // \drawer3
+        // \Drawer für Auswahl Manual ChargeCurrent
 
 //        Text {
 //            id: text50
@@ -989,7 +1072,7 @@ Window {
 //            font.pixelSize: 12
 //            horizontalAlignment: Text.AlignRight
 //        }
-    }
+    }   // \Rectangle Wallbox
 
     Rectangle {
         objectName: "Battery"
@@ -1013,7 +1096,7 @@ Window {
             height: 33
             color: "#ffffff"
             text: PowerNodeModel.batteryText
-            font.pixelSize: 12
+            font.pixelSize: captionTextSize
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             font.bold: true
@@ -1092,7 +1175,7 @@ Window {
             height: 33
             color: "#ffffff"
             text: qsTr("Batterie-ladezustand")
-            font.pixelSize: 12
+            font.pixelSize: captionTextSize
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             font.bold: true
@@ -1176,7 +1259,7 @@ Window {
             //text: qsTr("Netz-einspeisung")
             //text: qsTr("Netzbezug")
             text: PowerNodeModel.gridText
-            font.pixelSize: 12
+            font.pixelSize: captionTextSize
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             font.bold: true

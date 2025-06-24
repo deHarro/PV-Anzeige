@@ -1,9 +1,12 @@
 #include "PowerNodeModel.h"
 
 #include <algorithm>
-#include <chrono>
+//#include <chrono>
 #include <iostream>
 #include <QTextStream>
+#include <QTextEdit>
+#include <QAbstractButton>
+#include <QStyle>
 
 #include "Downloader.h"
 #include "SmartChargerXML.h"
@@ -91,6 +94,7 @@ void PowerNodeModel::onDataTimer() {
         setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
         setBGColor();           // on comm error make background light red
         showManualCurrent();    // make Manual ChargeCurrent visible in Drawer
+        showUsedPhases();       // show used phases in GUI
 //        showEVPercent();        // make percentage of power into car battery visible in Drawer (0..50..100)
 
     // Update the different values in QML -> show on GUI
@@ -255,20 +259,52 @@ void PowerNodeModel::setSunColor(int8_t newColor)
 
 void PowerNodeModel::openPopUpMsg() {
     // Messagebox mit Ertragswerten der WR aufpoppen.
-    // Mit Klick auf "Details einblenden" können die Werte kopiert werden
     // Schließen mit OK
+
     QMessageBox msgBox;
+    msgBox.setTextInteractionFlags(Qt::TextInteractionFlags (true));
+
     msgBox.setTextFormat(Qt::RichText);
-    msgBox.setBaseSize(QSize(600, 120));
-    msgBox.setText("<b>Ertragswerte der Wechselrichter</b>");
-    msgBox.setDetailedText(
-           "Dach Nord: " + m_genEnergyDachN + " kWh\r\n" +
-           "Dach Süd:  " + m_genEnergyDachS + " kWh\r\n" +
-           "Gaube:     " + m_genEnergyGaube + " kWh\r\n" +
-           "Garage:    " + m_genEnergyGarage + " kWh\r\n\r\n" +
-           "Gesamt:     " + m_genEnergyTotal + " MWh");
+    msgBox.setText("<pre>"
+        "<b>Ertrag der Wechselrichter</b>"
+        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        "<br><br>"
+        "Dach Nord:&#9;" + m_genEnergyDachN + " kWh<br>" +
+        "Dach Süd:&#9;" + m_genEnergyDachS + " kWh<br>" +
+        "Gaube:&#9;" + m_genEnergyGaube + " kWh<br>" +
+        "Garage:&#9;" + m_genEnergyGarage + " kWh<br><br>" +
+        "Gesamt:&#9;" + m_genEnergyTotal + " MWh"
+        "</pre>");
+
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.setIcon(QMessageBox::Information);
+
+    msgBox.exec();
+}
+
+void PowerNodeModel::openVersionInfoMsg() {
+    // Messagebox mit VersionInfo aufpoppen.
+    // Schließen mit OK
+
+    QString qtCompilerversionString = QString::number(QT_VERSION, 16);      // get compiler version
+    QString qtRuntimeversionString = qVersion();                            // get runtime version
+
+    QMessageBox msgBox;
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setText("<b>Version Info</b><br><br>"
+        "Version : V" VERSIONMAJOR "." VERSIONMINOR
+        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        "<br>Builddate: " + QString(IsoDate) +
+        "<br>Compiletime: " + QString(__TIME__) +
+        "<br>Compilerversion: " + qtCompilerversionString +
+        "<br>Runtimeversion: " + qtRuntimeversionString);
+
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.setIcon(QMessageBox::Information);
+
     msgBox.exec();
 }
 
@@ -285,7 +321,7 @@ void PowerNodeModel::resetComm(void)
 // set window title
 void PowerNodeModel::setWindowTitle(void)
 {
-    m_windowTitle =  m_windowTitle + QString(IsoDate);
+    //m_windowTitle =  m_windowTitle;
 }
 
 // countDown handling
@@ -515,6 +551,7 @@ void PowerNodeModel::showChargeMode()
 {
     emit chargingDataChanged();                         // refresh GUI
 }
+
 // setting Manual Current handling
 void PowerNodeModel::switchManualCurrent()
 {
@@ -539,9 +576,21 @@ void PowerNodeModel::setManualCurrent18000()
     m_EVManualCurrent = 18000;
     switchManualCurrent();
 }
+void PowerNodeModel::setManualCurrent32000()
+{
+    m_EVManualCurrent = 32000;                          // Maximum für _manual current_ setting im SmartCharger: 31980(?)
+    switchManualCurrent();
+}
 void PowerNodeModel::showManualCurrent()
 {
     m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    emit chargingDataChanged();                         // refresh GUI
+}
+
+    void PowerNodeModel::showUsedPhases()
+{
+    //m_EVusedPhasesS =  "P" + QString::number(m_Output == 0 ? 1 : 3);   // (m_Output = 0..1 -> 0: 1 Phase, 1: 3 Phasen)
+    m_EVusedPhasesS =  QString::number(m_Output == 0 ? 1 : 3) + "P";   // (m_Output = 0..1 -> 0: 1 Phase, 1: 3 Phasen)
     emit chargingDataChanged();                         // refresh GUI
 }
 
@@ -619,6 +668,7 @@ void PowerNodeModel::wallboxHandling()
     m_chargedEnergy = smchaXML.getEVTotalEnergy();      // [W] integer, no fraction
     m_sessionEnergy = smchaXML.getEVSessionEnergy();    // [W] integer, no fraction
     m_EVChargingMode = smchaXML.getEVChargeMode();      // QString
+    m_Output = smchaXML.getEVOutput();                  // [] integer, no fraction
 
     // Werte für Anzeige berechnen und als QString ausgeben
     m_charPower = QString().asprintf("%0.3f", (double)((double)(abs(m_chargingPower)/(double)1000))); // get rid of math in QML

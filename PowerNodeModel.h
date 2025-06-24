@@ -48,12 +48,34 @@ Version 1.16 - Manual Current "6A" im Drawer auf "=" ausgerichtet
                 zielführend, der Prozentsatz kann nicht über das Remote Interface geändert werden. -> Auskommentiert
                 (Wer weiß, vielleicht baut Nico das ja irgendwann mal in seinen EDL/SmartCharger ein ;)
              - Change log in Blockkommentar geändert
-             - Version auf V1.16 geändert
+Version 1.17 - Real Car Icon aktualisiert
+             - Auslesen des Parameters MaxPhases der Wallbox. Einstellung (Setting), wieviele Phasen die Wallbox an das EV
+                weiterleiten darf. Muss in SmartCharger auf "3" stehen. Wird nicht weiter genutzt/ausgewertet/angezeigt.
+             - Auslesen des Parameters Output der Wallbox. Liest den Status des Ausgangs X2 der Wallbox ein.
+                X2 steuert das Phasen-Umschaltrelais für die Wallbox. Das Relais schaltet bei Bedarf die Phasen L2 und L3
+                zur Wallbox durch, so dass auch 3-phasig geladen werden kann. Das ist der Normalfall.
+                Interessant im Zusammenhang mit Überschussladen per PV, gesteuert durch den SmartCharger.
+                Fällt der Sonnen_überschuss_ unter 3 * 1370 W (4,11 kW), wird auf 1-phasiges Laden umgeschaltet.
+             - Anzeige der Anzahl genutzter Phasen in der GUI
+             - Maxwert für Manual Current in der GUI (Drawer links unten) von 18 A auf 32 A / 7.36 kW erhöht
+             - Die vertikale Lokalisierung der Drag-Punkte ist bei Qt V6.x weg, es gilt die komplette seitliche Kante für den zuerst
+                in main.qml deklarierten Drawer -> Rechts wird nur der Charge Mode Drawer ausgeklappt. Nicht gut.
+                -> Die Dragpunkte ersetzt durch runde Buttons, die per Mausklick den jeweiligen Drawer aufklappen.
+             - Die (unsichtbaren) Buttons für die Drawer sind deutlich größer als die Dragpunkte -> leichter zu treffen :)
+             - Drawer schließen per Mausklick außerhalb der Drawerfläche
+             - Upscaling der App für Qt V6.x aktiviert (Darstellung auf Tablet auf Bildschirmhöhe gestreckt),
+                in main.cpp: QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Ceil);
+                Das war bei Qt V5.x als Default aktiviert.
+             - Box mit WR-Werten aufgehübscht, Aufruf geändert (Click auf WR-Werte), Werte können selektiert und kopiert werden.
+             - Box mit Angabe der Version, Build-Date und -Time, Compiler- und Runtimeversion (Click auf Sonne).
+             - Alle unsichtbaren Buttons bleiben unsichtbar wenn geklickt ("opacity: 0" in main.qml).
+
+  ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "16"
+#define VERSIONMINOR    "17"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -138,6 +160,7 @@ public:
     Q_PROPERTY(QString manualCurrentS       MEMBER m_EVManualCurrentS NOTIFY chargingDataChanged)                // current charge mode (String)
     Q_PROPERTY(bool visibleComm             MEMBER m_visibleComm      NOTIFY showComm)
     Q_PROPERTY(char evalCountDown           MEMBER m_evalCountDown    NOTIFY showComm)
+    Q_PROPERTY(QString usedPhases           MEMBER m_EVusedPhasesS    NOTIFY chargingDataChanged)                // current charge mode (String)
     //Q_PROPERTY(QString EVChargePercentS     MEMBER m_EVChargePercentS NOTIFY chargingDataChanged)                // current EV percentage (String)
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
@@ -188,24 +211,27 @@ Q_SIGNALS:
 public slots:
     void switchEVIcons();                   // change visualisation of car/scooter (icon or real picture)
     void switchChargeMode();                // send (new) chargeMode setting to SmartCharger
-    void showChargeModeOFF();               // display (potentially new) chargeMode in GUI on hover
-    void showChargeModeQUICK();             // display (potentially new) chargeMode in GUI on hover
-    void showChargeModeSURPLUS();           // display (potentially new) chargeMode in GUI on hover
-    void showChargeModeMANUAL();            // display (potentially new) chargeMode in GUI on hover
+    void showChargeModeOFF();               // display chargeMode in GUI
+    void showChargeModeQUICK();             // display chargeMode in GUI
+    void showChargeModeSURPLUS();           // display chargeMode in GUI
+    void showChargeModeMANUAL();            // display chargeMode in GUI
     void showChargeMode();                  // display currently selected ChargeMode
     void switchManualCurrent();             // send (new) manual current to SmartCharger
-    void setManualCurrent6000();           // display ManualChargeCurrent 6 A in GUI on hover
-    void setManualCurrent12000();          // display ManualChargeCurrent 12 A in GUI on hover
-    void setManualCurrent18000();          // display ManualChargeCurrent 18 A in GUI on hover
+    void setManualCurrent6000();           // display ManualChargeCurrent 6 A in GUI
+    void setManualCurrent12000();          // display ManualChargeCurrent 12 A in GUI
+    void setManualCurrent18000();          // display ManualChargeCurrent 18 A in GUI
+    void setManualCurrent32000();          // display ManualChargeCurrent 32 A in GUI, added in V1.17, 06/2025 (new car, 11 kW charging possible)
     void showManualCurrent();              // display currently selected ManualChargeCurrent
+    void showUsedPhases();                  // display currently selected used phases (relais on X2 switched ON/OFF - ON: 3 phases - OFF: 1 phase)
 /*
     void showEVPercent();                  // display currently selected ratio car battery/house battery (0..50.100%)
-    void switchEVChargePercent();           // send (new) manual current to SmartCharger
-    void setEVPercent10();                   // display EVPercent 0 GUI on hover
-    void setEVPercent50();                   // display EVPercent 0 GUI on hover
-    void setEVPercent100();                  // display EVPercent 0 GUI on hover
+    void switchEVChargePercent();           // send (new) percentage to SmartCharger
+    void setEVPercent10();                   // display EVPercent 10 GUI on hover
+    void setEVPercent50();                   // display EVPercent 50 GUI on hover
+    void setEVPercent100();                  // display EVPercent 100 GUI on hover
 */
-    void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt
+    void openVersionInfoMsg();              // Anzeige der Compiler- und Runtimeversion (V1.17)
+    void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt (V1.17)
 
 private:
     void getXMLdata(void);
@@ -234,7 +260,7 @@ public:
     QString getChargeModeString(void);
 
 // window title with version & build date
-#define WINDOWTITLE "PV-Anzeige - V" VERSIONMAJOR "." VERSIONMINOR " - "
+#define WINDOWTITLE "PV-Anzeige - V" VERSIONMAJOR "." VERSIONMINOR
     QString m_windowTitle = WINDOWTITLE;
 
 // generators, PV-Paneele
@@ -304,6 +330,8 @@ public:
     char m_nextChargeMode = 0;              // set ChargeMode der Wallbox via SmartCharger
     double m_EVManualCurrent = 18000.0;     // set ManualCurrent der Wallbox via SmartCharger (default 18 A = 4140 W)
     QString m_EVManualCurrentS;             // String für Anzeige in der GUI
+    int m_Output = 0;                       // Phasen-Relais-Ausgang geschaltet (0: AUS - 1: EIN)
+    QString m_EVusedPhasesS;                // String für Anzeige in der GUI
     //char m_EVChargePercent = 100;           // charge percentage into EV battery: 100..50..0 [%]
     //QString m_EVChargePercentS;             // String für Anzeige in der GUI
 
