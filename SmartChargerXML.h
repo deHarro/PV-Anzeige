@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QtGlobal>
+//#include <QtGlobal>
 #include <QObject>
 
 class SmartChargerXML : public QObject {

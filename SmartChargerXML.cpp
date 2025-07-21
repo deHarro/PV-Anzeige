@@ -1,12 +1,13 @@
 //#include <QApplication>
-#include <QtXML>// Library needed for processing XML documents
-#include <QFile>// Library needed for processing files
+#include <QtXml/QDomElement>// Library needed for processing XML documents
+//#include <QFile>// Library needed for processing files
 
 #include <iostream>
 #include "SmartChargerXML.h"
 #include "Downloader.h"
 
-//#define INTERMEDIATES
+//#define INTERMEDIATES     // if enabled all nodes are displayed during parsing
+                            // if diabled not used nodes are skipped
 
 // -----------------------------------------------------------
 // read XML file SmartCharger

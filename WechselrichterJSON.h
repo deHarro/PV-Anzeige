@@ -1,9 +1,9 @@
 #pragma once
 
-#include <QtGlobal>
-#include <QObject>
-#include <qjsondocument.h>
-#include <qjsonobject.h>
+//#include <QtGlobal>
+//#include <QObject>
+//#include <qjsondocument.h>
+//#include <qjsonobject.h>
 #include <qjsonarray.h>
 
 // WR DachN in Verabrbeitung aufnehmen (raus nehmen durch auskommentieren)

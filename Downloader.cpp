@@ -1,11 +1,11 @@
-#include <QFile>
+//#include <QFile>
 #include <iostream>
-#include <QGuiApplication>
-#include <QDir>
-#include <QIODevice>
+//#include <QGuiApplication>
+//#include <QDir>
+//#include <QIODevice>
 
 #include "Downloader.h"
-#include "PowerNodeModel.h"
+//#include "PowerNodeModel.h"
 
 Downloader::Downloader(QObject *parent) :
     QObject(parent)
@@ -189,13 +189,18 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
     jsonManager = nullptr;                                      // invalidate manager
 }
 
-// get access parameter for Raspberry Pi
+// get access parameter to reach the Raspberry Pi
 void Downloader::getRPiParameter()
 {
     // open PVconfig.ini
     QDir dir("./");
+    // to use/start from the current directory, we have to apply "./" as absoluteFilePath...
     QString filepath = dir.absoluteFilePath("./");              // path of PV-Anzeige.exe _at runtime_ (_not_ in Qt Creator!!)
     QFile file;
+
+    // ... but to remove the dot in the middle of the resulting path, this "./" has to be removed again, before adding "debug/release" below
+    // this is not absolutely neccessary but it's cleaner ;)
+    filepath.chop(2);                                           // get rid of "./" in the middle of the path
 
     // catch running in QT Creator
     if (filepath.contains("-Debug"))

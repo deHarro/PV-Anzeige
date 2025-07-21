@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
-import QtGraphicalEffects 1.0            // use this line when working with Qt 5
+import QtGraphicalEffects 1.0               // use this line when working with Qt 5
 // import Qt5Compat.GraphicalEffects           // use this line when working with Qt 6
 
 import PowerNodeModel 1.0

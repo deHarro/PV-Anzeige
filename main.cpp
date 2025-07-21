@@ -1,10 +1,7 @@
 #include <QGuiApplication>
 #include <QApplication>
 #include <QQmlApplicationEngine>
-//#include <QtCharts/QChartView>
-//#include <QtCharts/QPieSeries>
-//#include <QtCharts/QPieSlice>
-#include <QtWidgets/QMessageBox>                // Für Messagebox
+//#include <QtWidgets/QMessageBox>                // Für Messagebox
 #include <QQmlContext>
 
 #include "PowerNodeModel.h"

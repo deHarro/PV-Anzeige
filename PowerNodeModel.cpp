@@ -1,12 +1,12 @@
 #include "PowerNodeModel.h"
 
-#include <algorithm>
+//#include <algorithm>
 //#include <chrono>
 #include <iostream>
-#include <QTextStream>
-#include <QTextEdit>
-#include <QAbstractButton>
-#include <QStyle>
+//#include <QTextStream>
+//#include <QTextEdit>
+//#include <QAbstractButton>
+//#include <QStyle>
 
 #include "Downloader.h"
 #include "SmartChargerXML.h"
@@ -905,8 +905,13 @@ void PowerNodeModel::getIconType()
 {
     // open PVconfig.ini
     QDir dir("./");
+    // to use/start from the current directory, we have to apply "./" as absoluteFilePath...
     QString filepath = dir.absoluteFilePath("./");              // path of PV-Anzeige.exe _at runtime_ (_not_ in Qt Creator!!)
     QFile file;
+
+    // ... but to remove the dot in the middle of the resulting path, this "./" has to be removed again, before adding "debug/release" below
+    // this is not absolutely neccessary but it's cleaner ;)
+    filepath.chop(2);                                           // get rid of "./" in the middle of the path
 
     // catch case "running in QT Creator"
     if (filepath.contains("-Debug"))

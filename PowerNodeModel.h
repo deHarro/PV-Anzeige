@@ -1,9 +1,9 @@
 #pragma once
 
-#include <QObject>
+//#include <QObject>
 #include <QTimer>
-#include <QString>
-#include <QQuickImageProvider>
+//#include <QString>
+//#include <QQuickImageProvider>
 #include <QColor>
 #include <QMessageBox>
 
@@ -69,13 +69,14 @@ Version 1.17 - Real Car Icon aktualisiert
              - Box mit WR-Werten aufgehübscht, Aufruf geändert (Click auf WR-Werte), Werte können selektiert und kopiert werden.
              - Box mit Angabe der Version, Build-Date und -Time, Compiler- und Runtimeversion (Click auf Sonne).
              - Alle unsichtbaren Buttons bleiben unsichtbar wenn geklickt ("opacity: 0" in main.qml).
+Version 1.18 - Pfad auf PVConfig.ini schön gemacht (mitten im Pfad "./" entfernt).
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "17"
+#define VERSIONMINOR    "18"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
