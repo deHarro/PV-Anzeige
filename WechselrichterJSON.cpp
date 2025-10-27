@@ -1,11 +1,11 @@
 #include "WechselrichterJSON.h"
 #include "Downloader.h"
 
+extern QString m_JSONfiledata;    // globally defined in main.cpp, loaded with data by Downloader.cpp
+
 WechselrichterJSON::WechselrichterJSON() {}
 
 void WechselrichterJSON::ReadWechselrichterJSON() {
-
-    extern QString m_JSONfiledata;    // globally defined in main.cpp, loaded with data by Downloader.cpp
 
 //    qDebug() << "m_JSONfiledata: " << m_JSONfiledata;
 

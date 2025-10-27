@@ -6,6 +6,8 @@
 #include "SmartChargerXML.h"
 #include "Downloader.h"
 
+extern QByteArray m_XMLfiledata;    // globally defined in main.cpp, loaded with data by Downloader.cpp
+
 //#define INTERMEDIATES     // if enabled all nodes are displayed during parsing
                             // if diabled not used nodes are skipped
 
@@ -15,8 +17,6 @@
 SmartChargerXML::SmartChargerXML() {}
 
 void SmartChargerXML::ReadSmartChargerXML() {
-
-    extern QByteArray m_XMLfiledata;    // globally defined in main.cpp, loaded with data by Downloader.cpp
 
     QDomElement docElem;
     QDomDocument xmldoc;
