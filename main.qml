@@ -7,8 +7,6 @@ import QtGraphicalEffects 1.0               // use this line when working with Q
 
 import PowerNodeModel 1.0
 
-
-
 Window {
     id: window
     width: 404
@@ -35,6 +33,10 @@ Window {
     property real coordHouseH: 270
 
     property real captionTextSize: 12
+    property real faktor: 1                     // Faktor für die Darstellung der Wattzahl basierend auf 1-/3-phasig
+    property real xval: 218                     // x-Offset für die Leistungswerte der WR
+    property real yval: 8                       // y-Offset für die Leistungswerte der WR
+    property real ydist: 5                      // y-Abstand für die Leistungswerte der WR
 
     // Überlagerte Farben in der Haus-Box mit Texten und Bild
     Item {
@@ -330,131 +332,129 @@ Window {
             opacity: 0
         }
 
-        Text {
-            id: text22
-            x: 216
-            y: 6
-            color: "#ffffff"   // "#f9bbcbc"
-            text: qsTr("Dach N")
-            font.pixelSize: 12
-        }
-        Text {
-            id: text52
-            x: 216
-            y: 21
-            color: "#ffffff"   // "#f9bbcbc"
-            text: qsTr("Dach S")
-            font.pixelSize: 12
-        }
-        Text {
-            id: text23
-            x: 216
-            y: 36
-            color: "#ffffff"   // "#f9bbcbc"
-            text: qsTr("Gaube")
-            font.pixelSize: 12
-        }
-        Text {
-            id: text24
-            x: 216
-            y: 51
-            color: "#ffffff"   // "#f9bbcbc"
-            text: qsTr("Garage")
-            font.pixelSize: 12
-        }
-        Text {
-            id: text25
-            x: 256
-            y: 6
-            width: 33
-            height: 14
-            color: PowerNodeModel.MBMDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
-//            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
-            text: PowerNodeModel.generatorPowerDachN
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignRight
-        }
-        Text {
-            id: text53
-            x: 256
-            y: 21
-            width: 33
-            height: 14
-            color: PowerNodeModel.MBMDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
-//            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
-            text: PowerNodeModel.generatorPowerDachS
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignRight
-        }
-        Text {
-            id: text27
-            x: 256
-            y: 36
-            width: 33
-            height: 14
-            color: PowerNodeModel.MBMDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
-//            text: (PowerNodeModel.generatorPowerGaube / 1000).toFixed(2)
-            text: PowerNodeModel.generatorPowerGaube
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignRight
-        }
-        Text {
-            id: text30
-            x: 256
-            y: 51
-            width: 33
-            height: 14
-            color: PowerNodeModel.MBMDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
-//            text: (PowerNodeModel.generatorPowerGarage / 1000).toFixed(2)
-            text: PowerNodeModel.generatorPowerGarage
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignRight
-        }
-        Text {
-            id: text26
-            x: 292
-            y: 6
-            color: "#ffffff"   // "#f9bbcbc"
-            text: qsTr("kW")
-            font.pixelSize: 12
+        Item {                          // Zusammenfassung der WR-Angaben
+            x: xval
+            Column{
+                y: yval
+                spacing: ydist
+                Text {
+                    id: text22
+                    color: "#ffffff"   // "#f9bbcbc"
+                    text: qsTr("Dach N")
+                    font.pixelSize: 12
+                }
+                Text {
+                    id: text52
+                    color: "#ffffff"   // "#f9bbcbc"
+                    text: qsTr("Dach S")
+                    font.pixelSize: 12
+                }
+                Text {
+                    id: text23
+                    color: "#ffffff"   // "#f9bbcbc"
+                    text: qsTr("Gaube")
+                    font.pixelSize: 12
+                }
+                Text {
+                    id: text24
+                    color: "#ffffff"   // "#f9bbcbc"
+                    text: qsTr("Garage")
+                    font.pixelSize: 12
+                }
+            }
+            Column {
+                y: yval
+                spacing: ydist
+                x: 40
+                Text {
+                    id: text25
+                    y: 6
+                    width: 33
+                    height: 14
+                    color: PowerNodeModel.MBMDfigures
+        //            color: "#ffffff"   // "#f9bbcbc"
+        //            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
+                    text: PowerNodeModel.generatorPowerDachN
+                    font.pixelSize: 12
+                    horizontalAlignment: Text.AlignRight
+                }
+                Text {
+                    id: text53
+                    y: 21
+                    width: 33
+                    height: 14
+                    color: PowerNodeModel.MBMDfigures
+        //            color: "#ffffff"   // "#f9bbcbc"
+        //            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
+                    text: PowerNodeModel.generatorPowerDachS
+                    font.pixelSize: 12
+                    horizontalAlignment: Text.AlignRight
+                }
+                Text {
+                    id: text27
+                    y: 36
+                    width: 33
+                    height: 14
+                    color: PowerNodeModel.MBMDfigures
+        //            color: "#ffffff"   // "#f9bbcbc"
+        //            text: (PowerNodeModel.generatorPowerGaube / 1000).toFixed(2)
+                    text: PowerNodeModel.generatorPowerGaube
+                    font.pixelSize: 12
+                    horizontalAlignment: Text.AlignRight
+                }
+                Text {
+                    id: text30
+                    y: 67
+                    width: 33
+                    height: 14
+                    color: PowerNodeModel.MBMDfigures
+        //            color: "#ffffff"   // "#f9bbcbc"
+        //            text: (PowerNodeModel.generatorPowerGarage / 1000).toFixed(2)
+                    text: PowerNodeModel.generatorPowerGarage
+                    font.pixelSize: 12
+                    horizontalAlignment: Text.AlignRight
+                }
+            }
+            Column {
+                y: yval
+                spacing: ydist
+                x: 76
+                Text {
+                    id: text26
+                    y: 6
+                    color: "#ffffff"   // "#f9bbcbc"
+                    text: qsTr("kW")
+                    font.pixelSize: 12
+                }
+
+                Text {
+                    id: text54
+                    y: 21
+                    color: "#ffffff"   // "#f9bbcbc"
+                    text: qsTr("kW")
+                    font.pixelSize: 12
+                }
+
+                Text {
+                    id: text29
+                    y: 36
+                    width: 17
+                    color: "#ffffff"   // "#f9bbcbc"
+                    text: qsTr("kW")
+                    font.pixelSize: 12
+                }
+
+                Text {
+                    id: text32
+                    y: 67
+                    color: "#ffffff"   // "#f9bbcbc"
+                    text: qsTr("kW")
+                    font.pixelSize: 12
+                }
+            }
         }
 
-        Text {
-            id: text54
-            x: 292
-            y: 21
-            color: "#ffffff"   // "#f9bbcbc"
-            text: qsTr("kW")
-            font.pixelSize: 12
-        }
-
-        Text {
-            id: text29
-            x: 292
-            y: 36
-            width: 17
-            color: "#ffffff"   // "#f9bbcbc"
-            text: qsTr("kW")
-            font.pixelSize: 12
-        }
-
-        Text {
-            id: text32
-            x: 292
-            y: 51
-            color: "#ffffff"   // "#f9bbcbc"
-            text: qsTr("kW")
-            font.pixelSize: 12
-        }
-
-        Row {
-        }
-
-        Text {
+/*        Text {  // ab V1.19 in Drawer1 -> "MWh" war schon immer zu weit rechts, "Ertrag" gehört hier nicht hin
             id: text28
             x: 216
             y: 67
@@ -485,7 +485,7 @@ Window {
             text: qsTr("MWh")
             font.pixelSize: 12
         }
-
+*/
 
         // kleiner grauer Punkt als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
         Rectangle {
@@ -546,12 +546,12 @@ Window {
                      "Dach Süd:  " + PowerNodeModel.generatorDachSEnergy  + " kWh<br>" +
                      "Gaube:     " + PowerNodeModel.generatorGaubeEnergy  + " kWh<br>" +
                      "Garage:    " + PowerNodeModel.generatorGarageEnergy + " kWh<br>" +
-                     "Gesamt:     " + PowerNodeModel.genTotalEnergy + " MWh" +
+                     "Gesamt:    " + PowerNodeModel.genTotalEnergy + " MWh" +
                      "</b></pre>";
             }
         }
-
     }
+
 
     Rectangle {     // Wallbox
         objectName: "Wallbox"
@@ -938,7 +938,7 @@ Window {
                     y: 10
                     width: 100
                     height: 16
-                    text: "  6A = 1380 W"
+                    text: "6A = " + 1380 * faktor + " W"
                     z: 1
                     flat: false
                     activeFocusOnTab: false
@@ -952,7 +952,7 @@ Window {
                     y: 30
                     width: 100
                     height: 16
-                    text: "12A = 2760 W"
+                    text: "12A = " + 2760 * faktor + " W"
                     z: 1
                     flat: false
                     activeFocusOnTab: false
@@ -966,7 +966,7 @@ Window {
                     y: 50
                     width: 100
                     height: 16
-                    text: "18A = 4140 W"
+                    text: "18A = " + 4140 * faktor + " W"
                     z: 1
                     flat: false
                     activeFocusOnTab: false
@@ -981,7 +981,7 @@ Window {
                     y: 70
                     width: 100
                     height: 16
-                    text: "32A = 7360 W"
+                    text: "32A = " + 7360 * faktor + " W"
                     z: 1
                     flat: false
                     activeFocusOnTab: false
@@ -1002,7 +1002,7 @@ Window {
                     font.weight: Font.DemiBold
                     horizontalAlignment: Text.AlignHCenter
                 }
-                Text {          // manual Power (1380 W, 2760 W, 4140 W), 7360 W
+                Text {          // manual Power (1380 W, 2760 W, 4140 W), 7360 W, bzw. jeweils das dreifache bei 3-phasiger Ladung
                     id: text55drawer3
                     x: 160
                     y: 40
@@ -1010,8 +1010,44 @@ Window {
                     color: "white"
                     font.pixelSize: 16
                     font.weight: Font.DemiBold
-                    text: PowerNodeModel.manualCurrentS
+//                  text: PowerNodeModel.manualCurrentS
+                    // Die Berechnung für die Anzeige in der GUI passiert hier in QML.
+                    // Der eigentliche Wert wird, basierend auf den Übergaben von PV-Anzeige, von SmartCharger bestimmt.
+                    text: (PowerNodeModel.manualCurrent  / 1000 * 230 / 1000 * faktor).toFixed(2) + " kW max."
                     horizontalAlignment: Text.AlignHCenter
+                }
+
+
+                Item {                  // group of radio buttons
+                    x: 124
+                    y: 49
+                    RadioButton {       // 1-phasig
+                        x: 0
+                        y: 10
+                        scale: 0.5
+                        checked: true
+                        Text {
+                            x: 60
+                            font.pixelSize: 32
+                            font.weight: Font.DemiBold
+                            color: "white"
+                            text: qsTr("1-phasig")
+                        }
+                        onClicked: { faktor = 1; PowerNodeModel.setChargerPhases1();}
+                    }
+                    RadioButton {       // 3-phasig
+                        x: 0
+                        y: 30
+                        scale: 0.5
+                        Text {
+                            x: 60
+                            color: "white"
+                            font.pixelSize: 32
+                            font.weight: Font.DemiBold
+                            text: qsTr("3-phasig")
+                        }
+                        onClicked: { faktor = 3; PowerNodeModel.setChargerPhases3();}
+                    }
                 }
         /*
                 Button {        // change EVPercent for EV/house battery
