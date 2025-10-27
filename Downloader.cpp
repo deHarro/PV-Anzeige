@@ -7,6 +7,36 @@
 #include "Downloader.h"
 //#include "PowerNodeModel.h"
 
+// globally defined in main.cpp
+extern QString m_setChargeModeString;
+extern QString m_JSONfiledata;
+extern int m_ManualSetCurrent;
+extern int m_ChargerPhases;
+extern QByteArray m_XMLfiledata;
+//extern int m_EVPercent;
+
+
+/* alle möglichen Remote-Befehle für SmartCharger
+*
+* – Parameter: „mode“ mit den Werten: „quick“, „manual“, „surplus“ und „off“
+* – Parameter: „carmincharge“ mit den Werten: 6000, 7020, 7980, 9000, 10020, 10980, 12000, 13020, 13980, 15000, 16020 (mA)
+* – Parameter: „carmaxphases“ mit den Werten: 1, 2 oder 3 (maximale Ladephasen im Auto)
+* – Parameter: „manualcurrent“ mit den Werten: 6000, 7020, 7980, 9000, 10020, 10980, 12000, 13020, 13980, 15000, 16020,
+*             16980, 18000, 19020, 19980, 21000, 22020, 22980, 24000, 25020, 25980, 27000, 28020, 28980, 30000, 31020, 31980 (mA)
+* – Parameter: „surplusactivate“ mit den Werten: 0 bis 22000 (Watt an Überschuss)
+* – Parameter: „action=restart“ startet die Software neu und lädt die aktuellen Einstellungen aus der Konfiguration
+*
+* Beispiele:
+* http://192.168.xx.xx:18001/remote?mode=surplus&surplusactivate=1380
+* http://192.168.xx.xx:18001/remote?mode=quick
+* http://192.168.xx.xx:18001/remote?mode=off
+* http://192.168.xx.xx:18001/remote?action=restart
+* http://192.168.xx.xx:18001/remote?mode=manual&manualcurrent=12000
+* http://192.168.xx.xx:18001/remote?mode=surplus&carmincharge=6000&carmaxphases=1&surplusactivate=680
+*
+* Achtung! Der Prozentsatz der EV-ChargeRate kann NICHT per remote geändert werden.
+*/
+
 Downloader::Downloader(QObject *parent) :
     QObject(parent)
 {
@@ -22,8 +52,6 @@ Downloader::Downloader(QObject *parent) :
 
 void Downloader::doSetChargeMode(void)
 {
-    extern QString m_setChargeModeString;                       //
-
     xmlManager = new QNetworkAccessManager(this);
 
     connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
@@ -61,10 +89,10 @@ void Downloader::replyFinishedSetMode (QNetworkReply *reply)
 // http://192.168.xx.xx:18001/remote?manualcurrent=6000
 // http://192.168.xx.xx:18001/remote?manualcurrent=12000
 // http://192.168.xx.xx:18001/remote?manualcurrent=18000
+// http://192.168.xx.xx:18001/remote?manualcurrent=31980 (für 32000)
 
 void Downloader::doSetManualCurrent(void)
 {
-    extern int m_ManualSetCurrent;                       //
     manualCurrentTmp = QString::number(m_ManualSetCurrent);
 
     xmlManager = new QNetworkAccessManager(this);
@@ -82,7 +110,32 @@ void Downloader::replyFinishedSetManualCurrent (QNetworkReply *reply)
     {
         qDebug() << "ERROR with SmartCharger";
         qDebug() << reply->errorString();
-        m_messageFlag |= SETCURRENTFlag;                           // Fehler bei der Verarbeitung des SetMode Befehls
+        m_messageFlag |= SETCURRENTFlag;                 // Fehler bei der Verarbeitung des SetMode Befehls
+    }
+
+    reply->deleteLater();
+    xmlManager->deleteLater();
+    xmlManager = nullptr;
+}
+
+void Downloader::doSetChargerPhases(void)
+{
+    xmlManager = new QNetworkAccessManager(this);
+
+    connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinishedSetMode(QNetworkReply*)));
+
+    QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?carmaxphases=" + QString::number(m_ChargerPhases);
+    xmlManager->get(QNetworkRequest(SmartChargerAddr));
+}
+
+void Downloader::replyFinishedSetChargerPhases (QNetworkReply *reply)
+{
+    if(reply->error())
+    {
+        qDebug() << "ERROR with SmartCharger";
+        qDebug() << reply->errorString();
+        m_messageFlag |= SETCURRENTFlag;                  // Fehler bei der Verarbeitung des SetMode Befehls
     }
 
     reply->deleteLater();
@@ -93,7 +146,6 @@ void Downloader::replyFinishedSetManualCurrent (QNetworkReply *reply)
 /*
 void Downloader::doSetEVPercent(void)
 {
-    extern int m_EVPercent;                       //
     manualEVPercentTmp = QString::number(m_EVPercent);
 
     xmlManager = new QNetworkAccessManager(this);
@@ -119,6 +171,7 @@ void Downloader::replyFinishedSetEVPercent (QNetworkReply *reply)
     xmlManager = nullptr;
 }
 */
+
 // download XML data from SmartCharger ----------------------------------------
 void Downloader::doDownloadXML(void)
 {
@@ -141,8 +194,6 @@ void Downloader::replyFinishedXML (QNetworkReply *reply)
     }
     else
     {
-       extern QByteArray m_XMLfiledata;                         // globally defined in main.cpp
-
         m_XMLfiledata.clear();
         m_XMLfiledata.append(reply->readAll());
         m_messageFlag &= !EDLDFlag;                             // EDL Daemon ist ok -> ausblenden
@@ -176,8 +227,6 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
     }
     else
     {
-       extern QString m_JSONfiledata;                           // globally defined in main.cpp
-
         m_JSONfiledata.clear();
         m_JSONfiledata.append(reply->readAll());
         m_messageFlag &= !MBMDFlag;                             // MBMD Daemon ist ok -> ausblenden

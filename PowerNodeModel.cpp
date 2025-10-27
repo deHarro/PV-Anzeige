@@ -47,9 +47,14 @@ Downloader downler;
 SmartChargerXML smchaXML;
 WechselrichterJSON wrJSON;
 
+extern SmartChargerXML smchaXML;
+extern Downloader downler;
+extern SmartChargerXML smchaXML;
+extern WechselrichterJSON wrJSON;
 extern QString m_setChargeModeString;
 extern int m_ManualSetCurrent;
 extern QString m_EVChargingModeS;
+extern int m_ChargerPhases;                         //
 //extern int m_EVPercent;
 
 using namespace std::chrono_literals;
@@ -136,22 +141,18 @@ void PowerNodeModel::onDataTimer() {
 void PowerNodeModel::getXMLdata(void)
 {
     // download XML data from SmartCharger XML page into **global**  m_XMLfiledata
-    extern Downloader downler;
     downler.doDownloadXML();
 
     // decode XML data from m_XMLfiledata into member variables of SmartChargerXML
-    extern SmartChargerXML smchaXML;
     smchaXML.ReadSmartChargerXML();
 }
 
 void PowerNodeModel::getJSONdata(void)
 {
     // download JSON data from mbmd JSON page into **global**  m_JSONfiledata
-    extern Downloader downler;
     downler.doDownloadJSON();
 
     // decode JSON data from m_JSONfiledata into member variables of SmartChargerJSON
-    extern WechselrichterJSON wrJSON;
     wrJSON.ReadWechselrichterJSON();
 }
 
@@ -434,7 +435,6 @@ void PowerNodeModel::batteryHandling(void)
     m_batteryPercentage = rand() % 100;
     m_battTemp = 30.0 + (rand() % 30) - 15;
 #else
-    extern SmartChargerXML smchaXML;
     m_batteryPower = -(smchaXML.getStorageSystemActualPower());  // [W] integer, no fraction
     m_batteryPercentage = smchaXML.getStorageSystemSOC();        // [%] integer, no fraction
     m_battTemp = smchaXML.getStorageSystemTemperature();         // [°] double, fraction (27.1)
@@ -474,7 +474,6 @@ void PowerNodeModel::gridHandling(void)
     m_gridPower = (rand() % 10000) - 5000;
 //    m_gridPower = 0;
 #else
-    extern SmartChargerXML smchaXML;
     m_gridEnergyImport = smchaXML.getSmartMeterConsumption();   // [kW] double, fraction (7322.8)
     m_gridEnergyExport = smchaXML.getSmartMeterSurplus();       // [kW] double, fraction (43852.6)
     m_gridPower = -(smchaXML.getSmartMeterActualPower());       // [W] integer, no fraction
@@ -594,6 +593,22 @@ void PowerNodeModel::showManualCurrent()
     emit chargingDataChanged();                         // refresh GUI
 }
 
+void PowerNodeModel::setChargerPhases1()
+{
+    //    m_EVChargerPhases = QString::number(m_ChargerPhases) + " % to EV";   // Prozentwert anzeigen
+    emit chargingDataChanged();                         // refresh GUI
+    m_ChargerPhases = 1;
+    downler.doSetChargerPhases();
+}
+
+void PowerNodeModel::setChargerPhases3()
+{
+//    m_EVChargerPhases = QString::number(m_ChargerPhases) + " % to EV";   // Prozentwert anzeigen
+    emit chargingDataChanged();                         // refresh GUI
+    m_ChargerPhases = 3;
+    downler.doSetChargerPhases();
+}
+
 /*
 // setting EV percentage handling
 void PowerNodeModel::switchEVChargePercent()
@@ -662,7 +677,6 @@ void PowerNodeModel::wallboxHandling()
         m_wallboxColor =VLIGHTGRAY ;                // helles Hellgrau, keine QML Basic/SVG color
     }
 #else
-    extern SmartChargerXML smchaXML;
     m_evalPoints = smchaXML.getEVEvaluationPoints();    // [] integer, no fraction
     m_chargingPower = smchaXML.getEVActualPower();      // [W] integer, no fraction
     m_chargedEnergy = smchaXML.getEVTotalEnergy();      // [W] integer, no fraction
@@ -770,7 +784,6 @@ void PowerNodeModel::consumptionHandling(void)
     m_totalPowerConsumption = rand() % 10000;
     //m_totalPowerConsumption = 0;
 #else
-    extern SmartChargerXML smchaXML;
     m_totalPowerConsumption = m_generatorPowerTotal     - (  (m_gridPower)
                                                         + (m_chargingPower)
                                                         + (m_batteryPower) );

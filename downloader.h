@@ -34,6 +34,7 @@ public:
 
     void doSetChargeMode(void);
     void doSetManualCurrent(void);
+    void doSetChargerPhases(void);
     //void doSetEVPercent(void);
 
 signals:
@@ -44,6 +45,7 @@ public slots:
 
     void replyFinishedSetMode(QNetworkReply *reply);
     void replyFinishedSetManualCurrent(QNetworkReply *reply);
+    void replyFinishedSetChargerPhases(QNetworkReply *reply);
     //void replyFinishedSetEVPercent(QNetworkReply *reply);
 
 private:

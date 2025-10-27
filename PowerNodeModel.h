@@ -41,7 +41,7 @@ Version 1.14 - Pfeile am Rand für Drawer einblenden durch kleine graue Kreise e
              - Farbe der Drawer auf das Grün der Boxen geändert
              - allgemein etwas aufgeräumt (auskommentierte Bereiche gelöscht, Kommentare angebracht, ...)
              - Drawer ManualCurrent: Initialwert für ManualCurrent beim Öffnen des Drawer sofort anzeigen
-Version 1.15 - Texte und Werte in den drei Drawer weiß statt schwarz
+Version 1.15 - Texte und Werte der drei Drawer weiß statt schwarz
              - automatisches Build Datum für die Caption für "April" korrigiert (war im April falsch "August")
 Version 1.16 - Manual Current "6A" im Drawer auf "=" ausgerichtet
              - Die voreilig eingebauten Änderungen für Remote Zugriff auf den Prozentsatz der "EV ChargeRate" sind nicht 
@@ -70,13 +70,21 @@ Version 1.17 - Real Car Icon aktualisiert
              - Box mit Angabe der Version, Build-Date und -Time, Compiler- und Runtimeversion (Click auf Sonne).
              - Alle unsichtbaren Buttons bleiben unsichtbar wenn geklickt ("opacity: 0" in main.qml).
 Version 1.18 - Pfad auf PVConfig.ini schön gemacht (mitten im Pfad "./" entfernt).
+Version 1.19 - Bei manueller Einstellung des Ladestroms wird automatisch auf 3 Phasen umgeschaltet. Das bewirkt, dass der
+                in der GUI eingestellte Ladestrom verdreifacht wird (jede Phase übernimmt den eingestellten Wert), allerdings nur,
+                wenn ein dreiphasiges Ladekabel verwendet wird und das Fahrzeug dreiphasiges Laden unterstützt.
+                Das Problem kann mit Bordmitteln behoben werden (Radiobuttons für 1- bzw. 3-phasiges Laden im Manunal Dialog).
+             - Gesamtertrag der Anlage aus der PV-Box entfernt, der Wert steht auch im Drawer.
+             - Darstellung der WR-Werte geschönt (Column, offset, spacing, Item).
+             - Extern deklarierte Variablen aus den Routinen an den jeweiligen Dateianfang verschoben.
+             - Liste der möglichen Remote-Befehle in "Downloader.cpp".
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "18"
+#define VERSIONMINOR    "19"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -84,20 +92,17 @@ class StringData;
 
 // define colors according https://doc.qt.io/qt-5/qml-color.html
 // use #RRGGBB notation for QML instead of 0xRRGGBB
-#define VLIGHTGRAY      "#b3b3b3"       // "LIGHTGREY"    //  no defined color, hand tuned ;-)
-#define LIMEGREEN       "#00ac00"       // "0x32cd32"     // -> "#32cd32" replace 0x by # for QColor in QML file
+#define VLIGHTGRAY      "#b3b3b3"       // "LIGHTGREY"      //  no defined color, hand tuned ;-)
+#define LIMEGREEN       "#00ac00"       // "0x32cd32"       // -> "#32cd32" replace 0x by # for QColor in QML file
 #define FORESTGREEN     "FORESTGREEN"   // "0x228b22"
 #define FIREBRICK       "FIREBRICK"     // "0xb22222"
-#define DODGERBLUE      "#02a4f5"       // "DODGERBLUE"   // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
+#define DODGERBLUE      "#02a4f5"       // "DODGERBLUE"     // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
 #define DARKBLUE        "#2828B3"       // "#0371da" "0x00008b"     // EV attached to wallbox
-//#define LIGHTBLUE       "#49C6E5"       // sehr helles Blau
-//#define LIGHTBLUE       "#00C3FF"       // sehr helles Blau
-//#define LIGHTBLUE       "#A3D1FF"       // sehr helles Blau
 #define LIGHTBLUE       "#72BBFF"       // sehr helles Blau
 #define LIGHTHRED       "#FFE5E5"       // sehr helles Rot
-#define SUNWHITE        0               // "WHITE"         // weiß
-#define SUNLTYELLOW     1               // "#FFFFA8"       // helles Gelb
-#define SUNYELLOW       2               // "YELLOW"        // Gelb
+#define SUNWHITE        0               // "WHITE"          // weiß
+#define SUNLTYELLOW     1               // "#FFFFA8"        // helles Gelb
+#define SUNYELLOW       2               // "YELLOW"         // Gelb
 
 
 class PowerNodeModel : public QObject {
@@ -224,6 +229,9 @@ public slots:
     void setManualCurrent32000();          // display ManualChargeCurrent 32 A in GUI, added in V1.17, 06/2025 (new car, 11 kW charging possible)
     void showManualCurrent();              // display currently selected ManualChargeCurrent
     void showUsedPhases();                  // display currently selected used phases (relais on X2 switched ON/OFF - ON: 3 phases - OFF: 1 phase)
+
+    void setChargerPhases1();                   // display EVPercent 10 GUI on hover
+    void setChargerPhases3();                   // display EVPercent 10 GUI on hover
 /*
     void showEVPercent();                  // display currently selected ratio car battery/house battery (0..50.100%)
     void switchEVChargePercent();           // send (new) percentage to SmartCharger
@@ -333,6 +341,7 @@ public:
     QString m_EVManualCurrentS;             // String für Anzeige in der GUI
     int m_Output = 0;                       // Phasen-Relais-Ausgang geschaltet (0: AUS - 1: EIN)
     QString m_EVusedPhasesS;                // String für Anzeige in der GUI
+    //int m_ChargerPhases;                    // Festlegung der Anzahl Phasen beim Laden: 1 oder 3
     //char m_EVChargePercent = 100;           // charge percentage into EV battery: 100..50..0 [%]
     //QString m_EVChargePercentS;             // String für Anzeige in der GUI
 
