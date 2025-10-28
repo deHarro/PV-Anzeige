@@ -334,7 +334,7 @@ Window {
 
         Item {                          // Zusammenfassung der WR-Angaben
             x: xval
-            Column{                                        // PV-Flächen
+            Column {                                        // PV-Flächen
                 y: yval
                 spacing: ydist
                 Text {
@@ -365,47 +365,31 @@ Window {
             Column {                                        // Werte
                 y: yval
                 spacing: ydist
-                x: 40
+                x: 48
                 Text {
                     id: text25
-                    width: 33
-                    height: 14
                     color: PowerNodeModel.MBMDfigures
-        //            color: "#ffffff"
-        //            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
                     text: PowerNodeModel.generatorPowerDachN
                     font.pixelSize: 12
                     horizontalAlignment: Text.AlignRight
                 }
                 Text {
                     id: text53
-                    width: 33
-                    height: 14
                     color: PowerNodeModel.MBMDfigures
-        //            color: "#ffffff"
-        //            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
                     text: PowerNodeModel.generatorPowerDachS
                     font.pixelSize: 12
                     horizontalAlignment: Text.AlignRight
                 }
                 Text {
                     id: text27
-                    width: 33
-                    height: 14
                     color: PowerNodeModel.MBMDfigures
-        //            color: "#ffffff"
-        //            text: (PowerNodeModel.generatorPowerGaube / 1000).toFixed(2)
                     text: PowerNodeModel.generatorPowerGaube
                     font.pixelSize: 12
                     horizontalAlignment: Text.AlignRight
                 }
                 Text {
                     id: text30
-                    width: 33
-                    height: 14
                     color: PowerNodeModel.MBMDfigures
-        //            color: "#ffffff"
-        //            text: (PowerNodeModel.generatorPowerGarage / 1000).toFixed(2)
                     text: PowerNodeModel.generatorPowerGarage
                     font.pixelSize: 12
                     horizontalAlignment: Text.AlignRight
