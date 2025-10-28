@@ -161,7 +161,7 @@ Window {
                         id: text36
                         x: 29
                         y: 198
-                        color: "#ffffff"   // "#f9bbcbc"
+                        color: "#ffffff"
                         text: qsTr("Zähler")
                         font.pixelSize: 12
                     }
@@ -201,7 +201,7 @@ Window {
                         width: 74
                         height: 14
                         color: PowerNodeModel.EDLDfigures
-                        //                        color: "#ffffff"   // "#f9bbcbc"
+                        //                        color: "#ffffff"
                         // eine Nachkommastelle, zentriert
                         text: (PowerNodeModel.gridEnergyImport).toFixed(1)
                         font.pixelSize: 12
@@ -212,7 +212,7 @@ Window {
                         id: text38
                         x: 33
                         y: 229
-                        color: "#ffffff"   // "#f9bbcbc"
+                        color: "#ffffff"
                         text: qsTr("kWh")
                         font.pixelSize: 12
                     }
@@ -334,45 +334,44 @@ Window {
 
         Item {                          // Zusammenfassung der WR-Angaben
             x: xval
-            Column{
+            Column{                                        // PV-Flächen
                 y: yval
                 spacing: ydist
                 Text {
                     id: text22
-                    color: "#ffffff"   // "#f9bbcbc"
+                    color: "#ffffff"
                     text: qsTr("Dach N")
                     font.pixelSize: 12
                 }
                 Text {
                     id: text52
-                    color: "#ffffff"   // "#f9bbcbc"
+                    color: "#ffffff"
                     text: qsTr("Dach S")
                     font.pixelSize: 12
                 }
                 Text {
                     id: text23
-                    color: "#ffffff"   // "#f9bbcbc"
+                    color: "#ffffff"
                     text: qsTr("Gaube")
                     font.pixelSize: 12
                 }
                 Text {
                     id: text24
-                    color: "#ffffff"   // "#f9bbcbc"
+                    color: "#ffffff"
                     text: qsTr("Garage")
                     font.pixelSize: 12
                 }
             }
-            Column {
+            Column {                                        // Werte
                 y: yval
                 spacing: ydist
                 x: 40
                 Text {
                     id: text25
-                    y: 6
                     width: 33
                     height: 14
                     color: PowerNodeModel.MBMDfigures
-        //            color: "#ffffff"   // "#f9bbcbc"
+        //            color: "#ffffff"
         //            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
                     text: PowerNodeModel.generatorPowerDachN
                     font.pixelSize: 12
@@ -380,11 +379,10 @@ Window {
                 }
                 Text {
                     id: text53
-                    y: 21
                     width: 33
                     height: 14
                     color: PowerNodeModel.MBMDfigures
-        //            color: "#ffffff"   // "#f9bbcbc"
+        //            color: "#ffffff"
         //            text: (PowerNodeModel.generatorPowerDach / 1000).toFixed(2)
                     text: PowerNodeModel.generatorPowerDachS
                     font.pixelSize: 12
@@ -392,11 +390,10 @@ Window {
                 }
                 Text {
                     id: text27
-                    y: 36
                     width: 33
                     height: 14
                     color: PowerNodeModel.MBMDfigures
-        //            color: "#ffffff"   // "#f9bbcbc"
+        //            color: "#ffffff"
         //            text: (PowerNodeModel.generatorPowerGaube / 1000).toFixed(2)
                     text: PowerNodeModel.generatorPowerGaube
                     font.pixelSize: 12
@@ -404,50 +401,45 @@ Window {
                 }
                 Text {
                     id: text30
-                    y: 67
                     width: 33
                     height: 14
                     color: PowerNodeModel.MBMDfigures
-        //            color: "#ffffff"   // "#f9bbcbc"
+        //            color: "#ffffff"
         //            text: (PowerNodeModel.generatorPowerGarage / 1000).toFixed(2)
                     text: PowerNodeModel.generatorPowerGarage
                     font.pixelSize: 12
                     horizontalAlignment: Text.AlignRight
                 }
             }
-            Column {
+            Column {                                        // Einheiten
                 y: yval
                 spacing: ydist
                 x: 76
                 Text {
                     id: text26
-                    y: 6
-                    color: "#ffffff"   // "#f9bbcbc"
+                    color: "#ffffff"
                     text: qsTr("kW")
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: text54
-                    y: 21
-                    color: "#ffffff"   // "#f9bbcbc"
+                    color: "#ffffff"
                     text: qsTr("kW")
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: text29
-                    y: 36
                     width: 17
-                    color: "#ffffff"   // "#f9bbcbc"
+                    color: "#ffffff"
                     text: qsTr("kW")
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: text32
-                    y: 67
-                    color: "#ffffff"   // "#f9bbcbc"
+                    color: "#ffffff"
                     text: qsTr("kW")
                     font.pixelSize: 12
                 }
@@ -458,7 +450,7 @@ Window {
             id: text28
             x: 216
             y: 67
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("Ertrag")
             font.pixelSize: 12
         }
@@ -470,7 +462,7 @@ Window {
             width: 45
             height: 14
             color: PowerNodeModel.MBMDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"
 //            text: (PowerNodeModel.generatorTotalEnergy / 1000).toFixed(2)
             text: PowerNodeModel.generatorTotalEnergy.toFixed(2)
             font.pixelSize: 12
@@ -481,7 +473,7 @@ Window {
             id: text42
             x: 292
             y: 67
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("MWh")
             font.pixelSize: 12
         }
@@ -656,7 +648,7 @@ Window {
             id: text16
             x: 12
             y: 71
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("Zuletzt:")
             font.pixelSize: 12
         }
@@ -667,7 +659,7 @@ Window {
             width: 40
             height: 14
             color: PowerNodeModel.EDLDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
 //            text: (PowerNodeModel.sessionEnergy / 1000).toFixed(3)
@@ -677,7 +669,7 @@ Window {
             id: text18
             x: 96
             y: 71
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("kWh")
             font.pixelSize: 12
         }
@@ -685,7 +677,7 @@ Window {
             id: text19
             x: 190
             y: 71
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("Gesamt:")
             font.pixelSize: 12
         }
@@ -696,7 +688,7 @@ Window {
             width: 50
             height: 14
             color: PowerNodeModel.EDLDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"
 //            text: (PowerNodeModel.chargedEnergy / 1000).toFixed(2)
             text: PowerNodeModel.chargedEnergy
             font.pixelSize: 12
@@ -706,7 +698,7 @@ Window {
             id: text21
             x: 288
             y: 71
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("kWh")
             font.pixelSize: 12
         }
@@ -715,7 +707,7 @@ Window {
             id: text43
             x: 12
             y: 6
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("Eval.Pts:")
             font.pixelSize: 12
         }
@@ -727,7 +719,7 @@ Window {
             width: 16
             height: 14
             color: PowerNodeModel.EDLDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"
             text: PowerNodeModel.evalPoints.toFixed(0)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignLeft
@@ -1238,7 +1230,7 @@ Window {
             x: 11
             y: 153
             width: 33
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("Temp.")
             font.pixelSize: 12
         }
@@ -1250,7 +1242,7 @@ Window {
             width: 16
             height: 14
             color: PowerNodeModel.EDLDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"
             text: PowerNodeModel.battTemp.toFixed(1)
             font.pixelSize: 12
             horizontalAlignment: Text.AlignRight
@@ -1262,7 +1254,7 @@ Window {
             y: 152
             width: 6
             height: 14
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("°")
             font.pixelSize: 12
         }
@@ -1343,7 +1335,7 @@ Window {
             id: text39
             x: 13
             y: 199
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("Einspeisung")
             font.pixelSize: 12
         }
@@ -1355,7 +1347,7 @@ Window {
             width: 74
             height: 14
             color: PowerNodeModel.EDLDfigures
-            //            color: "#ffffff"   // "#f9bbcbc"
+            //            color: "#ffffff"
             // eine Nachkommastelle, zentriert
             text: (PowerNodeModel.gridEnergyExport).toFixed(1)
             font.pixelSize: 12
@@ -1366,7 +1358,7 @@ Window {
             id: text41
             x: 33
             y: 229
-            color: "#ffffff"   // "#f9bbcbc"
+            color: "#ffffff"
             text: qsTr("kWh")
             font.pixelSize: 12
         }
