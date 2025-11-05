@@ -140,7 +140,7 @@ void Downloader::replyFinishedSetChargerPhases (QNetworkReply *reply)
     {
         qDebug() << "ERROR with SmartCharger";
         qDebug() << reply->errorString();
-        m_messageFlag |= SETCURRENTFlag;                  // Fehler bei der Verarbeitung des SetMode Befehls
+        m_messageFlag |= SETPHASESFlag;                  // Fehler bei der Verarbeitung des setPhases Befehls
     }
 
     reply->deleteLater();

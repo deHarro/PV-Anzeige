@@ -11,12 +11,14 @@ extern quint8 m_messageFlag;
 // Flag: Bit 3 = 1 -> Einer der WR liefert keine Daten -> muss rückgesetzt werden!
 // Flag: Bit 4 = 1 -> Fehler bei der Verarbeitung des SetMode Befehls im EDLD
 // Flag: Bit 5 = 1 -> Fehler bei der Verarbeitung des SetManualCurrent Befehls im EDLD
+// Flag: Bit 6 = 1 -> Fehler bei der Verarbeitung des SetChargerPhases Befehls im EDLD
 #define EDLDFlag 1
 #define MBMDFlag 2
 #define VERSIONFlag 4
 #define WRFlag 8
 #define SETMODEFlag 10
 #define SETCURRENTFlag 20
+#define SETPHASESFlag 40
 
 class Downloader : public QObject
 {

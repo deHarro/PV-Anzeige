@@ -79,8 +79,8 @@ Version 1.19 - Bei manueller Einstellung des Ladestroms wird automatisch auf 3 P
 Version 1.20 - Überflüssige (bereits auskommentierte) Includes entfernt.
              - Überflüssige Kommentare entfernt (auskommentierte Routinen und Variablendefinitionen).
              - Gesetzte Anzahl Phasen für Radio-Buttons im Manual Drawer von Wallbox zurücklesen und im Drawer anzeigen.
-             - TransferTimeout für alle Aufrufe an EDLD und MBMD gesetzt (DefaultTransferTimeout -> 30s). Theoretisch werden
-                damit in PV-Anzeige nicht beantwortete Anfragen beim SmartCharger abgebrochen und laufen nicht immer weiter.
+             - TransferTimeout für alle Aufrufe an EDLD und MBMD gesetzt (4 Sekunden statt DefaultTransferTimeout -> 30s).
+                Theoretisch werden damit in PV-Anzeige nicht beantwortete Anfragen beim SmartCharger abgebrochen und laufen nicht immer weiter.
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */
