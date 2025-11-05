@@ -1,13 +1,7 @@
-#include "PowerNodeModel.h"
-
-//#include <algorithm>
-//#include <chrono>
 #include <iostream>
-//#include <QTextStream>
-//#include <QTextEdit>
-//#include <QAbstractButton>
-//#include <QStyle>
+#include <QFont>
 
+#include "PowerNodeModel.h"
 #include "Downloader.h"
 #include "SmartChargerXML.h"
 #include "WechselrichterJSON.h"
@@ -266,6 +260,7 @@ void PowerNodeModel::openPopUpMsg() {
     msgBox.setTextInteractionFlags(Qt::TextInteractionFlags (true));
 
     msgBox.setTextFormat(Qt::RichText);
+    // <pre> bewirkt die Umstellung auf Courier New (mono spaced Font), kann nicht unkompliziert geändert werden
     msgBox.setText("<pre>"
         "<b>Ertrag der Wechselrichter</b>"
         "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -295,6 +290,7 @@ void PowerNodeModel::openVersionInfoMsg() {
     msgBox.setTextFormat(Qt::RichText);
     msgBox.setText("<b>Version Info</b><br><br>"
         "Version : V" VERSIONMAJOR "." VERSIONMINOR
+        // die nachfolgenden zwei Zeilen legen die Breite der MSG-Box fest
         "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
         "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
         "<br>Builddate: " + QString(IsoDate) +
@@ -550,6 +546,7 @@ void PowerNodeModel::showChargeMode()
 {
     emit chargingDataChanged();                         // refresh GUI
 }
+// \setting ChargeMode handling
 
 // setting Manual Current handling
 void PowerNodeModel::switchManualCurrent()
@@ -592,10 +589,11 @@ void PowerNodeModel::showManualCurrent()
     m_EVusedPhasesS =  QString::number(m_Output == 0 ? 1 : 3) + "P";   // (m_Output = 0..1 -> 0: 1 Phase, 1: 3 Phasen)
     emit chargingDataChanged();                         // refresh GUI
 }
+// \setting Manual Current handling
 
+// setting Charging Phases handling
 void PowerNodeModel::setChargerPhases1()
 {
-    //    m_EVChargerPhases = QString::number(m_ChargerPhases) + " % to EV";   // Prozentwert anzeigen
     emit chargingDataChanged();                         // refresh GUI
     m_ChargerPhases = 1;
     downler.doSetChargerPhases();
@@ -603,42 +601,11 @@ void PowerNodeModel::setChargerPhases1()
 
 void PowerNodeModel::setChargerPhases3()
 {
-//    m_EVChargerPhases = QString::number(m_ChargerPhases) + " % to EV";   // Prozentwert anzeigen
     emit chargingDataChanged();                         // refresh GUI
     m_ChargerPhases = 3;
     downler.doSetChargerPhases();
 }
-
-/*
-// setting EV percentage handling
-void PowerNodeModel::switchEVChargePercent()
-{
-    m_EVChargePercentS = QString::number(m_EVChargePercent) + " % to EV";   // Prozentwert anzeigen
-    emit chargingDataChanged();                         // refresh GUI
-    m_EVPercent = m_EVChargePercent;
-    downler.doSetEVPercent();
-}
-void PowerNodeModel::showEVPercent()       // make percentage of power into car battery visible in Drawer (0..50..100%)
-{
-    m_EVChargePercentS = QString::number(m_EVChargePercent) + " % to EV";   // Prozentwert anzeigen
-    emit chargingDataChanged();                         // refresh GUI
-}
-void PowerNodeModel::setEVPercent0()
-{
-    m_EVChargePercent = 10;
-    switchEVChargePercent();
-}
-void PowerNodeModel::setEVPercent50()
-{
-    m_EVChargePercent = 50;
-    switchEVChargePercent();
-}
-void PowerNodeModel::setEVPercent100()
-{
-    m_EVChargePercent = 100;
-    switchEVChargePercent();
-}
-*/
+// \setting Charging Phases handling
 
 // wallbox handling ----------------------------------------------------------
 void PowerNodeModel::wallboxHandling()

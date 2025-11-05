@@ -1,9 +1,6 @@
 #pragma once
 
-//#include <QObject>
 #include <QTimer>
-//#include <QString>
-//#include <QQuickImageProvider>
 #include <QColor>
 #include <QMessageBox>
 
@@ -55,14 +52,14 @@ Version 1.17 - Real Car Icon aktualisiert
                 X2 steuert das Phasen-Umschaltrelais für die Wallbox. Das Relais schaltet bei Bedarf die Phasen L2 und L3
                 zur Wallbox durch, so dass auch 3-phasig geladen werden kann. Das ist der Normalfall.
                 Interessant im Zusammenhang mit Überschussladen per PV, gesteuert durch den SmartCharger.
-                Fällt der Sonnen_überschuss_ unter 3 * 1370 W (4,11 kW), wird auf 1-phasiges Laden umgeschaltet.
-             - Anzeige der Anzahl genutzter Phasen in der GUI
-             - Maxwert für Manual Current in der GUI (Drawer links unten) von 18 A auf 32 A / 7.36 kW erhöht
+                Liegt/fällt der Sonnen_überschuss_ unter 3 * 1370 W (4,11 kW), wird auf 1-phasiges Laden umgeschaltet.
+             - Anzeige der Anzahl genutzter Phasen in der GUI.
+             - Maxwert für Manual Current in der GUI (Drawer links unten) von 18 A auf 32 A / 7.36 kW erhöht (nur bei 3 Phasen).
              - Die vertikale Lokalisierung der Drag-Punkte ist bei Qt V6.x weg, es gilt die komplette seitliche Kante für den zuerst
                 in main.qml deklarierten Drawer -> Rechts wird nur der Charge Mode Drawer ausgeklappt. Nicht gut.
                 -> Die Dragpunkte ersetzt durch runde Buttons, die per Mausklick den jeweiligen Drawer aufklappen.
              - Die (unsichtbaren) Buttons für die Drawer sind deutlich größer als die Dragpunkte -> leichter zu treffen :)
-             - Drawer schließen per Mausklick außerhalb der Drawerfläche
+             - Drawer schließen per Mausklick außerhalb der Drawerfläche.
              - Upscaling der App für Qt V6.x aktiviert (Darstellung auf Tablet auf Bildschirmhöhe gestreckt),
                 in main.cpp: QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Ceil);
                 Das war bei Qt V5.x als Default aktiviert.
@@ -73,18 +70,24 @@ Version 1.18 - Pfad auf PVConfig.ini schön gemacht (mitten im Pfad "./" entfern
 Version 1.19 - Bei manueller Einstellung des Ladestroms wird automatisch auf 3 Phasen umgeschaltet. Das bewirkt, dass der
                 in der GUI eingestellte Ladestrom verdreifacht wird (jede Phase übernimmt den eingestellten Wert), allerdings nur,
                 wenn ein dreiphasiges Ladekabel verwendet wird und das Fahrzeug dreiphasiges Laden unterstützt.
-                Das Problem kann mit Bordmitteln behoben werden (Radiobuttons für 1- bzw. 3-phasiges Laden im Manunal Dialog).
-             - Gesamtertrag der Anlage aus der PV-Box entfernt, der Wert steht auch im Drawer.
+                Das wurde erst mit dem Capri zum Problem, der lädt mit 3 Phasen und hat ein 3-phasiges Ladekabel.
+                -> Behoben mit Radiobuttons für 1- bzw. 3-phasiges Laden im Manual Dialog.
+             - Gesamtertrag der Anlage aus der PV-Box entfernt, der Wert steht schon im Drawer.
              - Darstellung der WR-Werte geschönt (Column, offset, spacing, Item).
-             - Extern deklarierte Variablen aus den Routinen an den jeweiligen Dateianfang verschoben.
-             - Liste der möglichen Remote-Befehle in "Downloader.cpp".
+             - Extern (in main.cpp) deklarierte Variablen aus den Routinen an den jeweiligen Dateianfang verschoben.
+             - Liste der möglichen Remote-Befehle in "Downloader.cpp" als Kommentar.
+Version 1.20 - Überflüssige (bereits auskommentierte) Includes entfernt.
+             - Überflüssige Kommentare entfernt (auskommentierte Routinen und Variablendefinitionen).
+             - Gesetzte Anzahl Phasen für Radio-Buttons im Manual Drawer von Wallbox zurücklesen und im Drawer anzeigen.
+             - TransferTimeout für alle Aufrufe an EDLD und MBMD gesetzt (DefaultTransferTimeout -> 30s). Theoretisch werden
+                damit in PV-Anzeige nicht beantwortete Anfragen beim SmartCharger abgebrochen und laufen nicht immer weiter.
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "19"
+#define VERSIONMINOR    "20"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -167,7 +170,6 @@ public:
     Q_PROPERTY(bool visibleComm             MEMBER m_visibleComm      NOTIFY showComm)
     Q_PROPERTY(char evalCountDown           MEMBER m_evalCountDown    NOTIFY showComm)
     Q_PROPERTY(QString usedPhases           MEMBER m_EVusedPhasesS    NOTIFY chargingDataChanged)                // current charge mode (String)
-    //Q_PROPERTY(QString EVChargePercentS     MEMBER m_EVChargePercentS NOTIFY chargingDataChanged)                // current EV percentage (String)
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
     Q_PROPERTY(QString EDLDfigures  MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
@@ -296,7 +298,8 @@ public:
     QString m_generatorColor = VLIGHTGRAY;  // Farbe der PV Generator Box
     double m_sunAngle = 22.5;               // Sonne langsam rotieren ;)
     QString m_sunColor = "/Icons/Sonne_invers_hellgrau.png";          // 2022-05-26
-    QColor m_SunBGColor = "#ffffff";
+//    QColor m_SunBGColor = "#ffffff";      // wird angemeckert (Warnung)
+    QColor m_SunBGColor = QColor(255, 255, 255, 255);   // weiß
 
 // battery, Akku
     int m_batteryPower = 0;                 // Batterieladung/-Entladung [kW]
@@ -341,9 +344,6 @@ public:
     QString m_EVManualCurrentS;             // String für Anzeige in der GUI
     int m_Output = 0;                       // Phasen-Relais-Ausgang geschaltet (0: AUS - 1: EIN)
     QString m_EVusedPhasesS;                // String für Anzeige in der GUI
-    //int m_ChargerPhases;                    // Festlegung der Anzahl Phasen beim Laden: 1 oder 3
-    //char m_EVChargePercent = 100;           // charge percentage into EV battery: 100..50..0 [%]
-    //QString m_EVChargePercentS;             // String für Anzeige in der GUI
 
 // Error Messages
     QString m_MBMDProblemText = "";

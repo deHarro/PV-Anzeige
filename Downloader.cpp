@@ -1,11 +1,6 @@
-//#include <QFile>
 #include <iostream>
-//#include <QGuiApplication>
-//#include <QDir>
-//#include <QIODevice>
 
 #include "Downloader.h"
-//#include "PowerNodeModel.h"
 
 // globally defined in main.cpp
 extern QString m_setChargeModeString;
@@ -13,7 +8,8 @@ extern QString m_JSONfiledata;
 extern int m_ManualSetCurrent;
 extern int m_ChargerPhases;
 extern QByteArray m_XMLfiledata;
-//extern int m_EVPercent;
+
+#define TRANSFERTIMEOUT QNetworkRequest::DefaultTransferTimeoutConstant            // when no reaction cancel HTTPRequest after 4000 ms
 
 
 /* alle möglichen Remote-Befehle für SmartCharger
@@ -53,6 +49,7 @@ Downloader::Downloader(QObject *parent) :
 void Downloader::doSetChargeMode(void)
 {
     xmlManager = new QNetworkAccessManager(this);
+    xmlManager->setTransferTimeout(TRANSFERTIMEOUT);
 
     connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedSetMode(QNetworkReply*)));
@@ -82,6 +79,7 @@ void Downloader::replyFinishedSetMode (QNetworkReply *reply)
     xmlManager->deleteLater();
     xmlManager = nullptr;
 }
+// \set charging mode of SmartCharger ----------------------------------------
 
 // set manual current of SmartCharger ----------------------------------------
 // moegliche Ladeströme: 6000, 7020, 7980, 9000, 10020, 10980, 12000, 13020, 13980, 15000, 16020, 16980, 18000, 19020, 19980,
@@ -96,6 +94,8 @@ void Downloader::doSetManualCurrent(void)
     manualCurrentTmp = QString::number(m_ManualSetCurrent);
 
     xmlManager = new QNetworkAccessManager(this);
+    xmlManager->setTransferTimeout(TRANSFERTIMEOUT);
+
 
     connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedSetMode(QNetworkReply*)));
@@ -110,17 +110,21 @@ void Downloader::replyFinishedSetManualCurrent (QNetworkReply *reply)
     {
         qDebug() << "ERROR with SmartCharger";
         qDebug() << reply->errorString();
-        m_messageFlag |= SETCURRENTFlag;                 // Fehler bei der Verarbeitung des SetMode Befehls
+        m_messageFlag |= SETCURRENTFlag;                 // Fehler bei der Verarbeitung des SetManualCurrent Befehls
     }
 
     reply->deleteLater();
     xmlManager->deleteLater();
     xmlManager = nullptr;
 }
+// \set manual current of SmartCharger ----------------------------------------
 
+// set number of phases to use for SmartCharger ----------------------------------------
 void Downloader::doSetChargerPhases(void)
 {
     xmlManager = new QNetworkAccessManager(this);
+    xmlManager->setTransferTimeout(TRANSFERTIMEOUT);
+
 
     connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedSetMode(QNetworkReply*)));
@@ -142,40 +146,14 @@ void Downloader::replyFinishedSetChargerPhases (QNetworkReply *reply)
     xmlManager->deleteLater();
     xmlManager = nullptr;
 }
-
-/*
-void Downloader::doSetEVPercent(void)
-{
-    manualEVPercentTmp = QString::number(m_EVPercent);
-
-    xmlManager = new QNetworkAccessManager(this);
-
-    connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(replyFinishedSetMode(QNetworkReply*)));
-
-    QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?manualcurrent=" + manualEVPercentTmp;
-    xmlManager->get(QNetworkRequest(SmartChargerAddr));
-}
-
-void Downloader::replyFinishedSetEVPercent (QNetworkReply *reply)
-{
-    if(reply->error())
-    {
-        qDebug() << "ERROR with SmartCharger";
-        qDebug() << reply->errorString();
-        m_messageFlag |= SETCURRENTFlag;                           // Fehler bei der Verarbeitung des SetMode Befehls
-    }
-
-    reply->deleteLater();
-    xmlManager->deleteLater();
-    xmlManager = nullptr;
-}
-*/
+// \set number of phases to use for SmartCharger ----------------------------------------
 
 // download XML data from SmartCharger ----------------------------------------
 void Downloader::doDownloadXML(void)
 {
     xmlManager = new QNetworkAccessManager(this);
+    xmlManager->setTransferTimeout(TRANSFERTIMEOUT);
+
 
     connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedXML(QNetworkReply*)));
@@ -194,21 +172,22 @@ void Downloader::replyFinishedXML (QNetworkReply *reply)
     }
     else
     {
-        m_XMLfiledata.clear();
-        m_XMLfiledata.append(reply->readAll());
-        m_messageFlag &= !EDLDFlag;                             // EDL Daemon ist ok -> ausblenden
+        m_XMLfiledata.clear();                                  // XMLdata löschen...
+        m_XMLfiledata.append(reply->readAll());                 // ...und neu einlesen
+        m_messageFlag &= !EDLDFlag;                             // EDL Daemon ist ok -> Flag ausblenden
     }
 
     reply->deleteLater();
-
     xmlManager->deleteLater();
     xmlManager = nullptr;
 }
+// \download XML data from SmartCharger ----------------------------------------
 
 // download JSON data from MBMD PV-WR-reader ----------------------------------
 void Downloader::doDownloadJSON(void)
 {
     jsonManager = new QNetworkAccessManager(this);
+    jsonManager->setTransferTimeout(TRANSFERTIMEOUT);
 
     connect(jsonManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedJSON(QNetworkReply*)));
@@ -227,8 +206,8 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
     }
     else
     {
-        m_JSONfiledata.clear();
-        m_JSONfiledata.append(reply->readAll());
+        m_JSONfiledata.clear();                                 // JSONdata löschen...
+        m_JSONfiledata.append(reply->readAll());                // ... und neu einlesen
         m_messageFlag &= !MBMDFlag;                             // MBMD Daemon ist ok -> ausblenden
     }
 
@@ -237,6 +216,7 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
     jsonManager->deleteLater();                                 // delete manager -> prevent handle leaking
     jsonManager = nullptr;                                      // invalidate manager
 }
+// \download JSON data from MBMD PV-WR-reader ----------------------------------
 
 // get access parameter to reach the Raspberry Pi
 void Downloader::getRPiParameter()
@@ -286,3 +266,4 @@ void Downloader::getRPiParameter()
         std::cerr << "Error: PVconfig.ini doesn't exist (at the given path)" << std::endl;
     }
 }
+// \get access parameter to reach the Raspberry Pi

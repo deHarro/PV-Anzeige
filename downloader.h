@@ -1,12 +1,7 @@
 #pragma once
 
-//#include <QObject>
-//#include <QNetworkAccessManager>
-//#include <QNetworkRequest>
 #include <QNetworkReply>
-//#include <QUrl>
 #include <QDir>
-//#include <QCoreApplication>
 
 // global flag memory for error messages
 extern quint8 m_messageFlag;

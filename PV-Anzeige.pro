@@ -1,7 +1,6 @@
 TEMPLATE += app
 
 QT += quick
-#QT += gui       # not necessary, is default
 QT += xml
 QT += widgets
 

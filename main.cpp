@@ -1,7 +1,6 @@
 #include <QGuiApplication>
 #include <QApplication>
 #include <QQmlApplicationEngine>
-//#include <QtWidgets/QMessageBox>                // Für Messagebox
 #include <QQmlContext>
 
 #include "PowerNodeModel.h"
@@ -23,7 +22,6 @@ QString m_setChargeModeString;                      // Befehl für remote contro
 int m_ManualSetCurrent;                             // Befehl für remote control des SmartCharger (manual current 6, 12, 18, 32 A)
 QString m_EVChargingModeS;                          // Anzeige der manuell einzustellenden maximalen Ladeleistung
 int m_ChargerPhases;                                // Befehl für remote control des SmartCharger (number of phases 1, 3)
-//int m_EVPercent;                                    // Befehl für remote control des SmartCharger (0..50..100 %  Ladung -> EV)
 // \globals ----------------------------------------
 
 

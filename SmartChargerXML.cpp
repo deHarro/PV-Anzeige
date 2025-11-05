@@ -1,15 +1,17 @@
-//#include <QApplication>
-#include <QtXml/QDomElement>// Library needed for processing XML documents
-//#include <QFile>// Library needed for processing files
+/*
+ * Liest die XML-Ausgabe des SmartCharger von dessen REST Interface und füllt die Werte in Variablen
+*/
 
+#include <QtXml/QDomElement>// Library needed for processing XML documents
 #include <iostream>
+
 #include "SmartChargerXML.h"
 #include "Downloader.h"
 
 extern QByteArray m_XMLfiledata;    // globally defined in main.cpp, loaded with data by Downloader.cpp
 
-//#define INTERMEDIATES     // if enabled all nodes are displayed during parsing
-                            // if diabled not used nodes are skipped
+//#define SHOWINTERMEDIATENODES     // if enabled all nodes are displayed during parsing
+                                    // if disabled not used nodes are skipped
 
 // -----------------------------------------------------------
 // read XML file SmartCharger
@@ -44,13 +46,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
     // Search node SettingsVersion		-----------------------------------------------------------------
     while ((node.nodeName().compare("SettingsVersion") != 0) && (!node.isNull()))	// überspringe alle Nodes bis SmartMeter
     {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
         node=node.nextSibling();
     }
         // erste Ebene innerhalb GetValues
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
     if (node.nodeName().compare("SettingsVersion")==0)
@@ -67,13 +69,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
     // loopcount = 0;
     while ((node.nodeName().compare("SmartMeter") != 0) && (!node.isNull()))	// überspringe alle Nodes bis SmartMeter
     {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
         node=node.nextSibling();
     }
         // erste Ebene innerhalb SmartMeter
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
 
@@ -84,13 +86,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
         // loopcount = 0;
         while ((node.nodeName().compare("ActualPower") !=0 ) && (!node.isNull()))
         {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             node=node.nextSibling();
         }
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
         if (node.nodeName().compare("ActualPower")==0)
@@ -103,14 +105,14 @@ void SmartChargerXML::ReadSmartChargerXML() {
         // loopcount = 0;
         while ((node.nodeName().compare("MeterReadings") !=0 ) && (!node.isNull()))	// überspringe alle Nodes bis MeterReadings
         {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             node=node.nextSibling();
         }
 
             // erste Ebene innerhalb MeterReadings
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             node = node.firstChild();
@@ -119,13 +121,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
             // loopcount = 0;
             while ((node.nodeName().compare("Consumption") !=0 ) && (!node.isNull()))
             {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 node=node.nextSibling();
             }
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             if (node.nodeName().compare("Consumption")==0)
@@ -137,7 +139,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
             // Read node Surplus
             node=node.nextSibling();
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             if (node.nodeName().compare("Surplus")==0)
@@ -153,14 +155,14 @@ void SmartChargerXML::ReadSmartChargerXML() {
     // loopcount = 0;
     while ((node.nodeName().compare("EV") != 0) && (!node.isNull()))	// überspringe alle Nodes bis EV
     {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
         node=node.nextSibling();
     }
         nodeRestart = node;             // Merker für zweite Runde (Wallbox)
         // erste Ebene innerhalb EV
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
         node = node.firstChild();
@@ -169,14 +171,14 @@ void SmartChargerXML::ReadSmartChargerXML() {
         // loopcount = 0;
         while ((node.nodeName().compare("Charging") != 0) && (!node.isNull()))
         {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             node=node.nextSibling();
         }
 
         // erste Ebene innerhalb Charging
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
         node = node.firstChild();
@@ -185,13 +187,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
             // loopcount = 0;
             while ((node.nodeName().compare("ChargingMode") != 0) && (!node.isNull()))
             {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 node=node.nextSibling();
             }
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             if (node.nodeName().compare("ChargingMode")==0)
@@ -206,7 +208,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
             // loopcount = 0;
             while ((node.nodeName().compare("MaxPhases") != 0) && (!node.isNull()))
             {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 node=node.nextSibling();
@@ -222,13 +224,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
             // loopcount = 0;
             while ((node.nodeName().compare("EvaluationPoints") != 0) && (!node.isNull()))
             {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 node=node.nextSibling();
             }
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             if (node.nodeName().compare("EvaluationPoints")==0)
@@ -242,7 +244,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
             // loopcount = 0;
             while ((node.nodeName().compare("Wallbox") != 0) && (!node.isNull()))
             {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 node=node.nextSibling();
@@ -250,7 +252,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
 
             // erste Ebene innerhalb Wallbox
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             node = node.firstChild();
@@ -268,13 +270,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
                 // loopcount = 0;
                 while ((node.nodeName().compare("State") != 0) && (!node.isNull()))
                 {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                     std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                     node=node.nextSibling();
                 }
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 if (node.nodeName().compare("State")==0)
@@ -296,7 +298,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
 */
                 node=node.nextSibling();
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 if (node.nodeName().compare("Plug")==0)
@@ -308,7 +310,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
             // 			Search node SystemEnabled
                 node=node.nextSibling();
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 if (node.nodeName().compare("SystemEnabled")==0)
@@ -323,7 +325,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
                 // loopcount = 0;
                 while ((node.nodeName().compare("Output") != 0) && (!node.isNull()))
                 {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                     std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                     node=node.nextSibling();
@@ -339,13 +341,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
                 // loopcount = 0;
                 while ((node.nodeName().compare("ActualPower") != 0) && (!node.isNull()))
                 {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                     std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                     node=node.nextSibling();
                 }
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 if (node.nodeName().compare("ActualPower")==0)
@@ -357,7 +359,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
     // 			Search node SessionEnergy
                 node=node.nextSibling();
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 if (node.nodeName().compare("SessionEnergy")==0)
@@ -370,14 +372,14 @@ void SmartChargerXML::ReadSmartChargerXML() {
                 // loopcount = 0;
                   while ((node.nodeName().compare("TotalEnergy") != 0) && (!node.isNull()))
                 {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                     std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                     node=node.nextSibling();
                 }
 
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 if (node.nodeName().compare("TotalEnergy")==0)
@@ -393,7 +395,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
     // loopcount = 0;
     while ((node.nodeName().compare("StorageSystem") != 0) && (!node.isNull()))	// überspringe alle Nodes bis StorageSystem
     {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
         node=node.nextSibling();
@@ -401,7 +403,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
 
         nodeRestart = node;             // Merker für zweite Runde (AC)
         // erste Ebene innerhalb StorageSystem
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
         node = node.firstChild();
@@ -410,14 +412,14 @@ void SmartChargerXML::ReadSmartChargerXML() {
         // loopcount = 0;
         while ((node.nodeName().compare("Battery") != 0) && (!node.isNull()))
         {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             node=node.nextSibling();
         }
 
         // erste Ebene innerhalb Battery
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
         node = node.firstChild();
@@ -426,13 +428,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
             // loopcount = 0;
             while ((node.nodeName().compare("SOC") != 0) && (!node.isNull()))
             {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 node=node.nextSibling();
             }
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             if (node.nodeName().compare("SOC")==0)
@@ -444,7 +446,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
             node=node.nextSibling();
 
             // 			Search node Temperature
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             if (node.nodeName().compare("Temperature")==0)
@@ -458,7 +460,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
 
             // 		Search node AC
             // erste Ebene innerhalb StorageSystem
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             node = node.firstChild();
@@ -466,7 +468,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
             // loopcount = 0;
             while ((node.nodeName().compare("AC") != 0) && (!node.isNull()))
             {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 node=node.nextSibling();
@@ -474,7 +476,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
 
     // 			Search node ActualPower
             // erste Ebene innerhalb AC
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
             std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             node = node.firstChild();
@@ -483,13 +485,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
                 // loopcount = 0;
                 while ((node.nodeName().compare("ActualPower") != 0) && (!node.isNull()))
                 {
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                     std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                     node=node.nextSibling();
                 }
 
-#ifdef INTERMEDIATES
+#ifdef SHOWINTERMEDIATENODES
                 std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 if (node.nodeName().compare("ActualPower")==0)
@@ -499,9 +501,11 @@ void SmartChargerXML::ReadSmartChargerXML() {
                 }
 }
 
+// Konstruktor
 SmartChargerXML::~SmartChargerXML()
 {}
 
+// getter Funktionen
 double SmartChargerXML::getSmartMeterActualPower(void)
 {
     return m_SmartMeterActualPower;
@@ -515,7 +519,7 @@ double SmartChargerXML::getSmartMeterSurplus(void)
     return m_SmartMeterSurplus;
 }
 
-double SmartChargerXML::getMaxPhases(void)
+double SmartChargerXML::getEVMaxPhases(void)
 {
     return m_EVMaxPhases;
 }

@@ -2,22 +2,22 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
-import QtGraphicalEffects 1.0               // use this line when working with Qt 5
-// import Qt5Compat.GraphicalEffects           // use this line when working with Qt 6
+import QtGraphicalEffects 1.0                   // use this line when working with Qt 5
+// import Qt5Compat.GraphicalEffects               // use this line when working with Qt 6
 
-import PowerNodeModel 1.0
+import PowerNodeModel 1.0                       // Pointer to the code model
 
 Window {
     id: window
     width: 404
     height: 560
-    minimumWidth: width                      // prevent resizing
+    minimumWidth: width                         // prevent resizing
     maximumWidth: width
     minimumHeight: height
     maximumHeight: height
     opacity: 1
     visible: true
-    color: PowerNodeModel.backgroundColor    // sehr helles Grau oder helles Rosa (bei Fehler) für Fensterhintergrund
+    color: PowerNodeModel.backgroundColor       // sehr helles Grau oder helles Rosa (bei Fehler) für Fensterhintergrund
     title: PowerNodeModel.windowTitle
     //    title: qsTr("PV-Anzeige")
 
@@ -32,7 +32,7 @@ Window {
     property real coordHouseW: 90
     property real coordHouseH: 270
 
-    property real captionTextSize: 12
+    property real captionTextSize: 12           // Überschriften in allen Boxen
     property real faktor: 1                     // Faktor für die Darstellung der Wattzahl basierend auf 1-/3-phasig
     property real xval: 218                     // x-Offset für die Leistungswerte der WR
     property real yval: 8                       // y-Offset für die Leistungswerte der WR
@@ -57,7 +57,7 @@ Window {
                 anchors.fill: parent
                 anchors.margins: 0
                 radius:  15
-                color: "Yellow"           // wird nie angezeigt
+                color: "Yellow"                 // wird nie angezeigt
                 Item {
                     id: innerMaskSource
                     anchors.fill: parent
@@ -187,7 +187,6 @@ Window {
                         // consumptionPower hängt an EDLD _und_ MBMD, 2022-05-26
                         color: PowerNodeModel.consumptionPowerfigures
                         //                        color: "#ffffff"
-//                        text: (PowerNodeModel.consumptionPower / 1000).toFixed(2)
                         text: PowerNodeModel.consumptionPower
                         font.pixelSize: 23
                         horizontalAlignment: Text.AlignHCenter
@@ -1001,7 +1000,7 @@ Window {
                         x: 0
                         y: 10
                         scale: 0.5
-                        checked: true
+                        checked: true   // use Variable to visualized the current setting (derived from SmartCharger)
                         Text {
                             x: 60
                             font.pixelSize: 32
