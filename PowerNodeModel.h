@@ -225,22 +225,17 @@ public slots:
     void showChargeModeMANUAL();            // display chargeMode in GUI
     void showChargeMode();                  // display currently selected ChargeMode
     void switchManualCurrent();             // send (new) manual current to SmartCharger
-    void setManualCurrent6000();           // display ManualChargeCurrent 6 A in GUI
-    void setManualCurrent12000();          // display ManualChargeCurrent 12 A in GUI
-    void setManualCurrent18000();          // display ManualChargeCurrent 18 A in GUI
-    void setManualCurrent32000();          // display ManualChargeCurrent 32 A in GUI, added in V1.17, 06/2025 (new car, 11 kW charging possible)
-    void showManualCurrent();              // display currently selected ManualChargeCurrent
+
+    void setManualCurrent6000();            // display ManualChargeCurrent 6 A in GUI
+    void setManualCurrent12000();           // display ManualChargeCurrent 12 A in GUI
+    void setManualCurrent18000();           // display ManualChargeCurrent 18 A in GUI
+    void setManualCurrent32000();           // display ManualChargeCurrent 32 A in GUI, added in V1.17, 06/2025 (new car, 11 kW charging possible)
+    void showManualCurrent();               // display currently selected ManualChargeCurrent
     void showUsedPhases();                  // display currently selected used phases (relais on X2 switched ON/OFF - ON: 3 phases - OFF: 1 phase)
 
-    void setChargerPhases1();                   // display EVPercent 10 GUI on hover
-    void setChargerPhases3();                   // display EVPercent 10 GUI on hover
-/*
-    void showEVPercent();                  // display currently selected ratio car battery/house battery (0..50.100%)
-    void switchEVChargePercent();           // send (new) percentage to SmartCharger
-    void setEVPercent10();                   // display EVPercent 10 GUI on hover
-    void setEVPercent50();                   // display EVPercent 50 GUI on hover
-    void setEVPercent100();                  // display EVPercent 100 GUI on hover
-*/
+    void setChargerPhases1();               // set Charger Phases to 1
+    void setChargerPhases3();               // set Charger Phases to 3
+
     void openVersionInfoMsg();              // Anzeige der Compiler- und Runtimeversion (V1.17)
     void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt (V1.17)
 

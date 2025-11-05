@@ -49,7 +49,6 @@ extern QString m_setChargeModeString;
 extern int m_ManualSetCurrent;
 extern QString m_EVChargingModeS;
 extern int m_ChargerPhases;                         //
-//extern int m_EVPercent;
 
 using namespace std::chrono_literals;
 

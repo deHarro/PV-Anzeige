@@ -9,7 +9,8 @@ extern int m_ManualSetCurrent;
 extern int m_ChargerPhases;
 extern QByteArray m_XMLfiledata;
 
-#define TRANSFERTIMEOUT QNetworkRequest::DefaultTransferTimeoutConstant            // when no reaction cancel HTTPRequest after 4000 ms
+//#define TRANSFERTIMEOUT QNetworkRequest::DefaultTransferTimeoutConstant            // when no reaction cancel HTTPRequest after 30000 ms
+#define TRANSFERTIMEOUT 4000                        // when no reaction cancel HTTPRequest after 4 seconds
 
 
 /* alle möglichen Remote-Befehle für SmartCharger
