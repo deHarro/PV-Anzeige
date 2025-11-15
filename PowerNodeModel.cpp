@@ -1,5 +1,4 @@
 #include <iostream>
-#include <QFont>
 
 #include "PowerNodeModel.h"
 #include "Downloader.h"
@@ -43,8 +42,8 @@ WechselrichterJSON wrJSON;
 
 extern SmartChargerXML smchaXML;
 extern Downloader downler;
-extern SmartChargerXML smchaXML;
 extern WechselrichterJSON wrJSON;
+
 extern QString m_setChargeModeString;
 extern int m_ManualSetCurrent;
 extern QString m_EVChargingModeS;
@@ -92,8 +91,8 @@ void PowerNodeModel::onDataTimer() {
         setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
         setBGColor();           // on comm error make background light red
         showManualCurrent();    // make Manual ChargeCurrent visible in Drawer
+        showManualPhases();     // make Manual Phases visible in Drawer
         showUsedPhases();       // show used phases in GUI
-//        showEVPercent();        // make percentage of power into car battery visible in Drawer (0..50..100)
 
     // Update the different values in QML -> show on GUI
         emit showComm();
@@ -155,7 +154,7 @@ void PowerNodeModel::setMBMDText(void)              // Fehlermeldung wenn MBMD D
     // Ich verwende den MBMD-Text mit, damit die Meldung auf der linken Seite erscheint (wird nur gesetzt, nie gelöscht)
     if (m_messageFlag & VERSIONFlag)
     {
-        m_MBMDProblemText = "EDLD XML Version stimmt nicht!";
+        m_MBMDProblemText = "EDLD - XML Version überprüfen!";
     }
     else if (m_messageFlag & MBMDFlag)
     {
@@ -576,19 +575,24 @@ void PowerNodeModel::setManualCurrent32000()
     m_EVManualCurrent = 32000;                          // Maximum für _manual current_ setting im SmartCharger: 31980(?)
     switchManualCurrent();
 }
+// \setting Manual Current handling
+
+// show manual current handling
 void PowerNodeModel::showManualCurrent()
 {
     m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     emit chargingDataChanged();                         // refresh GUI
 }
+// \show manual current handling
 
-    void PowerNodeModel::showUsedPhases()
+// show used phases handling
+void PowerNodeModel::showUsedPhases()
 {
     //m_EVusedPhasesS =  "P" + QString::number(m_Output == 0 ? 1 : 3);   // (m_Output = 0..1 -> 0: 1 Phase, 1: 3 Phasen)
     m_EVusedPhasesS =  QString::number(m_Output == 0 ? 1 : 3) + "P";   // (m_Output = 0..1 -> 0: 1 Phase, 1: 3 Phasen)
     emit chargingDataChanged();                         // refresh GUI
 }
-// \setting Manual Current handling
+// \show used phases handling
 
 // setting Charging Phases handling
 void PowerNodeModel::setChargerPhases1()
@@ -597,6 +601,17 @@ void PowerNodeModel::setChargerPhases1()
     m_ChargerPhases = 1;
     downler.doSetChargerPhases();
 }
+// \setting Charging Phases handling
+
+// show Charging Phases handling
+void PowerNodeModel::showManualPhases()
+{
+    emit chargingDataChanged();                         // refresh GUI
+    //m_ChargerPhases = 1;
+    //downler.doSetChargerPhases();
+}
+// \show Charging Phases handling
+
 
 void PowerNodeModel::setChargerPhases3()
 {

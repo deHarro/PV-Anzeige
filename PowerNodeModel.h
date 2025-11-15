@@ -81,13 +81,19 @@ Version 1.20 - Überflüssige (bereits auskommentierte) Includes entfernt.
              - Gesetzte Anzahl Phasen für Radio-Buttons im Manual Drawer von Wallbox zurücklesen und im Drawer anzeigen.
              - TransferTimeout für alle Aufrufe an EDLD und MBMD gesetzt (4 Sekunden statt DefaultTransferTimeout -> 30s).
                 Theoretisch werden damit in PV-Anzeige nicht beantwortete Anfragen beim SmartCharger abgebrochen und laufen nicht immer weiter.
+Version 1.21 - Update des EDLD auf V2.9.114 -> Neue XML SettingsVersion 1.8 freigegeben (ist identisch zu 1.6).
+             - In der Datei edld.ini (auf dem SmartCharger RPi) kann die Zeit nach einem Umschalten des Phasenrelais eingestellt werden.
+                Gültige Werte sind 10..45 s. (Momentan auf 45 s gesetzt). Größere Werte verursachen ein Rücksetzen der Wallbox (60s Watchdog).
+                Diese längere Pause ist notwendig, um einen MEB basierten EV Zeit zu geben, sich auf die geänderten Phasenanzahl
+                einzustellen (bekanntes Problem aller EV die auf dem VW MEB basieren -> beispielsweise VW ID3..7, Skoda, Ford Capri, ...).
+             - Alle Werte in der Wallbox-Anzeige auf Null setzen, wenn EDLD die Wallbox nicht anspricht (Haken aus in SmartCharger-Settings).
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */
 
 // program version for window title
 #define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "20"
+#define VERSIONMINOR    "21"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -232,6 +238,7 @@ public slots:
     void setManualCurrent32000();           // display ManualChargeCurrent 32 A in GUI, added in V1.17, 06/2025 (new car, 11 kW charging possible)
     void showManualCurrent();               // display currently selected ManualChargeCurrent
     void showUsedPhases();                  // display currently selected used phases (relais on X2 switched ON/OFF - ON: 3 phases - OFF: 1 phase)
+    void showManualPhases();                // display manually set used phases (relais on X2 switched ON/OFF - ON: 3 phases - OFF: 1 phase)
 
     void setChargerPhases1();               // set Charger Phases to 1
     void setChargerPhases3();               // set Charger Phases to 3
