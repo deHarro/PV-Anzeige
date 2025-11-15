@@ -58,10 +58,13 @@ void SmartChargerXML::ReadSmartChargerXML() {
     if (node.nodeName().compare("SettingsVersion")==0)
     {
         std::cout << "              SettingsVersion = " << node.firstChild().toText().data().toStdString().c_str() << std::endl;
-        if ((node.firstChild().toText().data().toStdString() != "2.6.107") && (node.firstChild().toText().data().toStdString() != "1.6"))
+        if ((node.firstChild().toText().data().toStdString() != "2.6.107") &&
+            (node.firstChild().toText().data().toStdString() != "1.6") &&
+            (node.firstChild().toText().data().toStdString() != "1.8")
+            )
         {
             m_messageFlag |= VERSIONFlag;
-            std::cout << "              Caution!  Wrong settings version - Parser is for '1.6 or '2.6.107' and has to be checked" << std::endl;
+            std::cout << "              Caution!  Wrong settings version - Parser is for '1.6', '1.8' or '2.6.107' and has to be checked" << std::endl;
         }
     }
 
@@ -167,34 +170,61 @@ void SmartChargerXML::ReadSmartChargerXML() {
 #endif
         node = node.firstChild();
 
-        // 		Search node Charging
+        // 		Search node Using
         // loopcount = 0;
-        while ((node.nodeName().compare("Charging") != 0) && (!node.isNull()))
+        while ((node.nodeName().compare("Using") != 0) && (!node.isNull()))
         {
-#ifdef SHOWINTERMEDIATENODES
-            std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
-#endif
             node=node.nextSibling();
         }
-
-        // erste Ebene innerhalb Charging
 #ifdef SHOWINTERMEDIATENODES
         std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
-        node = node.firstChild();
+        qint16 EVUsing = node.firstChild().toText().data().toDouble(); // moegliche Werte: 0, 1 // nur für die Anzeige im Creator
+        std::cout << "   Using = " << node.firstChild().toText().data().toDouble() << std::endl;
 
-        // 			Search node ChargingMode
+        if (EVUsing == 0)               // wenn die Wallbox in den Settings deselektiert ist, alle Werte nullen -> graue Box
+        {
+            m_EVChargingMode = "OFF";
+            m_EVMaxPhases = 1;
+            m_EVEvaluationPoints = 0;
+            m_EVState = 0;
+            m_EVPlug = 0;
+            m_EVSystemEnabled = 0;
+            m_EVOutput = 0;
+            m_EVActualPower = 0;
+            m_EVSessionEnergy = 0;
+            m_EVTotalEnergy = 0;
+        }
+        else
+        {
+            // 		Search node Charging
             // loopcount = 0;
+            while ((node.nodeName().compare("Charging") != 0) && (!node.isNull()))
+            {
+#ifdef SHOWINTERMEDIATENODES
+            std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
+#endif
+                node=node.nextSibling();
+            }
+
+            // erste Ebene innerhalb Charging
+#ifdef SHOWINTERMEDIATENODES
+        std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
+#endif
+            node = node.firstChild();
+
+            // 			Search node ChargingMode
+                // loopcount = 0;
             while ((node.nodeName().compare("ChargingMode") != 0) && (!node.isNull()))
             {
 #ifdef SHOWINTERMEDIATENODES
-                std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
+            std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
                 node=node.nextSibling();
             }
 
 #ifdef SHOWINTERMEDIATENODES
-            std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
+        std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
             if (node.nodeName().compare("ChargingMode")==0)
             {
@@ -259,134 +289,135 @@ void SmartChargerXML::ReadSmartChargerXML() {
 
             // 			Search node State
 /*
-               "State" = Current state of the charging station
-                0 : starting
-                1 : not ready for charging; e.g. unplugged, X1 or "ena" not enabled, RFID not enabled, ...
-                2 : ready for charging; waiting for EV charging request (S2)
-                3 : charging
-                4 : error
-                5 : authorization rejected
+           "State" = Current state of the charging station
+            0 : starting
+            1 : not ready for charging; e.g. unplugged, X1 or "ena" not enabled, RFID not enabled, ...
+            2 : ready for charging; waiting for EV charging request (S2)
+            3 : charging
+            4 : error
+            5 : authorization rejected
 */
-                // loopcount = 0;
-                while ((node.nodeName().compare("State") != 0) && (!node.isNull()))
-                {
+            // loopcount = 0;
+            while ((node.nodeName().compare("State") != 0) && (!node.isNull()))
+            {
 #ifdef SHOWINTERMEDIATENODES
-                    std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
+                std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
-                    node=node.nextSibling();
-                }
+                node=node.nextSibling();
+            }
 
 #ifdef SHOWINTERMEDIATENODES
-                std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
+            std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
-                if (node.nodeName().compare("State")==0)
-                {
-                    m_EVState = node.toElement().attribute("id").toInt();
-                    std::cout << "              State = " << m_EVState << std::endl;
-                }
+            if (node.nodeName().compare("State")==0)
+            {
+                m_EVState = node.toElement().attribute("id").toInt();
+                std::cout << "              State = " << m_EVState << std::endl;
+            }
 
-                // 			Search node Plug
+            // 			Search node Plug
 /*
-               "Plug" = Current condition of the loading connection
-                0 unplugged
-                1 plugged on charging station
-                3 plugged on charging station plug locked
-                5 plugged on charging station plugged on EV
-                7 plugged on charging station plug locked plugged on EV
+           "Plug" = Current condition of the loading connection
+            0 unplugged
+            1 plugged on charging station
+            3 plugged on charging station plug locked
+            5 plugged on charging station plugged on EV
+            7 plugged on charging station plug locked plugged on EV
 
-                "Enable sys" = Enable state for charging (contains Enable input, RFID, UDP,..)
+            "Enable sys" = Enable state for charging (contains Enable input, RFID, UDP,..)
 */
-                node=node.nextSibling();
+            node=node.nextSibling();
 
 #ifdef SHOWINTERMEDIATENODES
-                std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
+            std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
-                if (node.nodeName().compare("Plug")==0)
-                {
-                    m_EVPlug = node.toElement().attribute("id").toInt();           // <<<<< klappt nicht
-                    std::cout << "              Plug = " << m_EVPlug << std::endl;
-                }
+            if (node.nodeName().compare("Plug")==0)
+            {
+                m_EVPlug = node.toElement().attribute("id").toInt();           // <<<<< klappt nicht
+                std::cout << "              Plug = " << m_EVPlug << std::endl;
+            }
 
-            // 			Search node SystemEnabled
-                node=node.nextSibling();
+        // 			Search node SystemEnabled
+            node=node.nextSibling();
 
 #ifdef SHOWINTERMEDIATENODES
-                std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
+            std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
-                if (node.nodeName().compare("SystemEnabled")==0)
-                {
-                    m_EVSystemEnabled = node.firstChild().toText().data().toDouble();
-                    std::cout << "              SystemEnabled = " << m_EVSystemEnabled << std::endl;
-                }
+            if (node.nodeName().compare("SystemEnabled")==0)
+            {
+                m_EVSystemEnabled = node.firstChild().toText().data().toDouble();
+                std::cout << "              SystemEnabled = " << m_EVSystemEnabled << std::endl;
+            }
 
 // neu:
 //  Output (Ansteuerung des Phasenumschaltrelais)
-                // 			Search node Output
-                // loopcount = 0;
-                while ((node.nodeName().compare("Output") != 0) && (!node.isNull()))
-                {
+            // 			Search node Output
+            // loopcount = 0;
+            while ((node.nodeName().compare("Output") != 0) && (!node.isNull()))
+            {
 #ifdef SHOWINTERMEDIATENODES
-                    std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
+                std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
-                    node=node.nextSibling();
-                }
-                if (node.nodeName().compare("Output")==0)
-                {
-                    m_EVOutput = node.firstChild().toText().data().toInt(); // moegliche Werte: 0, 1
-                    std::cout << "              Output = " << m_EVOutput << std::endl;
-                }
- // \Output
-
-    // 			Search node ActualPower
-                // loopcount = 0;
-                while ((node.nodeName().compare("ActualPower") != 0) && (!node.isNull()))
-                {
-#ifdef SHOWINTERMEDIATENODES
-                    std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
-#endif
-                    node=node.nextSibling();
-                }
-
-#ifdef SHOWINTERMEDIATENODES
-                std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
-#endif
-                if (node.nodeName().compare("ActualPower")==0)
-                {
-                    m_EVActualPower = node.firstChild().toText().data().toDouble();
-                    std::cout << "              ActualPower = " << m_EVActualPower << std::endl;
-                }
-
-    // 			Search node SessionEnergy
                 node=node.nextSibling();
+            }
+            if (node.nodeName().compare("Output")==0)
+            {
+                m_EVOutput = node.firstChild().toText().data().toInt(); // moegliche Werte: 0, 1
+                std::cout << "              Output = " << m_EVOutput << std::endl;
+            }
+// \Output
+
+// 			Search node ActualPower
+            // loopcount = 0;
+            while ((node.nodeName().compare("ActualPower") != 0) && (!node.isNull()))
+            {
+#ifdef SHOWINTERMEDIATENODES
+                std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
+#endif
+                node=node.nextSibling();
+            }
 
 #ifdef SHOWINTERMEDIATENODES
-                std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
+            std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
-                if (node.nodeName().compare("SessionEnergy")==0)
-                {
-                    m_EVSessionEnergy = node.firstChild().toText().data().toDouble();
-                    std::cout << "              SessionEnergy = " << m_EVSessionEnergy << std::endl;
-                }
+            if (node.nodeName().compare("ActualPower")==0)
+            {
+                m_EVActualPower = node.firstChild().toText().data().toDouble();
+                std::cout << "              ActualPower = " << m_EVActualPower << std::endl;
+            }
 
-    // 			Search node TotalEnergy
-                // loopcount = 0;
-                  while ((node.nodeName().compare("TotalEnergy") != 0) && (!node.isNull()))
-                {
-#ifdef SHOWINTERMEDIATENODES
-                    std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
-#endif
-                    node=node.nextSibling();
-                }
-
+// 			Search node SessionEnergy
+            node=node.nextSibling();
 
 #ifdef SHOWINTERMEDIATENODES
-                std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
+            std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
 #endif
-                if (node.nodeName().compare("TotalEnergy")==0)
-                {
-                    m_EVTotalEnergy = node.firstChild().toText().data().toULong();
-                    std::cout << "              TotalEnergy = " << m_EVTotalEnergy << std::endl;
-                }
+            if (node.nodeName().compare("SessionEnergy")==0)
+            {
+                m_EVSessionEnergy = node.firstChild().toText().data().toDouble();
+                std::cout << "              SessionEnergy = " << m_EVSessionEnergy << std::endl;
+            }
+
+// 			Search node TotalEnergy
+            // loopcount = 0;
+              while ((node.nodeName().compare("TotalEnergy") != 0) && (!node.isNull()))
+            {
+#ifdef SHOWINTERMEDIATENODES
+                std::cout << "   NodeNameLoop = " << node.nodeName().toStdString().c_str() << std::endl;
+#endif
+                node=node.nextSibling();
+            }
+
+
+#ifdef SHOWINTERMEDIATENODES
+            std::cout << "   NodeName = " << node.nodeName().toStdString().c_str() << std::endl;
+#endif
+            if (node.nodeName().compare("TotalEnergy")==0)
+            {
+                m_EVTotalEnergy = node.firstChild().toText().data().toULong();
+                std::cout << "              TotalEnergy = " << m_EVTotalEnergy << std::endl;
+            }
+        }
 
     // wieder oberste Ebene, neu aufsetzen
     node = nodeRestartTop;
