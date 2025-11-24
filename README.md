@@ -47,4 +47,6 @@ The displayed power levels do not depend from each other in this examples, the v
 
 ----
 
-As of 11/2025 the program depends on evcc as new data provider. The version has changed to V2.0
+As of 11/2025 the program depends on [evcc](https://github.com/evcc-io/evcc) as new data provider. The version has changed to V2.0
+
+
