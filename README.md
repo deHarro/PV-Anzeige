@@ -4,7 +4,7 @@ Resemblance to the official SunnyPortal plus additional WallBox information
 The official SunnyPortal has a fine live visualization of the power streams in your house.
 Its drawback is, you are kicked out after several minutes, after a given number of accesses to the database of SunnyPortal and some more restrictions.
 
-To circumvent those restrictions I make my own visualization. See my [homepage](http://harald-sattler.de/html/pv-anzeige.htm) for additional info (in german - use translation feature at the bottom of the page).
+To circumvent those restrictions I make my own visualization. See my [homepage](https://harald-sattler.de/html/pv-anzeige.htm) for additional info (in german - use translation feature at the bottom of the page).
 
 As an addition the power flowing to the wallbox is displayed as well. The information for that comes from Nico Treffkorn's [SmartCharger](https://web.archive.org/web/20211018170240/www.eb-systeme.de/?page_id=1265) (original site is offline, link redirects to web.archive.org), working together with some KEBA wall boxes.
 
@@ -47,7 +47,7 @@ The displayed power levels do not depend from each other in this examples, the v
 
 ----
 
-As of 11/2025 the program depends on [evcc](https://github.com/evcc-io/evcc) as new data provider. The version has changed to V2.0 (description ![over here](https://harald-sattler.de/html/pv-anzeige_v2.htm)).
+As of 11/2025 the program depends on [evcc](https://github.com/evcc-io/evcc) as new data provider. The version has changed to V2.0 (description [over here](https://harald-sattler.de/html/pv-anzeige_v2.htm)).
 
 ![PV-Anzeige_V2 0-EVCC](https://github.com/user-attachments/assets/eb2f7d68-7830-43b4-b8f2-29791d892d04)
 
