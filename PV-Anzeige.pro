@@ -16,12 +16,14 @@ TARGET = PV-Anzeige
 
 HEADERS += \
     Downloader.h \
+    EvccJSON.h \
     PowerNodeModel.h \
     SmartChargerXML.h \
     WechselrichterJSON.h
 
 SOURCES += \
     Downloader.cpp \
+    EvccJSON.cpp \
     PowerNodeModel.cpp \
     SmartChargerXML.cpp \
     WechselrichterJSON.cpp \

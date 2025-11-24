@@ -4,6 +4,7 @@
 #include "Downloader.h"
 #include "SmartChargerXML.h"
 #include "WechselrichterJSON.h"
+#include "EvccJSON.h"
 
 // BUILDDATE	wird automatisch erzeugt:
 // Build Datum der Form "Mar 9 2021" aus __DATE__ ummodeln in ISO Darstellung "2021-03-09"
@@ -36,18 +37,24 @@ constexpr char IsoDate[] =
 #endif
 // \BUILDDATE
 
+
 Downloader downler;
 SmartChargerXML smchaXML;
 WechselrichterJSON wrJSON;
+EvccJSON evccJSON;
 
 extern SmartChargerXML smchaXML;
 extern Downloader downler;
 extern WechselrichterJSON wrJSON;
+//extern EvccJSON evccJSON;
 
 extern QString m_setChargeModeString;
 extern int m_ManualSetCurrent;
 extern QString m_EVChargingModeS;
-extern int m_ChargerPhases;                         //
+extern int m_ChargerPhases;
+
+QString activeDataProviderString = downler.getDataProvider();
+QString iniVersion = downler.getiniVersion();
 
 using namespace std::chrono_literals;
 
@@ -77,8 +84,9 @@ void PowerNodeModel::onDataTimer() {
         setComm();              // switch on communication visu
         setSunAngle();          // slowly rotate sun icon
         setSunColor(SUNWHITE);  // change sun icon color
-        getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
-        getJSONdata();          // extract values from JSON string, read from RPi MBMD Daemon
+        //getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
+        //getJSONdata();          // extract values from JSON string, read from RPi MBMD Daemon
+        getEvccJSONdata();      // extract values from JSON string, read from RPi evcc
         generatorHandling();    // PV generator handling
         batteryHandling();      // battery handling
         gridHandling();         // grid handling
@@ -129,6 +137,7 @@ void PowerNodeModel::onDataTimer() {
 
 }
 
+
 // handling routines
 void PowerNodeModel::getXMLdata(void)
 {
@@ -146,6 +155,20 @@ void PowerNodeModel::getJSONdata(void)
 
     // decode JSON data from m_JSONfiledata into member variables of SmartChargerJSON
     wrJSON.ReadWechselrichterJSON();
+}
+
+// übler Trick um die Verdoppelung aller Zuweisungsroutinen zu vermeiden ---------------------------------
+#define smchaXML evccJSON           // Umleitung der smchaXML-Zugriffe auf evccJSON-Zugriffe
+#define wrJSON evccJSON             // Umleitung der wrJSON-Zugriffe auf evccJSON-Zugriffe
+// \übler Trick um die Verdoppelung aller Zuweisungsroutinen zu vermeiden --------------------------------
+
+void PowerNodeModel::getEvccJSONdata(void)
+{
+    // download JSON data from mbmd JSON page into **global**  m_JSONfiledata
+    downler.doDownloadEVCCJSON();
+
+    // decode JSON data from m_JSONfiledata into member variables of SmartChargerJSON
+    evccJSON.ReadEvccJSON();
 }
 
 void PowerNodeModel::setMBMDText(void)              // Fehlermeldung wenn MBMD Daemon Probleme hat
@@ -194,7 +217,7 @@ void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern 
 {
     if (m_messageFlag & (EDLDFlag | MBMDFlag | VERSIONFlag | WRFlag))      // EDLD oder MBMD oder falsche Version oder WR Fehler
     {
-        m_backgroundColor = LIGHTHRED;              // sehr helles Rot
+        m_backgroundColor = LIGHTRED;              // sehr helles Rot
     }
     else
     {
@@ -283,18 +306,20 @@ void PowerNodeModel::openVersionInfoMsg() {
 
     QString qtCompilerversionString = QString::number(QT_VERSION, 16);      // get compiler version
     QString qtRuntimeversionString = qVersion();                            // get runtime version
+    activeDataProviderString = downler.getDataProvider();                   // get Dataprovider (EVCC oder EDLD/MBMD)
 
     QMessageBox msgBox;
     msgBox.setTextFormat(Qt::RichText);
     msgBox.setText("<b>Version Info</b><br><br>"
         "Version : V" VERSIONMAJOR "." VERSIONMINOR
-        // die nachfolgenden zwei Zeilen legen die Breite der MSG-Box fest
+        // die nachfolgenden zwei Zeilen legen die Breite der MSG-Box fest. Versuche, das alternativ zu erreichen, gingen schief :(
         "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
         "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
         "<br>Builddate: " + QString(IsoDate) +
         "<br>Compiletime: " + QString(__TIME__) +
         "<br>Compilerversion: " + qtCompilerversionString +
-        "<br>Runtimeversion: " + qtRuntimeversionString);
+        "<br>Runtimeversion: " + qtRuntimeversionString +
+        "<br>Daten von: " + activeDataProviderString);
 
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
@@ -362,18 +387,15 @@ void PowerNodeModel::generatorHandling(void)
     m_generatorTotalEnergy = (rand() % 66000) + 30000;  // im Bereich ab 66 MWh
 #endif
 
-
     m_generatorPowerDachS = (wrJSON.getPVDachSActualPower());        // [W] integer, no fraction
     m_generatorPowerDachN = (wrJSON.getPVDachNActualPower());        // [W] integer, no fraction
     m_generatorPowerGarage = (wrJSON.getPVGarageActualPower());      // [W] integer, no fraction
     m_generatorPowerGaube = (wrJSON.getPVGaubeActualPower());        // [W] integer, no fraction
 
-    m_generatorPowerTotal   =   m_generatorPowerDachS                   // [W] integer, no fraction
+    m_generatorPowerTotal   =   m_generatorPowerDachS                // [W] integer, no fraction
                             +   m_generatorPowerDachN
                             +   m_generatorPowerGaube
                             +   m_generatorPowerGarage;
-
-//    m_generatorPowerTotal = 9000;     // für Test
 
     // Werte für Anzeige berechnen und als QString ausgeben
     m_genPowerTotal = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerTotal)/(double)1000))); // get rid of math in QML
@@ -408,16 +430,15 @@ void PowerNodeModel::generatorHandling(void)
     }
 
     // Ertragswerte der einzelnen Wechselrichter in Membervariablen speichern
-    m_generatorDachSEnergy  = (wrJSON.getPVDachSErtrag());       // [W] integer, no fraction
-    m_genEnergyDachS = QString().asprintf("%6.0f", abs(m_generatorDachSEnergy)); // get rid of math in QML
-    m_generatorDachNEnergy  = (wrJSON.getPVDachNErtrag());       // [W] integer, no fraction
-    m_genEnergyDachN = QString().asprintf("%6.0f", abs(m_generatorDachNEnergy)); // get rid of math in QML
-    m_generatorGaubeEnergy  = (wrJSON.getPVGaubeErtrag());       // [W] integer, no fraction
-    m_genEnergyGaube = QString().asprintf("%6.0f", abs(m_generatorGaubeEnergy)); // get rid of math in QML
-    m_generatorGarageEnergy = (wrJSON.getPVGarageErtrag());      // [W] integer, no fraction
-    m_genEnergyGarage = QString().asprintf("%6.0f", abs(m_generatorGarageEnergy)); // get rid of math in QML
-    m_genEnergyTotal = QString().asprintf("%3.2f", abs(m_generatorTotalEnergy)); // get rid of math in QML
-
+    m_generatorDachSEnergy  = (wrJSON.getPVDachSErtrag());                          // [W] integer, no fraction
+    m_genEnergyDachS = QString().asprintf("%6.0f", abs(m_generatorDachSEnergy));    // get rid of math in QML
+    m_generatorDachNEnergy  = (wrJSON.getPVDachNErtrag());                          // [W] integer, no fraction
+    m_genEnergyDachN = QString().asprintf("%6.0f", abs(m_generatorDachNEnergy));    // get rid of math in QML
+    m_generatorGaubeEnergy  = (wrJSON.getPVGaubeErtrag());                          // [W] integer, no fraction
+    m_genEnergyGaube = QString().asprintf("%6.0f", abs(m_generatorGaubeEnergy));    // get rid of math in QML
+    m_generatorGarageEnergy = (wrJSON.getPVGarageErtrag());                         // [W] integer, no fraction
+    m_genEnergyGarage = QString().asprintf("%6.0f", abs(m_generatorGarageEnergy));  // get rid of math in QML
+    m_genEnergyTotal = QString().asprintf("%3.2f", abs(m_generatorTotalEnergy));    // get rid of math in QML
 }
 
 // battery handling ----------------------------------------------------------
@@ -503,45 +524,40 @@ void PowerNodeModel::switchEVIcons()
     emit chargingDataChanged();                         // refresh GUI
 }
 
-// setting ChargeMode handling
-void PowerNodeModel::switchChargeMode()
+
+QString PowerNodeModel::chargeModeButtonTxt()
 {
-    if      (m_EVChargingMode == "OFF")      m_setChargeModeString = "off";
-    else if (m_EVChargingMode == "QUICK")    m_setChargeModeString = "quick";
-    else if (m_EVChargingMode == "SURPLUS")  m_setChargeModeString = "surplus";
-    else if (m_EVChargingMode == "MANUAL")   m_setChargeModeString = "manual";
-    else                                     m_setChargeModeString = "surplus";  // default mode
+    return (m_chargeModeManual);
+}
+
+// setting ChargeMode handling
+void PowerNodeModel::switchChargeMode(QString value)
+{
+    if      (value == "OFF")                                                //  EVCC      EDLD
+        m_setChargeModeString = (activeDataProviderString.toUpper() == "EVCC" ? "off"   : "off"     );
+    else if (value == "QUICK")
+        m_setChargeModeString = (activeDataProviderString.toUpper() == "EVCC" ? "now"   : "quick"   );
+    else if (value == "SURPLUS")
+        m_setChargeModeString = (activeDataProviderString.toUpper() == "EVCC" ? "pv"    : "surplus" );
+    else if (value == "MANUAL")
+        m_setChargeModeString = (activeDataProviderString.toUpper() == "EVCC" ? "minpv" : "manual"  );
+    else
+        m_setChargeModeString = (activeDataProviderString.toUpper() == "EVCC" ? "pv"    : "surplus" );  // default mode
 
     downler.doSetChargeMode();
     emit chargingDataChanged();                         // refresh GUI
 }
 
-void PowerNodeModel::showChargeModeOFF()
+void PowerNodeModel::changeChargeMode(QString value)
 {
-    m_EVChargingMode = "OFF";
-    switchChargeMode();
-    emit chargingDataChanged();                         // refresh GUI
-}
-void PowerNodeModel::showChargeModeQUICK()
-{
-    m_EVChargingMode = "QUICK";
-    switchChargeMode();
-    emit chargingDataChanged();                         // refresh GUI
-}
-void PowerNodeModel::showChargeModeSURPLUS()
-{
-    m_EVChargingMode = "SURPLUS";
-    switchChargeMode();
-    emit chargingDataChanged();                         // refresh GUI
-}
-void PowerNodeModel::showChargeModeMANUAL()
-{
-    m_EVChargingMode = "MANUAL";
-    switchChargeMode();
+    m_EVChargingMode = value;
+    switchChargeMode(value);
+    showChargeMode();
     emit chargingDataChanged();                         // refresh GUI
 }
 void PowerNodeModel::showChargeMode()
 {
+    m_chargeModeManual = (activeDataProviderString.toUpper() == "EVCC" ? "Min+PV" : "MANUAL");
     emit chargingDataChanged();                         // refresh GUI
 }
 // \setting ChargeMode handling
@@ -549,30 +565,15 @@ void PowerNodeModel::showChargeMode()
 // setting Manual Current handling
 void PowerNodeModel::switchManualCurrent()
 {
-    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000 * (m_Output == 0 ? 1 : 3)) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     emit chargingDataChanged();                         // refresh GUI
 
     m_ManualSetCurrent = m_EVManualCurrent;
     downler.doSetManualCurrent();
 }
-void PowerNodeModel::setManualCurrent6000()
+void PowerNodeModel::setManualCurrent(int number)
 {
-    m_EVManualCurrent = 6000;
-    switchManualCurrent();
-}
-void PowerNodeModel::setManualCurrent12000()
-{
-    m_EVManualCurrent = 12000;
-    switchManualCurrent();
-}
-void PowerNodeModel::setManualCurrent18000()
-{
-    m_EVManualCurrent = 18000;
-    switchManualCurrent();
-}
-void PowerNodeModel::setManualCurrent32000()
-{
-    m_EVManualCurrent = 32000;                          // Maximum für _manual current_ setting im SmartCharger: 31980(?)
+    m_EVManualCurrent = number;
     switchManualCurrent();
 }
 // \setting Manual Current handling
@@ -580,13 +581,13 @@ void PowerNodeModel::setManualCurrent32000()
 // show manual current handling
 void PowerNodeModel::showManualCurrent()
 {
-    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000 * (m_Output == 0 ? 1 : 3)) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     emit chargingDataChanged();                         // refresh GUI
 }
 // \show manual current handling
 
 // show used phases handling
-void PowerNodeModel::showUsedPhases()
+void PowerNodeModel::showUsedPhases()                   // zeigt die Rückmeldung von der Wallbox (Ausgang X1 aktiv/nicht aktiv)
 {
     //m_EVusedPhasesS =  "P" + QString::number(m_Output == 0 ? 1 : 3);   // (m_Output = 0..1 -> 0: 1 Phase, 1: 3 Phasen)
     m_EVusedPhasesS =  QString::number(m_Output == 0 ? 1 : 3) + "P";   // (m_Output = 0..1 -> 0: 1 Phase, 1: 3 Phasen)
@@ -595,11 +596,14 @@ void PowerNodeModel::showUsedPhases()
 // \show used phases handling
 
 // setting Charging Phases handling
-void PowerNodeModel::setChargerPhases1()
+void PowerNodeModel::setChargerPhases(int number)
 {
-    emit chargingDataChanged();                         // refresh GUI
-    m_ChargerPhases = 1;
+    m_ChargerPhases = number;
+//    setChargerPhases(m_ChargerPhases);
     downler.doSetChargerPhases();
+    m_EVconfiguredPhases = number;                      // damit die Checkmark direkt beim Click wechselt (kann temporär wieder zurück springen)
+    showManualPhases();
+    emit chargingDataChanged();                         // refresh GUI
 }
 // \setting Charging Phases handling
 
@@ -607,19 +611,9 @@ void PowerNodeModel::setChargerPhases1()
 void PowerNodeModel::showManualPhases()
 {
     emit chargingDataChanged();                         // refresh GUI
-    //m_ChargerPhases = 1;
     //downler.doSetChargerPhases();
 }
 // \show Charging Phases handling
-
-
-void PowerNodeModel::setChargerPhases3()
-{
-    emit chargingDataChanged();                         // refresh GUI
-    m_ChargerPhases = 3;
-    downler.doSetChargerPhases();
-}
-// \setting Charging Phases handling
 
 // wallbox handling ----------------------------------------------------------
 void PowerNodeModel::wallboxHandling()
@@ -658,12 +652,13 @@ void PowerNodeModel::wallboxHandling()
         m_wallboxColor =VLIGHTGRAY ;                // helles Hellgrau, keine QML Basic/SVG color
     }
 #else
-    m_evalPoints = smchaXML.getEVEvaluationPoints();    // [] integer, no fraction
-    m_chargingPower = smchaXML.getEVActualPower();      // [W] integer, no fraction
-    m_chargedEnergy = smchaXML.getEVTotalEnergy();      // [W] integer, no fraction
-    m_sessionEnergy = smchaXML.getEVSessionEnergy();    // [W] integer, no fraction
-    m_EVChargingMode = smchaXML.getEVChargeMode();      // QString
-    m_Output = smchaXML.getEVOutput();                  // [] integer, no fraction
+    m_evalPoints = smchaXML.getEVEvaluationPoints();            // [] integer, no fraction
+    m_chargingPower = smchaXML.getEVActualPower();              // [W] integer, no fraction
+    m_chargedEnergy = smchaXML.getEVTotalEnergy();              // [W] integer, no fraction
+    m_sessionEnergy = smchaXML.getEVSessionEnergy();            // [W] integer, no fraction
+    m_EVChargingMode = smchaXML.getEVChargeMode();              // QString
+    m_Output = smchaXML.getEVOutput();                          // [] integer, no fraction
+    m_EVconfiguredPhases = smchaXML.getEVconfiguredPhases();    // [] integer, no fraction
 
     // Werte für Anzeige berechnen und als QString ausgeben
     m_charPower = QString().asprintf("%0.3f", (double)((double)(abs(m_chargingPower)/(double)1000))); // get rid of math in QML
@@ -681,26 +676,26 @@ void PowerNodeModel::wallboxHandling()
         5 : authorization rejected
     */
 
-    if (((smchaXML.getEVState() == 2) || (smchaXML.getEVState() == 3))  // ready for or actually charging
-      && (m_chargingPower == 0))                // state ready for charging (alles vorbereitet)
+    if (((smchaXML.getEVState() == 2) || (smchaXML.getEVState() == 3))      // ready for or actually charging
+      && (m_chargingPower == 0))                                            // state ready for charging (alles vorbereitet)
     {
-        m_wallboxColor = DODGERBLUE;            // Ladung vorbereitet -> schickes mittleres Blau
+        m_wallboxColor = DODGERBLUE;                                        // Ladung vorbereitet -> schickes mittleres Blau
     }
-    else if ((smchaXML.getEVState() == 3) && (m_chargingPower > 0))  // state=charging && power>0
+    else if ((smchaXML.getEVState() == 3) && (m_chargingPower > 0))         // state=charging && power>0
     {
-        m_wallboxColor = DARKBLUE;              // Ladung startet oder läuft -> dunkles Blau
+        m_wallboxColor = DARKBLUE;                                          // Ladung startet oder läuft -> dunkles Blau
     }
-    else if (smchaXML.getEVState() == 4)        // Error oder rejected
+    else if (smchaXML.getEVState() == 4)                                    // Error oder rejected
     {
-        m_wallboxColor = FIREBRICK ;            // -> dunkles Rot
+        m_wallboxColor = FIREBRICK ;                                        // -> dunkles Rot
     }
     else if (((smchaXML.getEVState() <= 2) || (smchaXML.getEVState() == 5))
          && ((smchaXML.getEVPlug() == 5) || (smchaXML.getEVPlug() == 7)))   // Stecker steckt aber Wallbox not ready
     {
-        m_wallboxColor = LIGHTBLUE ;            // helles Blau
+        m_wallboxColor = LIGHTBLUE ;                                        // helles Blau
     }
     else
-        m_wallboxColor = VLIGHTGRAY ;           // helles Hellgrau, keine QML Basic/SVG color
+        m_wallboxColor = VLIGHTGRAY ;                                       // helles Hellgrau, keine QML Basic/SVG color
 
     /*  // picture selection
        "Plug" = Current condition of the loading connection
@@ -909,9 +904,9 @@ void PowerNodeModel::getIconType()
 
     // catch case "running in QT Creator"
     if (filepath.contains("-Debug"))
-        file.setFileName(filepath + "debug/PVconfig.ini");      // add filename to path
+        file.setFileName(filepath + "PVconfig.ini");      // add filename to path
     else if (filepath.contains("-Release"))
-        file.setFileName(filepath + "release/PVconfig.ini");    // add filename to path
+        file.setFileName(filepath + "PVconfig.ini");    // add filename to path
     else
         file.setFileName(filepath + "PVconfig.ini");            // add filename to path
 
@@ -927,9 +922,23 @@ void PowerNodeModel::getIconType()
             while (!file.atEnd())
             {
                 QString line = file.readLine();
-                if (line.contains("[REALPICS]"))
+                if (line.contains("[INIVERSION]"))
                 {
-                    m_realPics = (QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n')).toInt() == 0) ? false : true;     // Icon Flag
+                    QString iniVersion = (QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n'));     // Ini-Version 1.xx
+
+                    if((iniVersion.left(1) >= VERSIONMAJOR) && (iniVersion.right(2) >= VERSIONMINOR))
+                    {
+                        QString line = file.readLine();
+                        if (line.contains("[REALPICS]"))
+                        {
+                            m_realPics = (QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n')).toInt() == 0) ? false : true;     // Icon Flag
+                        }
+                    }
+                    else
+                    {
+                        // Error wrong INI-File version
+                        std::cerr << "Error wrong INI-File version" << std::endl;
+                    }
                 }
             }
         }

@@ -429,39 +429,7 @@ Window {
             }
         }
 
-/*        Text {  // ab V1.19 in Drawer1 -> "MWh" war schon immer zu weit rechts, "Ertrag" gehört hier nicht hin
-            id: text28
-            x: 216
-            y: 67
-            color: "#ffffff"
-            text: qsTr("Ertrag")
-            font.pixelSize: 12
-        }
-
-        Text {
-            id: text31
-            x: 244
-            y: 67
-            width: 45
-            height: 14
-            color: PowerNodeModel.MBMDfigures
-            //            color: "#ffffff"
-//            text: (PowerNodeModel.generatorTotalEnergy / 1000).toFixed(2)
-            text: PowerNodeModel.generatorTotalEnergy.toFixed(2)
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignRight
-        }
-
-        Text {
-            id: text42
-            x: 292
-            y: 67
-            color: "#ffffff"
-            text: qsTr("MWh")
-            font.pixelSize: 12
-        }
-*/
-
+        // Drawer 1 für die Ertragswerte
         // kleiner grauer Punkt als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
         Rectangle {
             x: 339
@@ -495,7 +463,7 @@ Window {
             interactive: true
             dim: false                          // enable closing by clicking outside of drawer area
 
-            background: Rectangle {
+            background: Button {
                 Rectangle {
                     x: 1
                     width: parent.width - 2
@@ -503,6 +471,7 @@ Window {
                     height: parent.height - 2
                     color: "#00ac00"            // LIMEGREEN
                 }
+                onClicked: drawer1.close()
             }
             // <pre> bewirkt, dass mehrere Leerzeichen nicht zu Einem zusammengefasst werden -> Formatierung der Zeilen
             Label {
@@ -736,8 +705,11 @@ Window {
             visible: true
             onClicked: PowerNodeModel.switchEVIcons()
             opacity: 0
-        }
-        // Drawer für Auswahl ChargeMode
+        }   // \drawer1
+        // \Drawer für Ertragswerte
+
+
+        // Drawer 2 für Auswahl ChargeMode
             // kleiner grauer Punkt als Hint wo mit der Maus geklickt werden muss, damit der Drawer aufgeht
             Rectangle {
                 x: 339
@@ -772,7 +744,7 @@ Window {
                 interactive: true
                 dim: false                          // enable closing by clicking outside of drawer area
 
-                background: Rectangle {
+                background: Button {
                     Rectangle {
                         x: 1
                         width: parent.width - 2
@@ -780,6 +752,8 @@ Window {
                         height: parent.height - 2
                         color: "#00ac00"            // LIMEGREEN
                     }
+                    onHoveredChanged: PowerNodeModel.showChargeMode()   // Buttontext bei open drawer aktualisieren
+                    onClicked: drawer2.close()
                 }
                 // Festlegung des Charge Mode (Off, Manual, Surplus, Quick)
                 Button {        // change ChargeMode der Wallbox
@@ -792,9 +766,9 @@ Window {
                     flat: false
                     activeFocusOnTab: false
                     hoverEnabled: true
-                    onHoveredChanged: PowerNodeModel.showChargeMode()
+//                    onHoveredChanged: PowerNodeModel.showChargeMode()
                     visible: true
-                    onClicked: PowerNodeModel.showChargeModeOFF()
+                    onClicked: PowerNodeModel.changeChargeMode("OFF")
                 }
                 Button {        // change ChargeMode der Wallbox
                     x: 20
@@ -806,9 +780,9 @@ Window {
                     flat: false
                     activeFocusOnTab: false
                     hoverEnabled: true
-                    onHoveredChanged: PowerNodeModel.showChargeMode()
+//                    onHoveredChanged: PowerNodeModel.showChargeMode()
                     visible: true
-                    onClicked: PowerNodeModel.showChargeModeQUICK()
+                    onClicked: PowerNodeModel.changeChargeMode("QUICK")
                 }
                 Button {        // change ChargeMode der Wallbox
                     x: 20
@@ -820,23 +794,24 @@ Window {
                     flat: false
                     activeFocusOnTab: false
                     hoverEnabled: true
-                    onHoveredChanged: PowerNodeModel.showChargeMode()
+//                    onHoveredChanged: PowerNodeModel.showChargeMode()
                     visible: true
-                    onClicked: PowerNodeModel.showChargeModeSURPLUS()
+                    onClicked: PowerNodeModel.changeChargeMode("SURPLUS")
                 }
                 Button {        // change ChargeMode der Wallbox
                     x: 20
                     y: 70
                     width: 100
                     height: 16
-                    text: "MANUAL"
+//                    text: "Manual/Min+PV"      // evtl. als Variable übergeben, abhängig von m_dataProvider
+                    text: PowerNodeModel.chargeModeManual
                     z: 1
                     flat: false
                     activeFocusOnTab: false
                     hoverEnabled: true
-                    onHoveredChanged: PowerNodeModel.showChargeMode()
+//                    onHoveredChanged: PowerNodeModel.showChargeMode()
                     visible: true
-                    onClicked: PowerNodeModel.showChargeModeMANUAL()
+                    onClicked: PowerNodeModel.changeChargeMode("MANUAL")
                 }
                 Text {          // Überschrift
                     id: text51drawer
@@ -863,7 +838,7 @@ Window {
             }   // \drawer2
         // \Drawer für Auswahl ChargeMode
 
-        // Drawer für Auswahl Manual ChargeCurrent
+        // Drawer 3 für Auswahl Manual ChargeCurrent und Phasenanzahl
             // kleiner grauer Punkt als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
             Rectangle {
                 x: -27
@@ -897,7 +872,7 @@ Window {
                 interactive: true
                 dim: false                          // enable closing by clicking outside of drawer area
 
-                background: Rectangle {
+                background: Button {
                     Rectangle {
                         x: 1
                         width: parent.width - 2
@@ -905,7 +880,8 @@ Window {
                         height: parent.height - 2
                         color: "#00ac00"            // LIMEGREEN
                     }
-                }
+                    onClicked: drawer3.close()
+            }
 
         // Festlegung des Manual Charge Current in 3 Stufen (6, 12, 18 A), 2025-06-18 - in 4 Stufen (32 A -> 11 kW)
                 Button {        // change ManualCurrent der Wallbox
@@ -913,42 +889,45 @@ Window {
                     y: 10
                     width: 100
                     height: 16
-                    text: "6A = " + 1380 * faktor + " W"
+                    //text: "6A = " + 1380 * faktor + " W"
+                    text: "6A"
                     z: 1
                     flat: false
                     activeFocusOnTab: false
                     hoverEnabled: true
                     onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 6A = 1380 W
                     visible: true
-                    onClicked: PowerNodeModel.setManualCurrent6000()
+                    onClicked: PowerNodeModel.setManualCurrent(6000)
                 }
                 Button {        // change ManualCurrent der Wallbox
                     x: 20
                     y: 30
                     width: 100
                     height: 16
-                    text: "12A = " + 2760 * faktor + " W"
+                    //text: "12A = " + 2760 * faktor + " W"
+                    text: "12A"
                     z: 1
                     flat: false
                     activeFocusOnTab: false
                     hoverEnabled: true
                     onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 12A = 2760 W
                     visible: true
-                    onClicked: PowerNodeModel.setManualCurrent12000()
+                    onClicked: PowerNodeModel.setManualCurrent(12000)
                 }
                 Button {        // change ManualCurrent der Wallbox
                     x: 20
                     y: 50
                     width: 100
                     height: 16
-                    text: "18A = " + 4140 * faktor + " W"
+                    //text: "18A = " + PowerNodeModel.manualCurrentS + " W"
+                    text: "18A"
                     z: 1
                     flat: false
                     activeFocusOnTab: false
                     hoverEnabled: true
                     onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 18A = 4140 W
                     visible: true
-                    onClicked: PowerNodeModel.setManualCurrent18000()
+                    onClicked: PowerNodeModel.setManualCurrent(18000)
                 }
 
                 Button {        // change ManualCurrent der Wallbox
@@ -956,14 +935,15 @@ Window {
                     y: 70
                     width: 100
                     height: 16
-                    text: "32A = " + 7360 * faktor + " W"
+                    //text: "32A = " + 7360 * faktor + " W"
+                    text: "32A"
                     z: 1
                     flat: false
                     activeFocusOnTab: false
                     hoverEnabled: true
                     onHoveredChanged: PowerNodeModel.showManualCurrent()    // set to 18A = 4140 W
                     visible: true
-                    onClicked: PowerNodeModel.setManualCurrent32000()
+                    onClicked: PowerNodeModel.setManualCurrent(32000)
                 }
 
                 Text {          // Überschrift
@@ -980,27 +960,41 @@ Window {
                 Text {          // manual Power (1380 W, 2760 W, 4140 W), 7360 W, bzw. jeweils das dreifache bei 3-phasiger Ladung
                     id: text55drawer3
                     x: 160
-                    y: 40
+                    y: 35
                     width: 70
                     color: "white"
                     font.pixelSize: 16
                     font.weight: Font.DemiBold
-//                  text: PowerNodeModel.manualCurrentS
+                  text: PowerNodeModel.manualCurrentS
                     // Die Berechnung für die Anzeige in der GUI passiert hier in QML.
                     // Der eigentliche Wert wird, basierend auf den Übergaben von PV-Anzeige, von SmartCharger bestimmt.
-                    text: (PowerNodeModel.manualCurrent  / 1000 * 230 / 1000 * faktor).toFixed(2) + " kW max."
+//                    text: (PowerNodeModel.manualCurrent  / 1000 * 230 / 1000 * faktor).toFixed(2) + " kW max."
                     horizontalAlignment: Text.AlignHCenter
                 }
 
-
+        // Festlegung der Phasenanzahl mit der geladen wird
                 Item {                  // group of radio buttons
                     x: 124
                     y: 49
+                    RadioButton {       // automatisch
+                        x: 0
+                        y: 0
+                        scale: 0.4
+                        checked: (PowerNodeModel.configuredPhases == 0 ? true : false)
+                        Text {
+                            x: 60
+                            font.pixelSize: 32
+                            font.weight: Font.DemiBold
+                            color: "white"
+                            text: qsTr("automatisch")
+                        }
+                        onClicked: { faktor = 1; PowerNodeModel.setChargerPhases(0);}
+                    }
                     RadioButton {       // 1-phasig
                         x: 0
-                        y: 10
-                        scale: 0.5
-                        checked: true   // use Variable to visualized the current setting (derived from SmartCharger)
+                        y: 15
+                        scale: 0.4
+                        checked: (PowerNodeModel.configuredPhases == 1 ? true : false)
                         Text {
                             x: 60
                             font.pixelSize: 32
@@ -1008,12 +1002,13 @@ Window {
                             color: "white"
                             text: qsTr("1-phasig")
                         }
-                        onClicked: { faktor = 1; PowerNodeModel.setChargerPhases1();}
+                        onClicked: { faktor = 1; PowerNodeModel.setChargerPhases(1);}
                     }
                     RadioButton {       // 3-phasig
                         x: 0
                         y: 30
-                        scale: 0.5
+                        scale: 0.4
+                        checked: (PowerNodeModel.configuredPhases == 3 ? true : false)
                         Text {
                             x: 60
                             color: "white"
@@ -1021,57 +1016,11 @@ Window {
                             font.weight: Font.DemiBold
                             text: qsTr("3-phasig")
                         }
-                        onClicked: { faktor = 3; PowerNodeModel.setChargerPhases3();}
+                        onClicked: { faktor = 3; PowerNodeModel.setChargerPhases(3);}
                     }
                 }
-        /*
-                Button {        // change EVPercent for EV/house battery
-                    x: 20
-                    y: 80
-                    width: 34
-                    height: 16
-                    text: "0"
-                    z: 1
-                    flat: false
-                    activeFocusOnTab: false
-                    hoverEnabled: true
-                    onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
-                    visible: true
-                    onClicked: PowerNodeModel.setEVPercent10()
-                }
-
-                Button {        // change EVPercent for EV/house battery
-                    x: 55
-                    y: 80
-                    width: 34
-                    height: 16
-                    text: "50"
-                    z: 1
-                    flat: false
-                    activeFocusOnTab: false
-                    hoverEnabled: true
-                    onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
-                    visible: true
-                    onClicked: PowerNodeModel.setEVPercent50()
-                }
-
-                Button {        // change EVPercent for EV/house battery
-                    x: 90
-                    y: 80
-                    width: 34
-                    height: 16
-                    text: "100"
-                    z: 1
-                    flat: false
-                    activeFocusOnTab: false
-                    hoverEnabled: true
-                    onHoveredChanged: PowerNodeModel.showEVPercent()        // set X %
-                    visible: true
-                    onClicked: PowerNodeModel.setEVPercent100()
-                }
-        */
             }   // \drawer3
-        // \Drawer für Auswahl Manual ChargeCurrent
+        // \Drawer für Auswahl Manual ChargeCurrent und Phasenanzahl
 
 //        Text {
 //            id: text50
@@ -1207,44 +1156,46 @@ Window {
             font.family: "Arial"
         }
 
+        // Temperatur der Batterie/des Batterie-Wechselrichters
+        Item {
+            id: battTemperatur
+            visible: PowerNodeModel.battTemp == 0 ? false : true    // EVCC liefert keine Temperatur -> 0°
+            Text {
+                id: text45
+                x: 11
+                y: 153
+                width: 33
+                color: "#ffffff"
+                text: qsTr("Temp.")
+                font.pixelSize: 12
+            }
 
-        Text {
-            id: text45
-            x: 11
-            y: 153
-            width: 33
-            color: "#ffffff"
-            text: qsTr("Temp.")
-            font.pixelSize: 12
-        }
+            Text {
+                id: text46
+                x: 56
+                y: 153
+                width: 16
+                height: 14
+                color: PowerNodeModel.EDLDfigures
+                //            color: "#ffffff"
+                text: PowerNodeModel.battTemp.toFixed(1)
+                font.pixelSize: 12
+                horizontalAlignment: Text.AlignRight
+            }
 
-        Text {
-            id: text46
-            x: 56
-            y: 153
-            width: 16
-            height: 14
-            color: PowerNodeModel.EDLDfigures
-            //            color: "#ffffff"
-            text: PowerNodeModel.battTemp.toFixed(1)
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignRight
-        }
-
-        Text {
-            id: text47
-            x: 73
-            y: 152
-            width: 6
-            height: 14
-            color: "#ffffff"
-            text: qsTr("°")
-            font.pixelSize: 12
+            Text {
+                id: text47
+                x: 73
+                y: 152
+                width: 6
+                height: 14
+                color: "#ffffff"
+                text: qsTr("°")
+                font.pixelSize: 12
+            }
         }
 
     }
-
-
 
     Rectangle {
         objectName: "Grid"

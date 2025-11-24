@@ -12,6 +12,7 @@ extern quint8 m_messageFlag;
 // Flag: Bit 4 = 1 -> Fehler bei der Verarbeitung des SetMode Befehls im EDLD
 // Flag: Bit 5 = 1 -> Fehler bei der Verarbeitung des SetManualCurrent Befehls im EDLD
 // Flag: Bit 6 = 1 -> Fehler bei der Verarbeitung des SetChargerPhases Befehls im EDLD
+// Flag: Bit 7 = 1 -> EVCC antwortet nicht korrekt
 #define EDLDFlag 1
 #define MBMDFlag 2
 #define VERSIONFlag 4
@@ -19,6 +20,7 @@ extern quint8 m_messageFlag;
 #define SETMODEFlag 10
 #define SETCURRENTFlag 20
 #define SETPHASESFlag 40
+#define EVCCFlag 80
 
 class Downloader : public QObject
 {
@@ -29,10 +31,14 @@ public:
     void doDownloadXML(void);
     void doDownloadJSON(void);
 
+    void doDownloadEVCCJSON(void);
+
     void doSetChargeMode(void);
     void doSetManualCurrent(void);
     void doSetChargerPhases(void);
-    //void doSetEVPercent(void);
+
+    QString getDataProvider(void);          // liefert den DataProvider zur Entscheidung, welcher Parser Verwendung findet
+    QString getiniVersion(void);            // liefert die Version der INI-Datei zur Entscheidung, ob die INI zur Version passt
 
 signals:
 
@@ -40,21 +46,27 @@ public slots:
     void replyFinishedXML (QNetworkReply *reply);
     void replyFinishedJSON (QNetworkReply *reply);
 
+    void replyFinishedEVCCJSON (QNetworkReply *reply);
+
     void replyFinishedSetMode(QNetworkReply *reply);
     void replyFinishedSetManualCurrent(QNetworkReply *reply);
     void replyFinishedSetChargerPhases(QNetworkReply *reply);
-    //void replyFinishedSetEVPercent(QNetworkReply *reply);
 
 private:
     void getRPiParameter(void);
 
     QNetworkAccessManager *jsonManager;
     QNetworkAccessManager *xmlManager;
+    QNetworkAccessManager *jsonEVCCManager;
 
-    QString m_smartChargerIP;
-    QString m_smartChargerPort;
-    QString m_mbmdPort;
+    QString m_smartChargerIP;                                   // IP des RPi mit SmartCharger (EDLD)
+    QString m_smartChargerPort;                                 // Port SmartCharger (EDLD)
+    QString m_mbmdPort;                                         // Port MBMD (läuft auf demselben RPi)
+    QString m_EvccIP;                                           // IP des RPi mit EVCC
+    QString m_EvccPort;                                         // Port EVCC
+    QString m_DataProvider;                                     // Daten für PV-Anzeige kommen von "EVCC" oder "EDLD" (-> EDLD + MBMD)
+    QString m_iniVersion;                                       // Version der INI-Datei. Zusätzliche Werte ab Vx.xx
+
     QString manualCurrentTmp;
-    //QString manualEVPercentTmp;
 };
 

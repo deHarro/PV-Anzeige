@@ -86,14 +86,42 @@ Version 1.21 - Update des EDLD auf V2.9.114 -> Neue XML SettingsVersion 1.8 frei
                 Gültige Werte sind 10..45 s. (Momentan auf 45 s gesetzt). Größere Werte verursachen ein Rücksetzen der Wallbox (60s Watchdog).
                 Diese längere Pause ist notwendig, um einen MEB basierten EV Zeit zu geben, sich auf die geänderten Phasenanzahl
                 einzustellen (bekanntes Problem aller EV die auf dem VW MEB basieren -> beispielsweise VW ID3..7, Skoda, Ford Capri, ...).
+                EDLD macht aus den eingestellten 45 s deren 35 s -> ist OK, Ford Capri schlägt >30 s vor (Duck.Ai-Antwort ;)
              - Alle Werte in der Wallbox-Anzeige auf Null setzen, wenn EDLD die Wallbox nicht anspricht (Haken aus in SmartCharger-Settings).
+Version 2.00 - Versionssprung auf 2.0 wegen Umstellung auf neuen DataProvider EVCC.
+             - Alternativer Zugang zu WR-Daten, Energy-Meter-Daten und Wallbox-Daten über EVCC (anstelle EDLD und MBMD).
+                Die Unterstützung der Keba Wallbox in EVCC kostet einmalig 100$ -> man erhält einen "Provider-Token".
+                Der Token wird in die evcc.yaml eingetragen oder über die GUI in der evcc.db Datenbank (in der DB nur kompliziert zu ändern!).
+             - Erstellung von EcvvJSON.h und .cpp - Die Werte von EVCC werden in einem JSON Array zur Verfügung gestellt.
+             - -->> Übler Trick <<-- 2 #define um die Verdoppelung aller Werte-Zuweisungen zu vermeiden (PowerNodeModel.cpp - ca. Zeile 160
+                #define smchaXML evccJSON           // Umleitung der smchaXML-Zugriffe auf evccJSON-Zugriffe
+                #define wrJSON evccJSON             // Umleitung der wrJSON-Zugriffe auf evccJSON-Zugriffe
+             - INI-Datei erweitert um Version der INI-Datei [INIVERSION]. Der Wert INIVERSION muss mindestens der Programmversion entsprechen,
+                sonst wird eine Fehlermeldung auf std-err ausgegeben. Das Programm startet aber trotzdem, zeigt aber ggf. keine Daten.
+             - Caption der App um " - EVCC" erweitert, siehe #define WINDOWTITLE in Z. 287 (suche #define WINDOWTITLE).
+             - Schreibfehler LIGHTRED behoben.
+             - GUI wo notwendig an EVCC Notation angepasst (abhängig von DataProvider auch für EDLD/MBMD passend).
+             - Charge mode kann über die GUI geändert werden (Drawer2, rechts unten).
+             - Farbe der Wallbox muss anders hergeleitet werden, EVCC liefert keinen Status im Sinne von EDLD.
+             - Aktualisierungsrate in EVCC auf 20 s eingestellt (keine Programmänderung).
+                10 s sind deutlich zu knapp- Regelung schwingt :( - EVCC Default ist 30 s (Minimum).
+             - Umstellung Drawer-Background von Rectangle auf Button -> per Click wieder schließen (im Window und in der Drawerfläche).
+             - setManualCurrent() auf Parameter umgestellt.
+             - setChargerPhases() auf Parameter umgestellt.
+             - Phasenanzahl kann über die GUI geändert werden (Drawer3, links unten).
+             - showChargeMode() auf Parameter umgestellt.
+             - Temperatur für Batterie bei EVCC ausgeblendet (in main.qml: Temp == 0 -> ausgeblendet).
+             - Vorgabe für maximalen Ladestrom über die GUI implementiert (setManualCurrent())
+             - Einstellungen in PV-Anzeige werden direkt in EVCC (Web-GUI) angezeigt, umgekehrt ebenfalls, aber um die Aktualisierungszeit
+                von EVCC verzögert.
+
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */
 
 // program version for window title
-#define VERSIONMAJOR    "1"
-#define VERSIONMINOR    "21"
+#define VERSIONMAJOR    "2"
+#define VERSIONMINOR    "00"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -108,7 +136,7 @@ class StringData;
 #define DODGERBLUE      "#02a4f5"       // "DODGERBLUE"     // EV charging // 0x0A7CEB = "um -20 dunkleres dogerblue" (Orig. 0x1e90ff)
 #define DARKBLUE        "#2828B3"       // "#0371da" "0x00008b"     // EV attached to wallbox
 #define LIGHTBLUE       "#72BBFF"       // sehr helles Blau
-#define LIGHTHRED       "#FFE5E5"       // sehr helles Rot
+#define LIGHTRED        "#FFE5E5"       // sehr helles Rot
 #define SUNWHITE        0               // "WHITE"          // weiß
 #define SUNLTYELLOW     1               // "#FFFFA8"        // helles Gelb
 #define SUNYELLOW       2               // "YELLOW"         // Gelb
@@ -156,26 +184,28 @@ public:
     Q_PROPERTY(int homeBotRedH              MEMBER m_homeBotRedH           NOTIFY shadeDataChanged)
 
     // grid properties - all grid values are updated in one call to "gridDataChanged"
-    Q_PROPERTY(QString gridText             MEMBER m_gridText         NOTIFY gridDataChanged)
-    Q_PROPERTY(QString gridColor            MEMBER m_gridColor        NOTIFY gridDataChanged)
-    Q_PROPERTY(QString gridPower            MEMBER m_gridPowerAnzeige NOTIFY gridDataChanged)                   // current power from/to grid
-    Q_PROPERTY(double gridEnergyImport      MEMBER m_gridEnergyImport NOTIFY gridDataChanged)                   // Verbrauchszähler [kWh]
-    Q_PROPERTY(double gridEnergyExport      MEMBER m_gridEnergyExport NOTIFY gridDataChanged)                   // Einspeisezähler [kWh]
+    Q_PROPERTY(QString gridText             MEMBER m_gridText           NOTIFY gridDataChanged)
+    Q_PROPERTY(QString gridColor            MEMBER m_gridColor          NOTIFY gridDataChanged)
+    Q_PROPERTY(QString gridPower            MEMBER m_gridPowerAnzeige   NOTIFY gridDataChanged)           // current power from/to grid
+    Q_PROPERTY(double gridEnergyImport      MEMBER m_gridEnergyImport   NOTIFY gridDataChanged)           // Verbrauchszähler [kWh]
+    Q_PROPERTY(double gridEnergyExport      MEMBER m_gridEnergyExport   NOTIFY gridDataChanged)           // Einspeisezähler [kWh]
 
     // wallbox properties - all wallbox values are updated in one call to "chargingDataChanged"
-    Q_PROPERTY(QString chargingPower        MEMBER m_charPower        NOTIFY chargingDataChanged)                // current power [kW]
-    Q_PROPERTY(QString chargedEnergy        MEMBER m_charEnergy       NOTIFY chargingDataChanged)                // total energy [kWh]
-    Q_PROPERTY(QString sessionEnergy        MEMBER m_sessEnergy       NOTIFY chargingDataChanged)                // last session energy [kWh]
-    Q_PROPERTY(int evalPoints               MEMBER m_evalPoints       NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxColor         MEMBER m_wallboxColor     NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxCar           MEMBER m_wallboxCar       NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString wallboxScoot         MEMBER m_wallboxScoot     NOTIFY chargingDataChanged)
-    Q_PROPERTY(QString chargeMode           MEMBER m_EVChargingMode   NOTIFY chargingDataChanged)                // current charge mode (String)
-    Q_PROPERTY(double manualCurrent         MEMBER m_EVManualCurrent  NOTIFY chargingDataChanged)                // charging current for manual
-    Q_PROPERTY(QString manualCurrentS       MEMBER m_EVManualCurrentS NOTIFY chargingDataChanged)                // current charge mode (String)
-    Q_PROPERTY(bool visibleComm             MEMBER m_visibleComm      NOTIFY showComm)
-    Q_PROPERTY(char evalCountDown           MEMBER m_evalCountDown    NOTIFY showComm)
-    Q_PROPERTY(QString usedPhases           MEMBER m_EVusedPhasesS    NOTIFY chargingDataChanged)                // current charge mode (String)
+    Q_PROPERTY(QString chargingPower        MEMBER m_charPower          NOTIFY chargingDataChanged)       // current power [kW]
+    Q_PROPERTY(QString chargedEnergy        MEMBER m_charEnergy         NOTIFY chargingDataChanged)       // total energy [kWh]
+    Q_PROPERTY(QString sessionEnergy        MEMBER m_sessEnergy         NOTIFY chargingDataChanged)       // last session energy [kWh]
+    Q_PROPERTY(int evalPoints               MEMBER m_evalPoints         NOTIFY chargingDataChanged)       // ab 6 startet PV Ladevorgang (nur EDLD)
+    Q_PROPERTY(QString wallboxColor         MEMBER m_wallboxColor       NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxCar           MEMBER m_wallboxCar         NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString wallboxScoot         MEMBER m_wallboxScoot       NOTIFY chargingDataChanged)
+    Q_PROPERTY(QString chargeMode           MEMBER m_EVChargingMode     NOTIFY chargingDataChanged)       // current charge mode (String)
+    Q_PROPERTY(double manualCurrent         MEMBER m_EVManualCurrent    NOTIFY chargingDataChanged)       // manually set charge current (Number)
+    Q_PROPERTY(QString manualCurrentS       MEMBER m_EVManualCurrentS   NOTIFY chargingDataChanged)       // manually set charge current (String)
+    Q_PROPERTY(bool visibleComm             MEMBER m_visibleComm        NOTIFY showComm)                  // WLAN Icon rechts oben in Wallbox
+    Q_PROPERTY(char evalCountDown           MEMBER m_evalCountDown      NOTIFY showComm)                  // (nicht genutzt)
+    Q_PROPERTY(QString usedPhases           MEMBER m_EVusedPhasesS      NOTIFY chargingDataChanged)       // currently used phases (String)
+    Q_PROPERTY(QString chargeModeManual     MEMBER m_chargeModeManual   NOTIFY chargingDataChanged)       // currently used charge mode (String)
+    Q_PROPERTY(int configuredPhases         MEMBER m_EVconfiguredPhases NOTIFY chargingDataChanged)       // ab 6 startet PV Ladevorgang (nur EDLD)
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
     Q_PROPERTY(QString EDLDfigures  MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
@@ -224,24 +254,18 @@ Q_SIGNALS:
 
 public slots:
     void switchEVIcons();                   // change visualisation of car/scooter (icon or real picture)
-    void switchChargeMode();                // send (new) chargeMode setting to SmartCharger
-    void showChargeModeOFF();               // display chargeMode in GUI
-    void showChargeModeQUICK();             // display chargeMode in GUI
-    void showChargeModeSURPLUS();           // display chargeMode in GUI
-    void showChargeModeMANUAL();            // display chargeMode in GUI
-    void showChargeMode();                  // display currently selected ChargeMode
+    void switchChargeMode(QString);         // send (new) chargeMode setting to SmartCharger
+    void changeChargeMode(QString);           // display chargeMode in GUI
+    void showChargeMode();                 // display currently selected ChargeMode
     void switchManualCurrent();             // send (new) manual current to SmartCharger
 
-    void setManualCurrent6000();            // display ManualChargeCurrent 6 A in GUI
-    void setManualCurrent12000();           // display ManualChargeCurrent 12 A in GUI
-    void setManualCurrent18000();           // display ManualChargeCurrent 18 A in GUI
-    void setManualCurrent32000();           // display ManualChargeCurrent 32 A in GUI, added in V1.17, 06/2025 (new car, 11 kW charging possible)
+    void setManualCurrent(int);             // display ManualChargeCurrent 6, 12, 18, 32 A in GUI
     void showManualCurrent();               // display currently selected ManualChargeCurrent
     void showUsedPhases();                  // display currently selected used phases (relais on X2 switched ON/OFF - ON: 3 phases - OFF: 1 phase)
     void showManualPhases();                // display manually set used phases (relais on X2 switched ON/OFF - ON: 3 phases - OFF: 1 phase)
+    QString chargeModeButtonTxt();          // send button text to "MANUAL" button in drawer2 (main.qml)
 
-    void setChargerPhases1();               // set Charger Phases to 1
-    void setChargerPhases3();               // set Charger Phases to 3
+    void setChargerPhases(int);             // set Charger Phases to 0(automatic), 1, 3
 
     void openVersionInfoMsg();              // Anzeige der Compiler- und Runtimeversion (V1.17)
     void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt (V1.17)
@@ -249,6 +273,7 @@ public slots:
 private:
     void getXMLdata(void);
     void getJSONdata(void);
+    void getEvccJSONdata(void);
     void generatorHandling(void);
     void batteryHandling(void);
     void gridHandling(void);
@@ -273,7 +298,7 @@ public:
     QString getChargeModeString(void);
 
 // window title with version & build date
-#define WINDOWTITLE "PV-Anzeige - V" VERSIONMAJOR "." VERSIONMINOR
+#define WINDOWTITLE "PV-Anzeige - V" VERSIONMAJOR "." VERSIONMINOR " - EVCC"
     QString m_windowTitle = WINDOWTITLE;
 
 // generators, PV-Paneele
@@ -346,6 +371,9 @@ public:
     QString m_EVManualCurrentS;             // String für Anzeige in der GUI
     int m_Output = 0;                       // Phasen-Relais-Ausgang geschaltet (0: AUS - 1: EIN)
     QString m_EVusedPhasesS;                // String für Anzeige in der GUI
+    QString m_chargeModeManual;             // MANUAL oder Min+PV für den Button im Drawer, je nach DataProvider
+    int m_EVChargerPhases;                  // Vorgabe an EVCC
+    int m_EVconfiguredPhases;               // Rückmeldung von EVCC
 
 // Error Messages
     QString m_MBMDProblemText = "";
