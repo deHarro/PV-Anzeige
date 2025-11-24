@@ -49,4 +49,7 @@ The displayed power levels do not depend from each other in this examples, the v
 
 As of 11/2025 the program depends on [evcc](https://github.com/evcc-io/evcc) as new data provider. The version has changed to V2.0
 
+![PV-Anzeige_V2 0-EVCC](https://github.com/user-attachments/assets/eb2f7d68-7830-43b4-b8f2-29791d892d04)
+
+
 
