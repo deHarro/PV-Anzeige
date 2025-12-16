@@ -537,14 +537,15 @@ Window {
 
         Text {          // usedPhases (1, 3)
             id: text56
-            x: 180
+//            x: 180
+            x: PowerNodeModel.activeDataProvider == "EVCC" ? 22 : 180   // bei EVCC Phasen links anzeigen
             y: 8
             width: 70
             color: "#ffffff"
             text: PowerNodeModel.usedPhases
             //text: "P"
-            font.pixelSize: 11
-            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: PowerNodeModel.activeDataProvider == "EVCC" ? 12 : 11 // bei EVCC 12 Pix hoch
+            horizontalAlignment: Text.AlignHLeft
         }
 
         Text {
@@ -660,6 +661,7 @@ Window {
             x: 12
             y: 6
             color: "#ffffff"
+            visible: PowerNodeModel.activeDataProvider == "EVCC" ? false : true
             text: qsTr("Eval.Pts:")
             font.pixelSize: 12
         }
@@ -671,6 +673,7 @@ Window {
             width: 16
             height: 14
             color: PowerNodeModel.EDLDfigures
+            visible: PowerNodeModel.activeDataProvider == "EVCC" ? false : true
             //            color: "#ffffff"
             text: PowerNodeModel.evalPoints.toFixed(0)
             font.pixelSize: 12
@@ -1336,7 +1339,7 @@ Window {
             text: PowerNodeModel.WRProblemText
             font.bold : true
             font.pixelSize: 12
-            horizontalAlignment: Text.AlignLeft
+            horizontalAlignment: Text.AlignHCenter
         }
     }
 

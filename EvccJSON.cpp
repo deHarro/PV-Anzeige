@@ -126,6 +126,7 @@ void EvccJSON::ReadEvccJSON() {
                         bool connected      = auxObj["connected"].toBool();                 //
                         bool enabled        = auxObj["enabled"].toBool();                   //
                         bool charging       = auxObj["charging"].toBool();                  //
+                        QString chargerStatusReason = auxObj["chargerStatusReason"].toString();
 //                        double chargedEnergy = auxObj["chargedEnergy"].toDouble();        // Energie in dieser Sitzung == sessionEnergy
 //                        bool singlePhase    = auxObj["chargerSinglePhase"].toBool();      // immer "false"
 //                        bool chargerPhases1p3p = auxObj["chargerPhases1p3p"].toBool();    // immer "true"
@@ -137,7 +138,8 @@ void EvccJSON::ReadEvccJSON() {
                                  << ", Mode:" << mode
                                  << ", Phases configured:" << phasesConfigured
                                  << ", Phases active:" << phasesActive
-                                 << ", Enabled:" << enabled;
+                                 << ", Enabled:" << enabled
+                                 << ", ChStatus:" << chargerStatusReason;
                         //                                 << ", singlePhase:" << singlePhase
                         //                                 << ", chargerPhases1p3p:" << chargerPhases1p3p
 
@@ -152,8 +154,8 @@ void EvccJSON::ReadEvccJSON() {
                         m_EVActualPower = power;                        // aktuell ans EV abgegebene Leistung
                         m_EVSessionEnergy = sessionEnergy;              // zuletzt ins EV geladene Energie
                         m_EVTotalEnergy = totalImport;                  // gesamte jemals in ein EV eingeladene Energie
-                        m_EVChargerPhases = phasesActive;               // Festlegung der Anzahl Phasen beim Laden: 1 oder 3
-                        m_EVconfiguredPhases = phasesConfigured;        // Rückmeldung Anzahl Phasen von EVCC
+                        m_EVChargerPhases = phasesActive;               // Rückmeldung Anzahl Phasen von EVCC
+                        m_EVconfiguredPhases = phasesConfigured;        // konfigurierte Anzahl Phasen beim Laden: 1 oder 3
 
                         // EVCC hat 3 Booleans die den Zustand der Kombination EV-Wallbox beschreiben:
                         // connected, enabled, charging
@@ -258,5 +260,6 @@ QString EvccJSON::getEVChargeMode(void)             {return m_EVChargingMode;}
 ulong   EvccJSON::getEVTotalEnergy(void)            {return m_EVTotalEnergy*1000;}
 int     EvccJSON::getEVconfiguredPhases(void)       {return m_EVconfiguredPhases;}
 int     EvccJSON::getEVallowedPhases(void)          {return m_EVallowedPhases;}
+int     EvccJSON::getEVactivePhases(void)           {return m_EVChargerPhases;}
 
 

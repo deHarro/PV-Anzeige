@@ -114,6 +114,12 @@ Version 2.00 - Versionssprung auf 2.0 wegen Umstellung auf neuen DataProvider EV
              - Vorgabe für maximalen Ladestrom über die GUI implementiert (setManualCurrent())
              - Einstellungen in PV-Anzeige werden direkt in EVCC (Web-GUI) angezeigt, umgekehrt ebenfalls, aber um die Aktualisierungszeit
                 von EVCC verzögert.
+Version 2.01 - "Aktive Phasen" Anzeige im Wallbox-Kasten bei EVCC nach links gerückt und ausgeschrieben (anstelle der Eval.Points)
+                Die Magie erfolgt in "main.qml". Wenn EVCC als Datenprovider in der "PVconfig.ini" eingestellt ist, werden Koordinaten
+                und Texte angepasst: siehe PowerNodeModel.activeDataProvider == "EVCC" ?
+Version 2.02 - "Aktive Phasen" Anzeige im Wallbox-Kasten korrigiert (falsche Variable verwendet)
+Version 2.03 - Hintergrund hellrot einfärben, wenn evcc keine Daten mehr liefert oder der Server nicht läuft
+
 
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
@@ -121,7 +127,7 @@ Version 2.00 - Versionssprung auf 2.0 wegen Umstellung auf neuen DataProvider EV
 
 // program version for window title
 #define VERSIONMAJOR    "2"
-#define VERSIONMINOR    "00"
+#define VERSIONMINOR    "03"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -206,6 +212,7 @@ public:
     Q_PROPERTY(QString usedPhases           MEMBER m_EVusedPhasesS      NOTIFY chargingDataChanged)       // currently used phases (String)
     Q_PROPERTY(QString chargeModeManual     MEMBER m_chargeModeManual   NOTIFY chargingDataChanged)       // currently used charge mode (String)
     Q_PROPERTY(int configuredPhases         MEMBER m_EVconfiguredPhases NOTIFY chargingDataChanged)       // ab 6 startet PV Ladevorgang (nur EDLD)
+    Q_PROPERTY(QString activeDataProvider   MEMBER m_actDataProviderStr NOTIFY chargingDataChanged)       // bestimmte Anzeigen in der GUI ein/ausblenden/ändern
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
     Q_PROPERTY(QString EDLDfigures  MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
@@ -251,6 +258,7 @@ Q_SIGNALS:
     void sunColor();
     void showComm();
     void displayWindowTitle();
+    void showEvalPtsTxt(void);
 
 public slots:
     void switchEVIcons();                   // change visualisation of car/scooter (icon or real picture)
@@ -286,6 +294,7 @@ private:
     void setMBMDText(void);
     void setEDLDText(void);
     void setWRText(void);
+    void setEvccText(void);
     void setBGColor(void);
     void setSunAngle(void);
     void setSunColor(int8_t);
@@ -372,8 +381,9 @@ public:
     int m_Output = 0;                       // Phasen-Relais-Ausgang geschaltet (0: AUS - 1: EIN)
     QString m_EVusedPhasesS;                // String für Anzeige in der GUI
     QString m_chargeModeManual;             // MANUAL oder Min+PV für den Button im Drawer, je nach DataProvider
-    int m_EVChargerPhases;                  // Vorgabe an EVCC
+ //   int m_EVChargerPhases;                  // Rückmeldung von Wallbox, Anzahl Phasen beim Laden: 1 oder 3
     int m_EVconfiguredPhases;               // Rückmeldung von EVCC
+    QString m_actDataProviderStr;           // Dataprovider (EVCC oder EDLD)
 
 // Error Messages
     QString m_MBMDProblemText = "";

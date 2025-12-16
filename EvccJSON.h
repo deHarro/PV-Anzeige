@@ -58,6 +58,7 @@ public:
     ulong   getEVTotalEnergy(void);
     int     getEVconfiguredPhases();
     int     getEVallowedPhases();
+    int     getEVactivePhases();
 
     // nachfolgende Werte kamen vom PowerNodeModel
 //    void doSetChargerPhases(int);             // set Charger Phases to 0(automatic), 1, 3
@@ -87,7 +88,7 @@ private:
     double  m_EVActualPower             = 0.0;      // aktuell ans EV abgegebene Leistung
     double  m_EVSessionEnergy           = 0.0;      // zuletzt ins EV geladene Energie
     ulong   m_EVTotalEnergy             = 0;        // gesamte jemals in ein EV eingeladene Energie
-    int     m_EVChargerPhases;                      // Festlegung der Anzahl Phasen beim Laden: 1 oder 3
+    int     m_EVChargerPhases;                      // Rückmeldung der aktiven Anzahl Phasen beim Laden: 1 oder 3
     double  m_EVEvaluationPoints = 0.0;
     int     m_EVState = 0;
     int     m_EVPlug = 0;
