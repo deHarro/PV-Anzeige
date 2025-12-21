@@ -3,6 +3,7 @@
 #include <QTimer>
 #include <QColor>
 #include <QMessageBox>
+#include <EvccJSON.h>
 
 /*
 Hinweis
@@ -51,7 +52,7 @@ Version 1.17 - Real Car Icon aktualisiert
              - Auslesen des Parameters Output der Wallbox. Liest den Status des Ausgangs X2 der Wallbox ein.
                 X2 steuert das Phasen-Umschaltrelais für die Wallbox. Das Relais schaltet bei Bedarf die Phasen L2 und L3
                 zur Wallbox durch, so dass auch 3-phasig geladen werden kann. Das ist der Normalfall.
-                Interessant im Zusammenhang mit Überschussladen per PV, gesteuert durch den SmartCharger.
+                Interessant im Zusammenhang mit Überschussladen per PV, gesteuert durch SmartCharger.
                 Liegt/fällt der Sonnen_überschuss_ unter 3 * 1370 W (4,11 kW), wird auf 1-phasiges Laden umgeschaltet.
              - Anzeige der Anzahl genutzter Phasen in der GUI.
              - Maxwert für Manual Current in der GUI (Drawer links unten) von 18 A auf 32 A / 7.36 kW erhöht (nur bei 3 Phasen).
@@ -97,7 +98,7 @@ Version 2.00 - Versionssprung auf 2.0 wegen Umstellung auf neuen DataProvider EV
                 #define smchaXML evccJSON           // Umleitung der smchaXML-Zugriffe auf evccJSON-Zugriffe
                 #define wrJSON evccJSON             // Umleitung der wrJSON-Zugriffe auf evccJSON-Zugriffe
              - INI-Datei erweitert um Version der INI-Datei [INIVERSION]. Der Wert INIVERSION muss mindestens der Programmversion entsprechen,
-                sonst wird eine Fehlermeldung auf std-err ausgegeben. Das Programm startet aber trotzdem, zeigt aber ggf. keine Daten.
+                sonst wird eine Fehlermeldung auf std-err ausgegeben. Das Programm startet trotzdem, zeigt aber ggf. keine Daten.
              - Caption der App um " - EVCC" erweitert, siehe #define WINDOWTITLE in Z. 287 (suche #define WINDOWTITLE).
              - Schreibfehler LIGHTRED behoben.
              - GUI wo notwendig an EVCC Notation angepasst (abhängig von DataProvider auch für EDLD/MBMD passend).
@@ -105,7 +106,7 @@ Version 2.00 - Versionssprung auf 2.0 wegen Umstellung auf neuen DataProvider EV
              - Farbe der Wallbox muss anders hergeleitet werden, EVCC liefert keinen Status im Sinne von EDLD.
              - Aktualisierungsrate in EVCC auf 20 s eingestellt (keine Programmänderung).
                 10 s sind deutlich zu knapp- Regelung schwingt :( - EVCC Default ist 30 s (Minimum).
-             - Umstellung Drawer-Background von Rectangle auf Button -> per Click wieder schließen (im Window und in der Drawerfläche).
+             - Umstellung Drawer-Background von Rectangle auf Button -> Drawer schließen per Click im Window und in der Drawerfläche.
              - setManualCurrent() auf Parameter umgestellt.
              - setChargerPhases() auf Parameter umgestellt.
              - Phasenanzahl kann über die GUI geändert werden (Drawer3, links unten).
@@ -119,7 +120,13 @@ Version 2.01 - "Aktive Phasen" Anzeige im Wallbox-Kasten bei EVCC nach links ger
                 und Texte angepasst: siehe PowerNodeModel.activeDataProvider == "EVCC" ?
 Version 2.02 - "Aktive Phasen" Anzeige im Wallbox-Kasten korrigiert (falsche Variable verwendet)
 Version 2.03 - Hintergrund hellrot einfärben, wenn evcc keine Daten mehr liefert oder der Server nicht läuft
-
+Version 2.04 - evcc-Variablen im Zusammenhang mit Ladeverteilung zwischen Hausakku und EV im Code eingeführt (bufferSoc, prioritySoc, batteryDischargeControl).
+                (Diese Vorgaben werden _in der evcc-GUI_ über Menü-Hausbatterie eingestellt).
+             - INI-File Überprüfung auf MajorVersion reduziert.
+Version 2.05 - Visualisierung der drei neuen Parameter bufferSoc, prioritySoc und batteryDischargeControl in Drawer4.
+             - bufferSoc, prioritySoc und batteryDischargeControl können über die GUI im Drawer4 gesetzt werden.
+                Werden die Parameter in Pv_Anzeige geändert, werden meist ncohmal kurz die vorherigen Werte angezeigt, bevor der neue Wert
+                angezeigt wird. Evcc übernimmt die neuen Einstellungen sofort (Kontrolle über die evcc GUI).
 
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
@@ -127,7 +134,7 @@ Version 2.03 - Hintergrund hellrot einfärben, wenn evcc keine Daten mehr liefer
 
 // program version for window title
 #define VERSIONMAJOR    "2"
-#define VERSIONMINOR    "03"
+#define VERSIONMINOR    "05"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -147,9 +154,10 @@ class StringData;
 #define SUNLTYELLOW     1               // "#FFFFA8"        // helles Gelb
 #define SUNYELLOW       2               // "YELLOW"         // Gelb
 
-
 class PowerNodeModel : public QObject {
     Q_OBJECT
+
+    EvccJSON evcc;
 
 public:
     PowerNodeModel();
@@ -180,6 +188,9 @@ public:
     Q_PROPERTY(QString batteryImage         MEMBER m_batteryImage          NOTIFY batteryDataChanged)
     Q_PROPERTY(int batteryFill              MEMBER m_batteryFill           NOTIFY batteryDataChanged)
     Q_PROPERTY(double battTemp              MEMBER m_battTemp              NOTIFY batteryDataChanged)
+    Q_PROPERTY(int prioritySOC              MEMBER m_evPrioritySOC         NOTIFY batteryDataChanged)
+    Q_PROPERTY(int bufferSOC                MEMBER m_evBufferSOC           NOTIFY batteryDataChanged)
+    Q_PROPERTY(bool evBattDcControl         MEMBER m_evBattDcControl       NOTIFY batteryDataChanged)
 
     // home consumption properties - all home consumption values are updated in one call to "consumptionDataChanged"
     Q_PROPERTY(QString consumptionPower     MEMBER m_totPowerConsumption   NOTIFY consumptionDataChanged)
@@ -272,6 +283,9 @@ public slots:
     void showUsedPhases();                  // display currently selected used phases (relais on X2 switched ON/OFF - ON: 3 phases - OFF: 1 phase)
     void showManualPhases();                // display manually set used phases (relais on X2 switched ON/OFF - ON: 3 phases - OFF: 1 phase)
     QString chargeModeButtonTxt();          // send button text to "MANUAL" button in drawer2 (main.qml)
+    void setBatDcControl(qreal);
+    void setBufferSoc(int);
+    void setPrioritySoc(int);
 
     void setChargerPhases(int);             // set Charger Phases to 0(automatic), 1, 3
 
@@ -302,6 +316,9 @@ private:
     void resetComm(void);
     void setWindowTitle(void);
     void countDown(void);
+    void setEvPrioritySOC(void);
+    void setEvBufferSOC(void);
+    void setEvBattDischargeControl(void);
 
 public:
     QString getChargeModeString(void);
@@ -346,6 +363,10 @@ public:
     QString m_batteryImage = "/Icons/Akku_weiss_transparent00.png";
     int m_batteryFill = 0;                  // analoge Balkenanzeige des Betteriefüllstands
     double m_battTemp = 0.0;                // Temperatur des Akkus
+    int m_evPrioritySOC = 0;                // bis zu welchem %-Satz muss der Hausakku geladen sein, bevor das EV anfängt zu laden (bei knapper Sonne)
+    int m_evBufferSOC = 0;                  // der Hausakku wird nur für EV-Ladung genutzt, wenn er über diesem %-Satz geladen ist
+    bool m_evBattDcControl = true;          // wenn true wird der Hausakku nicht entladen, wenn das EV mit QUICK geladen wird
+
 // consumption, home, Hausverbrauch
     int m_totalPowerConsumption = 0;        // Gesamtverbrauch [kW]
     QString m_totPowerConsumption = 0;      // Gesamtverbrauch [kW]

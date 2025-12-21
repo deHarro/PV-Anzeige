@@ -81,27 +81,30 @@ void PowerNodeModel::onDataTimer() {
     if ((timerCounter++ % 10) == 0)  // alle 5 Sekunden den RPi abfragen (10 * 500 ms)
     {
     // Update the different values in C++
-        setComm();              // switch on communication visu
-        setSunAngle();          // slowly rotate sun icon
-        setSunColor(SUNWHITE);  // change sun icon color
-        //getXMLdata();           // extract values from XML string, read from RPi EDL Daemon
-        //getJSONdata();          // extract values from JSON string, read from RPi MBMD Daemon
-        getEvccJSONdata();      // extract values from JSON string, read from RPi evcc
-        generatorHandling();    // PV generator handling
-        batteryHandling();      // battery handling
-        gridHandling();         // grid handling
-        wallboxHandling();      // wallbox handling
-        arrowsHandling();       // arrows handling
-        consumptionHandling();  // consumption handling
-        shadeHandling();        // handle shades for home with fractional grid power and fractional battery power
-        setEDLDText();          // emit warning message if connection to EDL Daemon on RPi ceases
-        setWRText();            // emit warning message if one or more of the WR fail to send data (modbus error)
-        setMBMDText();          // emit warning message if connection to MBMD Daemon on RPi ceases
-        setEvccText();          // emit warning message if connection to EVCC on RPi ceases
-        setBGColor();           // on comm error make background light red
-        showManualCurrent();    // make Manual ChargeCurrent visible in Drawer
-        showManualPhases();     // make Manual Phases visible in Drawer
-        showUsedPhases();       // show used phases in GUI
+        setComm();                      // switch on communication visu
+        setSunAngle();                  // slowly rotate sun icon
+        setSunColor(SUNWHITE);          // change sun icon color
+        //getXMLdata();                   // extract values from XML string, read from RPi EDL Daemon
+        //getJSONdata();                  // extract values from JSON string, read from RPi MBMD Daemon
+        getEvccJSONdata();              // extract values from JSON string, read from RPi evcc
+        generatorHandling();            // PV generator handling
+        batteryHandling();              // battery handling
+        gridHandling();                 // grid handling
+        wallboxHandling();              // wallbox handling
+        arrowsHandling();               // arrows handling
+        consumptionHandling();          // consumption handling
+        shadeHandling();                // handle shades for home with fractional grid power and fractional battery power
+        setEDLDText();                  // emit warning message if connection to EDL Daemon on RPi ceases
+        setWRText();                    // emit warning message if one or more of the WR fail to send data (modbus error)
+        setMBMDText();                  // emit warning message if connection to MBMD Daemon on RPi ceases
+        setEvccText();                  // emit warning message if connection to EVCC on RPi ceases
+        setBGColor();                   // on comm error make background light red
+        showManualCurrent();            // make Manual ChargeCurrent visible in Drawer
+        showManualPhases();             // make Manual Phases visible in Drawer
+        showUsedPhases();               // show used phases in GUI
+        setEvPrioritySOC();             // set EvPrioSOC slider in drawer4
+        setEvBufferSOC();               // set EvPrioSOC slider in drawer4
+        setEvBattDischargeControl();    // set EvBattDischargeControl switch in drawer4
 
     // Update the different values in QML -> show on GUI
         emit showComm();
@@ -284,6 +287,24 @@ void PowerNodeModel::setSunColor(int8_t newColor)
         case 1: m_sunColor =  "/Icons/Sonne_invers_gruen.png"; break;       // mit Sonne  -> grüner Hintergrund
         default: m_sunColor = "/Icons/Sonne_invers_hellgrau.png";
     }
+}
+
+// set EvPrioritySOC in Drawer4
+void PowerNodeModel::setEvPrioritySOC(void)
+{
+    m_evPrioritySOC = evccJSON.getEVprioritySOC();
+}
+
+// set EvPrioritySOC in Drawer4
+void PowerNodeModel::setEvBufferSOC(void)
+{
+    m_evBufferSOC = evccJSON.getEVbufferSOC();
+}
+
+// set EvPrioritySOC in Drawer4
+void PowerNodeModel::setEvBattDischargeControl(void)
+{
+    m_evBattDcControl = evccJSON.getEVbattDcControl();
 }
 
 void PowerNodeModel::openPopUpMsg() {
@@ -634,6 +655,25 @@ void PowerNodeModel::showManualPhases()
 }
 // \show Charging Phases handling
 
+// setting batteryDischargeControl feature
+void PowerNodeModel::setBatDcControl(qreal number)
+{
+    downler.doSetBatDcControl(number < 0.5 ? false : true);
+}
+
+// setting batteryDischargeControl feature
+void PowerNodeModel::setBufferSoc(int number)
+{
+    downler.doSetBufferSoc(number);
+}
+
+// setting batteryDischargeControl feature
+void PowerNodeModel::setPrioritySoc(int number)
+{
+    downler.doSetPrioritySoc(number);
+}
+
+
 // show "Eval.Points" handling
 //void PowerNodeModel::showEvalPtsTxt()
 //{
@@ -955,7 +995,7 @@ void PowerNodeModel::getIconType()
                 {
                     QString iniVersion = (QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n'));     // Ini-Version 1.xx
 
-                    if((iniVersion.left(1) >= VERSIONMAJOR) && (iniVersion.right(2) >= VERSIONMINOR))
+                    if((iniVersion.left(1) >= VERSIONMAJOR) /*&& (iniVersion.right(2) >= VERSIONMINOR)*/)
                     {
                         QString line = file.readLine();
                         if (line.contains("[REALPICS]"))

@@ -36,6 +36,9 @@ public:
     void doSetChargeMode(void);
     void doSetManualCurrent(void);
     void doSetChargerPhases(void);
+    void doSetBatDcControl(bool);
+    void doSetBufferSoc(int);
+    void doSetPrioritySoc(int);
 
     QString getDataProvider(void);          // liefert den DataProvider zur Entscheidung, welcher Parser Verwendung findet
     QString getiniVersion(void);            // liefert die Version der INI-Datei zur Entscheidung, ob die INI zur Version passt
@@ -54,6 +57,8 @@ public slots:
 
 private:
     void getRPiParameter(void);
+
+    void sendParamToEvcc(QString);
 
     QNetworkAccessManager *jsonManager;
     QNetworkAccessManager *xmlManager;

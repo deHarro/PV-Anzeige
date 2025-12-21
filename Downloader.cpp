@@ -49,6 +49,68 @@ Downloader::Downloader(QObject *parent) :
     getRPiParameter();
 }
 
+// 3 settings for battery <> EV
+//  /batterydischargecontrol/{enable}   - true, false, 1, 0
+//  /buffersoc/{soc}                    - 0..100
+//  /prioritysoc/{soc}                  - 0..100
+
+// set BatteryDischargeControl -
+void Downloader::doSetBatDcControl(bool input)
+{
+    QString parameter = "batterydischargecontrol/" + QString(input == 0 ? "false" : "true");
+    sendParamToEvcc(parameter);
+}
+
+// set bufferSOC -
+void Downloader::doSetBufferSoc(int input)
+{
+    QString parameter = "buffersoc/" + QString::number(input);
+    sendParamToEvcc(parameter);
+}
+
+// set bufferSOC -
+void Downloader::doSetPrioritySoc(int input)
+{
+    QString parameter = "prioritysoc/" + QString::number(input);
+    sendParamToEvcc(parameter);
+}
+
+// send parameters to evcc
+void Downloader::sendParamToEvcc(QString param)
+{
+    QUrl EvccAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/" + param;  // PowerNodeModel.getChargeModeString();
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
+
+    // URL für die Anfrage festlegen
+    QUrl url(EvccAddr);
+
+    // QNetworkRequest erstellen
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("Accept", "application/json");
+
+    // Leere JSON-Daten (falls nötig, ersetze dies durch tatsächliche Daten)
+    QJsonObject json;
+    QByteArray jsonData = QJsonDocument(json).toJson();
+
+    // POST-Anfrage senden
+    QNetworkReply *reply = manager->post(request, jsonData);
+
+    // Optional: Verbindung zu signalen, um auf die Antwort zu reagieren
+    QObject::connect(reply, &QNetworkReply::finished, [reply]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray response = reply->readAll();
+            // Verarbeite die Antwort hier
+        } else {
+            // Fehlerverarbeitung
+        }
+        reply->deleteLater();
+    });
+}
+// \send parameters to evcc
+
+
+
 // set charging mode of SmartCharger ----------------------------------------
 // possible Charge Modes
 // http://192.168.xx.xx:18001/remote?mode=off
@@ -204,7 +266,6 @@ void Downloader::doSetChargerPhases(void)
 {
     if(m_DataProvider.toUpper() == "EVCC")
     {
-//        QUrl EvccAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/loadpoints/1/phases/" + QString::number(evcc.getEVallowedPhases());
         QUrl EvccAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/loadpoints/1/phases/" + QString::number(m_ChargerPhases);
         QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -417,7 +478,7 @@ void Downloader::getRPiParameter()
                 {
                     QString iniVersion = (QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n'));     // Ini-Version 1.xx
 
-                    if((iniVersion.left(1) >= VERSIONMAJOR) && (iniVersion.right(2) >= VERSIONMINOR))
+                    if((iniVersion.left(1) >= VERSIONMAJOR) /*&& (iniVersion.right(2) >= VERSIONMINOR)*/)
                     {
                         QString line = file.readLine();
                         if (line.contains("[REALPICS]"))

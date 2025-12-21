@@ -12,12 +12,9 @@ void EvccJSON::ReadEvccJSON() {
     QJsonArray jsonArray;
     QJsonValue value;
 
-//    qDebug() << "m_JSONevccData: " << m_JSONevccData;                           // QString
-
     if(!m_JSONevccData.isEmpty())                                               // QString enthält Daten?
     {
         // QString in QJsonObject umwandeln
-//        evccJSONdocument = QJsonDocument::fromJson(m_JSONevccData.toUtf8());    // Ja -> QJsonDocument erzeugen
         evccJSONdocument = QJsonDocument::fromJson(m_JSONevccData.toUtf8());    // Ja -> QJsonDocument erzeugen
 
         if (!evccJSONdocument.isNull())                                         // hat das Erzeugen des JSON Doc geklappt?
@@ -26,12 +23,7 @@ void EvccJSON::ReadEvccJSON() {
             {
                 QJsonObject jsonObject = evccJSONdocument.object();
 
-                // JSON-Objekt in QJsonArray umwandeln
-//                jsonArray.append(jsonObject);
-
-//                jsonArray = jsonObject["aux"].toArray();                        // suche Werte des Netzes
-
-                for (auto &&value : jsonObject["aux"].toArray())
+                for (auto &&value : jsonObject["aux"].toArray())                // suche Werte des Netzes (SMA Energy-Meter)
                 {
                     if (value.isObject())
                     {
@@ -47,9 +39,7 @@ void EvccJSON::ReadEvccJSON() {
                 }
                 qDebug() << "Aux fertig";
 
-//                jsonArray = jsonObject["battery"].toArray();                    // suche Werte des Akku
-
-                for (auto &&value : jsonObject["battery"].toArray())
+                for (auto &&value : jsonObject["battery"].toArray())              // suche Werte des Akku
                 {
                     if (value.isObject())
                     {
@@ -59,33 +49,19 @@ void EvccJSON::ReadEvccJSON() {
                         double capacity   = auxObj["capacity"].toDouble();
                         double soc   = auxObj["soc"].toDouble();
 
-                        qDebug() << "Name:" << title << ", Capacity:" << capacity << ", Power:" << power << "Soc:" << soc << "%";
+                        qDebug() << "Name:" << title <<
+                            ", Capacity:" << capacity <<
+                            ", Power:" << power <<
+                            "Soc:" << soc << "%";
 
-                        m_StorageSystemSOC          = soc;          // aktuelle prozentuale Ladung des Hausakku
-                        m_StorageSystemTemperature  = 0.0;          // aktuelle Temperatur des Hausakku/des Wechselrichters (?)
-                        m_StorageSystemActualPower  = power;        // aktuell vom Akku abgegebene/aufgenommene Leistung
+                        m_StorageSystemSOC          = soc;              // aktuelle prozentuale Ladung des Hausakku
+                        m_StorageSystemTemperature  = 0.0;              // aktuelle Temperatur des Hausakku/des Wechselrichters (?)
+                        m_StorageSystemActualPower  = power;            // aktuell vom Akku abgegebene/aufgenommene Leistung
                     }
                 }
                 qDebug() << "Battery fertig";
 
-//                jsonArray = jsonObject["grid"].toArray();                       // suche Werte des Netzes
-
-/*                for (auto &&value : jsonObject["grid"].toObject())
-                {
-                    if (value.isObject())
-                    {
-                        QJsonObject auxObj = value.toObject();
-                        double power    = auxObj["power"].toDouble();
-                        double energy   = auxObj["energy"].toDouble();
-
-                        qDebug() << "Energy:" << energy << ", Power:" << power;
-
-                        m_SmartMeterActualPower = power;
-                        m_SmartMeterConsumption = energy;
-                    }
-                }
-*/
-                if (jsonObject["grid"].isObject()) {
+                if (jsonObject["grid"].isObject()) {                // suche Werte des Netzes
                     QJsonObject gridObj = jsonObject["grid"].toObject();
                     double power = gridObj["power"].toDouble();
                     double energy = gridObj["energy"].toDouble();
@@ -97,20 +73,16 @@ void EvccJSON::ReadEvccJSON() {
                 }
                 qDebug() << "Grid fertig";
 
-//                jsonArray = jsonObject["homePower"].toArray();                       // suche Werte des Netzes
-
                 if (jsonObject.contains("homePower")) {
-                    QJsonValue homePower = jsonObject.value("homePower");
+                    QJsonValue homePower = jsonObject.value("homePower");                   // suche Werte des Netzes
 
-                    qDebug() << "Wert von" << "homePower" << ":" << homePower.toVariant(); // oder value.toVariant() für andere Typen
+                    qDebug() << "Wert von" << "homePower" << ":" << homePower.toVariant();  // oder value.toVariant() für andere Typen
 
                     m_totalPowerConsumption = homePower.toInt();
                 }
                 qDebug() << "homePower fertig";
 
-//                jsonArray = jsonObject["loadpoints"].toArray();                 // suche Werte der Wallbox
-
-                for (auto &&value : jsonObject["loadpoints"].toArray())
+                for (auto &&value : jsonObject["loadpoints"].toArray())                     // suche Werte der Wallbox
                 {
                     if (value.isObject())
                     {
@@ -127,10 +99,6 @@ void EvccJSON::ReadEvccJSON() {
                         bool enabled        = auxObj["enabled"].toBool();                   //
                         bool charging       = auxObj["charging"].toBool();                  //
                         QString chargerStatusReason = auxObj["chargerStatusReason"].toString();
-//                        double chargedEnergy = auxObj["chargedEnergy"].toDouble();        // Energie in dieser Sitzung == sessionEnergy
-//                        bool singlePhase    = auxObj["chargerSinglePhase"].toBool();      // immer "false"
-//                        bool chargerPhases1p3p = auxObj["chargerPhases1p3p"].toBool();    // immer "true"
-//                        QString phaseAction = auxObj["phaseAction"].toString();           // immer "inactive"
 
                         qDebug() << "Power:" << power
                                  << ", TotalImport:" << totalImport
@@ -140,8 +108,6 @@ void EvccJSON::ReadEvccJSON() {
                                  << ", Phases active:" << phasesActive
                                  << ", Enabled:" << enabled
                                  << ", ChStatus:" << chargerStatusReason;
-                        //                                 << ", singlePhase:" << singlePhase
-                        //                                 << ", chargerPhases1p3p:" << chargerPhases1p3p
 
                         // Lademodus: OFF, PV, MINPV, NOW (EDLD: Surplus, Quick, Manual, Off)
                         // Hier den Text für die GUI zusammenstellen
@@ -149,7 +115,6 @@ void EvccJSON::ReadEvccJSON() {
                                             mode == "pv" ? "SURPLUS" :
                                             mode == "minpv" ? "Min+PV" :
                                             mode == "now" ? "QUICK" : "");
-//                        m_EVMaxPhases = chargerPhases1p3p;              // Festlegung der maximal nutzbaren Anzahl Phasen aus SmartCharger Settings
                         m_EVOutput = (phasesConfigured == 1 ? 0 : 1);   // Ausgang für Phasenumschaltrelais (0 -> 1 Phase, >1 -> 3 Phasen)
                         m_EVActualPower = power;                        // aktuell ans EV abgegebene Leistung
                         m_EVSessionEnergy = sessionEnergy;              // zuletzt ins EV geladene Energie
@@ -169,9 +134,7 @@ void EvccJSON::ReadEvccJSON() {
                 }
                 qDebug() << "Wallbox fertig";
 
-//                jsonArray = jsonObject["pv"].toArray();                         // suche PV-Ertrag der WR
-
-                for (auto &&value : jsonObject["pv"].toArray())
+                for (auto &&value : jsonObject["pv"].toArray())                   // suche PV-Ertrag der WR
                 {
                     if (value.isObject())
                     {
@@ -194,7 +157,7 @@ void EvccJSON::ReadEvccJSON() {
                     }
                 }
 
-                jsonArray = jsonObject["pvEnergy"].toArray();                       // suche Werte des Netzes
+                jsonArray = jsonObject["pvEnergy"].toArray();                       // suche Werte der PV-Energie
 
                 if (jsonObject.contains("pvEnergy")) {
                     QJsonValue pvEnergy = jsonObject.value("pvEnergy");
@@ -218,6 +181,32 @@ void EvccJSON::ReadEvccJSON() {
                 qDebug() << "pvPower fertig";
 
                 qDebug() << "WR fertig";
+
+                // bis zu welchem %-Satz muss der Hausakku geladen sein, bevor das EV anfängt zu laden (bei knapper Sonne)
+                if (jsonObject.contains("prioritySoc")) {
+                    QJsonValue prioritySoc = jsonObject.value("prioritySoc");              // suche Werte des prioritySoc
+
+                    qDebug() << "Wert von" << "prioritySoc" << ":" << prioritySoc.toVariant(); // oder value.toVariant() für andere Typen
+
+                    m_prioritySOC = prioritySoc.toInt();
+                }
+
+                // bis zu welchem %-Satz muss der Hausakku geladen sein, bevor das EV anfängt zu laden (bei knapper Sonne)
+                if (jsonObject.contains("prioritySoc")) {
+                    QJsonValue bufferSoc = jsonObject.value("bufferSoc");              // suche Werte des prioritySoc
+
+                    qDebug() << "Wert von" << "prioritySoc" << ":" << bufferSoc.toInt(); // oder value.toVariant() für andere Typen
+
+                    m_bufferSOC = bufferSoc.toInt();         // Laden des EV aus dem Hausakku nur wenn der diesen %-Satz ereicht hat
+                }
+
+                if (jsonObject.contains("batteryDischargeControl")) {
+                    QJsonValue batDisChControl = jsonObject.value("batteryDischargeControl"); // suche Werte des batteryDischargeControl
+
+                    qDebug() << "Wert von" << "prioritySoc" << ":" << batDisChControl.toBool(); // oder value.toVariant() für andere Typen
+
+                    m_batteryDisChargeControl   = batDisChControl.toBool();  // wenn true wird bei QUICK _nicht_ der Akku entladen
+                }
             }
         }
         else
@@ -259,7 +248,11 @@ double  EvccJSON::getEVSessionEnergy(void)          {return m_EVSessionEnergy;}
 QString EvccJSON::getEVChargeMode(void)             {return m_EVChargingMode;}
 ulong   EvccJSON::getEVTotalEnergy(void)            {return m_EVTotalEnergy*1000;}
 int     EvccJSON::getEVconfiguredPhases(void)       {return m_EVconfiguredPhases;}
-int     EvccJSON::getEVallowedPhases(void)          {return m_EVallowedPhases;}
+// int     EvccJSON::getEVallowedPhases(void)          {return m_EVallowedPhases;}
 int     EvccJSON::getEVactivePhases(void)           {return m_EVChargerPhases;}
+int     EvccJSON::getEVprioritySOC(void)            {return m_prioritySOC;}
+int     EvccJSON::getEVbufferSOC(void)              {return m_bufferSOC;}
+bool    EvccJSON::getEVbattDcControl(void)          {return m_batteryDisChargeControl;}
+
 
 

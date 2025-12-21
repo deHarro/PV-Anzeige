@@ -27,6 +27,9 @@ public:
     double getPVGaubeErtrag       (void);
     double getPVGarageErtrag      (void);
     double getPVGesamtErtrag      (void);
+    int    getEVprioritySOC       (void);
+    int    getEVbufferSOC         (void);
+    bool   getEVbattDcControl     (void);
 
     // nachfolgende Werte kamen vom SmartCharger (EDLD)
     double getSmartMeterActualPower (void);
@@ -57,7 +60,7 @@ public:
     QString getEVChargeMode(void);
     ulong   getEVTotalEnergy(void);
     int     getEVconfiguredPhases();
-    int     getEVallowedPhases();
+    // int     getEVallowedPhases();
     int     getEVactivePhases();
 
     // nachfolgende Werte kamen vom PowerNodeModel
@@ -97,6 +100,9 @@ private:
     int     m_StorageSystemSOC          = 0;        // aktuelle prozentuale Ladung des Hausakku
     double  m_StorageSystemTemperature  = 0.0;      // aktuelle Temperatur des Hausakku/des Wechselrichters (?)
     double  m_StorageSystemActualPower  = 0.0;      // aktuell vom Akku abgegebene/aufgenommene Leistung
+    bool    m_batteryDisChargeControl = false;      // wenn true wird der Hausakku nicht entladen, wenn das EV mit QUICK geladen wird
+    int     m_bufferSOC = 0;                        // der Hausakku wird nur für EV-Ladung genutzt, wenn er über diesem %-Satz geladen ist
+    int     m_prioritySOC = 0;                      // bis zu welchem %-Satz muss der Hausakku geladen sein, bevor das EV anfängt zu laden (bei knapper Sonne)
     bool    m_configuredPhases0;
     bool    m_configuredPhases1;
     bool    m_configuredPhases3;

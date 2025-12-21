@@ -38,6 +38,9 @@ Window {
     property real yval: 8                       // y-Offset für die Leistungswerte der WR
     property real ydist: 5                      // y-Abstand für die Leistungswerte der WR
 
+    property int controlHeight: 20
+
+
     // Überlagerte Farben in der Haus-Box mit Texten und Bild
     Item {
         id: root
@@ -463,7 +466,7 @@ Window {
             interactive: true
             dim: false                          // enable closing by clicking outside of drawer area
 
-            background: Button {
+            background: Button {                // enable closing by clicking inside of drawer area
                 Rectangle {
                     x: 1
                     width: parent.width - 2
@@ -747,7 +750,7 @@ Window {
                 interactive: true
                 dim: false                          // enable closing by clicking outside of drawer area
 
-                background: Button {
+                background: Button {                // enable closing by clicking inside of drawer area
                     Rectangle {
                         x: 1
                         width: parent.width - 2
@@ -875,7 +878,7 @@ Window {
                 interactive: true
                 dim: false                          // enable closing by clicking outside of drawer area
 
-                background: Button {
+                background: Button {                // enable closing by clicking inside of drawer area
                     Rectangle {
                         x: 1
                         width: parent.width - 2
@@ -884,7 +887,7 @@ Window {
                         color: "#00ac00"            // LIMEGREEN
                     }
                     onClicked: drawer3.close()
-            }
+                }
 
         // Festlegung des Manual Charge Current in 3 Stufen (6, 12, 18 A), 2025-06-18 - in 4 Stufen (32 A -> 11 kW)
                 Button {        // change ManualCurrent der Wallbox
@@ -1198,7 +1201,184 @@ Window {
             }
         }
 
-    }
+    // Drawer 4 für Auswahl Manual ChargeCurrent und Phasenanzahl
+        // kleiner grauer Punkt als Hint wo mit der Maus gezogen werden muss, damit der Drawer aufgeht
+        Rectangle {
+            x: -27
+            y: 135 - width*0.5
+            width: 10
+            height: width
+            color: "#d4d4d4"
+            radius: width*0.5
+        }
+
+        // kleiner Kreis als Hint wo mit der Maus geklickt werden muss, damit der Drawer aufgeht
+        RoundButton {
+            width: 50
+            height: width
+            x: -27 - width*0.5
+            y: 135 - width*0.5
+            z: 1
+            flat: true
+            opacity: 0
+            onClicked: drawer4.open()
+        }
+
+        // Mit Mausklick die Batterielade Alternativen einblenden
+    Drawer {
+        id: drawer4
+        y: rectangle2.y - 12                // -- das muss zu window.height passen -> auf BatteryBox zentriert
+        width: 0.64 * window.width
+        height: 0.525 * window.height       // -- window.height -> und der Abstand zu den Markierungen passt
+        dragMargin: 0       // 0.1 * window.width   // prevent drawer from being dragged
+        edge: Qt.LeftEdge
+        interactive: true
+        dim: false                          // enable closing by clicking outside of drawer area
+
+        background: Button {                // enable closing by clicking inside of drawer area
+            Rectangle {
+                x: 1
+                width: parent.width - 2
+                y: 1
+                height: parent.height - 2
+                color: "#00ac00"            // LIMEGREEN
+            }
+            onClicked: drawer4.close()
+        }
+
+        Text {          // Überschrift
+            id: text51drawer4
+            x: 20
+            y: 10
+            width: 0.66 * window.width
+            color: "white"
+            text: "Ladungsverteilung Haus <> EV"
+            font.pixelSize: 16
+            font.weight: Font.DemiBold
+            horizontalAlignment: Text.AlignHLeft
+        }
+
+        Item {
+            id: drawerInhalt
+            y: -5
+
+            Slider {
+                id: sliderBatSupport
+                x: 10
+                y: 100
+                width: 235
+                from: 10.0
+                to: 100.0
+                value: PowerNodeModel.bufferSOC
+                orientation: Qt.Horizontal
+                stepSize: 5.0
+
+                onPressedChanged: {
+                    if (!pressed) {
+                        PowerNodeModel.setBufferSoc(value);
+                    }
+                }
+
+                Text {                                      // Batterieunterstütztes Fahrzeugladen
+                    id: text51drawer5
+                    x: 10
+                    y: -50
+                    width: 235
+                    color: "white"
+                    text: "Fahrzeugladen mit Unterstützung durch die Hausbatterie wenn die Hausbatterie über " + sliderBatSupport.value +" % geladen ist."
+                    font.pixelSize: captionTextSize
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHLeft
+                    wrapMode: Text.WordWrap
+                }
+            }
+
+            Slider {
+                id: sliderBatPrio
+                x: 10
+                y: 200
+                width: 235
+                from: 10.0
+                to: 100.0
+                value: PowerNodeModel.prioritySOC
+                orientation: Qt.Horizontal
+                stepSize: 5.0
+
+                onPressedChanged: {
+                    if (!pressed) {
+                        PowerNodeModel.setPrioritySoc(value);
+                    }
+                }
+
+                Text {                                      // Priorisiere die Hausbatterie
+                    id: text51drawer6
+                    x: 10
+                    y: -50
+                    width: 235
+                    color: "white"
+                    text: "Priorisiere Ladung der Hausbatterie bis Hausbatterie " + sliderBatPrio.value + " % erreicht hat.\nDanach wird das EV priorisiert."
+                    font.pixelSize: captionTextSize
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHLeft
+                    wrapMode: Text.WordWrap
+                }
+            }
+
+            Text {                  // Text für On/Off toggle switch
+                id: text300
+                x: 20
+                y: drawer4.height - 45
+                width: 200
+                text: qsTr("Verhindere Entladung der Batterie im Quick-Modus")
+                color: "white"
+                font.pixelSize: captionTextSize
+                font.bold: true
+                wrapMode: Text.WordWrap
+            }
+            Switch {                // On/Off toggle switch für "Verhindere Entladung der Hausbatterie im Quick-Modus"
+                id: control
+                x: 180
+                y: 245
+                text: qsTr("")
+                checked: PowerNodeModel.evBattDcControl
+
+                // contentItem: Text {
+                //     text: control.text
+                //     font: control.font
+                //     color: "white"
+                //     verticalAlignment: Text.AlignVCenter
+                // }
+                indicator: Rectangle {                  // Hintergrund des Switch
+                    implicitWidth: 48
+                    implicitHeight: controlHeight
+                    x: 10
+                    y: 10
+                    radius: controlHeight /2
+                    color: control.checked ? "green" : "red"    // aktiv/nicht aktiv
+                    border.color: "lightgray"
+                    Rectangle {                         // das ist der "Knopf" des Switch
+                        x: control.checked ? parent.width - width : 0
+                        width: controlHeight
+                        height: width       // für Kreis
+                        radius: width / 2   // für Kreis
+                        color: control.down ? "#cccccc" : "#ffffff"
+                        border.color: "white"
+                    }
+                }
+                background: Rectangle {                 // das ist die (unsichtbare) aktive Fläche für den Mausklick
+                    implicitWidth: 70
+                    implicitHeight: 35
+                    // visible: control.down || control.highlighted
+                    color: control.down ? "#bdbebf" : "#eeeeee"
+                    opacity: 0                          // verhindert graues Rechteck bei Click auf das Control
+                }
+                onClicked: {PowerNodeModel.setBatDcControl(position);}
+            }
+        }
+    }   // \drawer4
+// \Drawer für Auswahl Manual ChargeCurrent und Phasenanzahl
+    }   // \Batterie-Box
+
 
     Rectangle {
         objectName: "Grid"
@@ -1342,8 +1522,6 @@ Window {
             horizontalAlignment: Text.AlignHCenter
         }
     }
-
-
 
 
     Item {
