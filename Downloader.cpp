@@ -49,26 +49,26 @@ Downloader::Downloader(QObject *parent) :
     getRPiParameter();
 }
 
-// 3 settings for battery <> EV
-//  /batterydischargecontrol/{enable}   - true, false, 1, 0
-//  /buffersoc/{soc}                    - 0..100
-//  /prioritysoc/{soc}                  - 0..100
+// 3 settings for load balance "battery <> EV" in evcc
+//  batterydischargecontrol/{enable}   - {enable} == true/false
+//  buffersoc/{soc}                    - {soc} == 0..100
+//  prioritysoc/{soc}                  - {soc} == 0..100
 
-// set BatteryDischargeControl -
+// set BatteryDischargeControl - Verhindere Entladung im Schnell-Modus und bei geplantem Laden.
 void Downloader::doSetBatDcControl(bool input)
 {
     QString parameter = "batterydischargecontrol/" + QString(input == 0 ? "false" : "true");
     sendParamToEvcc(parameter);
 }
 
-// set bufferSOC -
+// set bufferSOC - Batterieunterstütztes Fahrzeugladen ab x%
 void Downloader::doSetBufferSoc(int input)
 {
     QString parameter = "buffersoc/" + QString::number(input);
     sendParamToEvcc(parameter);
 }
 
-// set bufferSOC -
+// set prioritySOC - Priorisiere die Hausbatterie bis x%
 void Downloader::doSetPrioritySoc(int input)
 {
     QString parameter = "prioritysoc/" + QString::number(input);
@@ -122,35 +122,8 @@ void Downloader::doSetChargeMode(void)
 {
     if(m_DataProvider.toUpper() == "EVCC")
     {
-        QUrl EvccAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/loadpoints/1/mode/" + m_setChargeModeString;  // PowerNodeModel.getChargeModeString();
-        QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-        // URL für die Anfrage festlegen
-        QUrl url(EvccAddr);
-
-        // QNetworkRequest erstellen
-        QNetworkRequest request(url);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        request.setRawHeader("Accept", "application/json");
-
-        // Leere JSON-Daten (falls nötig, ersetze dies durch tatsächliche Daten)
-        QJsonObject json;
-        QByteArray jsonData = QJsonDocument(json).toJson();
-
-        // POST-Anfrage senden
-        QNetworkReply *reply = manager->post(request, jsonData);
-
-        // Optional: Verbindung zu signalen, um auf die Antwort zu reagieren
-        QObject::connect(reply, &QNetworkReply::finished, [reply]() {
-            if (reply->error() == QNetworkReply::NoError) {
-                QByteArray response = reply->readAll();
-                // Verarbeite die Antwort hier
-            } else {
-                // Fehlerverarbeitung
-            }
-            reply->deleteLater();
-        });
-
+        QString parameter = "loadpoints/1/mode/" + m_setChargeModeString;
+        sendParamToEvcc(parameter);
     }
     else
     {
@@ -186,6 +159,7 @@ void Downloader::replyFinishedSetMode (QNetworkReply *reply)
     xmlManager->deleteLater();
     xmlManager = Q_NULLPTR ;
 }
+
 // \set charging mode of SmartCharger ----------------------------------------
 
 // set manual current of SmartCharger ----------------------------------------
@@ -202,35 +176,8 @@ void Downloader::doSetManualCurrent(void)
 
     if(m_DataProvider.toUpper() == "EVCC")
     {
-        //        QUrl EvccAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/loadpoints/1/phases/" + QString::number(evcc.getEVallowedPhases());
-        QUrl EvccAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/loadpoints/1/maxcurrent/" + QString::number(m_ManualSetCurrent / 1000);
-        QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-        // URL für die Anfrage festlegen
-        QUrl url(EvccAddr);
-
-        // QNetworkRequest erstellen
-        QNetworkRequest request(url);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        request.setRawHeader("Accept", "application/json");
-
-        // Leere JSON-Daten (falls nötig, ersetze dies durch tatsächliche Daten)
-        QJsonObject json;
-        QByteArray jsonData = QJsonDocument(json).toJson();
-
-        // POST-Anfrage senden
-        QNetworkReply *reply = manager->post(request, jsonData);
-
-        // Optional: Verbindung zu signalen, um auf die Antwort zu reagieren
-        QObject::connect(reply, &QNetworkReply::finished, [reply]() {
-            if (reply->error() == QNetworkReply::NoError) {
-                QByteArray response = reply->readAll();
-                // Verarbeite die Antwort hier
-            } else {
-                // Fehlerverarbeitung
-            }
-            reply->deleteLater();
-        });
+        QString parameter = "loadpoints/1/maxcurrent/" + QString::number(m_ManualSetCurrent / 1000);
+        sendParamToEvcc(parameter);
     }
     else
     {
@@ -266,34 +213,8 @@ void Downloader::doSetChargerPhases(void)
 {
     if(m_DataProvider.toUpper() == "EVCC")
     {
-        QUrl EvccAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/loadpoints/1/phases/" + QString::number(m_ChargerPhases);
-        QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-        // URL für die Anfrage festlegen
-        QUrl url(EvccAddr);
-
-        // QNetworkRequest erstellen
-        QNetworkRequest request(url);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        request.setRawHeader("Accept", "application/json");
-
-        // Leere JSON-Daten (falls nötig, ersetze dies durch tatsächliche Daten)
-        QJsonObject json;
-        QByteArray jsonData = QJsonDocument(json).toJson();
-
-        // POST-Anfrage senden
-        QNetworkReply *reply = manager->post(request, jsonData);
-
-        // Optional: Verbindung zu signalen, um auf die Antwort zu reagieren
-        QObject::connect(reply, &QNetworkReply::finished, [reply]() {
-            if (reply->error() == QNetworkReply::NoError) {
-                QByteArray response = reply->readAll();
-                // Verarbeite die Antwort hier
-            } else {
-                // Fehlerverarbeitung
-            }
-            reply->deleteLater();
-        });
+        QString parameter = "loadpoints/1/phases/" + QString::number(m_ChargerPhases);
+        sendParamToEvcc(parameter);
     }
     else
     {
