@@ -334,7 +334,23 @@ void PowerNodeModel::openPopUpMsg() {
     msgBox.exec();
 }
 
-void PowerNodeModel::openVersionInfoMsg() {
+
+
+QString PowerNodeModel::openVersionInfoMsg() {
+
+    m_VersionInfo = QString("<b>Version Info</b><br><br>"
+                            "Version : V" VERSIONMAJOR "." VERSIONMINOR
+                            // die nachfolgenden zwei Zeilen legen die Breite der MSG-Box fest. Versuche, das alternativ zu erreichen, gingen schief :(
+                            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            "<br>Builddate: " + QString(IsoDate) +
+                            "<br>Compiletime: " + QString(__TIME__) +
+                            "<br>Compilerversion: " + QString::number(QT_VERSION, 16) +
+                            "<br>Runtimeversion: " + qVersion() +
+                            "<br>Data Provider: " + downler.getDataProvider());
+    return m_VersionInfo;
+
+    /*
     // Messagebox mit VersionInfo aufpoppen.
     // Schließen mit OK
 
@@ -360,6 +376,7 @@ void PowerNodeModel::openVersionInfoMsg() {
     msgBox.setIcon(QMessageBox::Information);
 
     msgBox.exec();
+*/
 }
 
 // visualize interrogation of RPi for new values

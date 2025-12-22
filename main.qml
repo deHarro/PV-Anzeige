@@ -316,12 +316,34 @@ Window {
                 flat: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 activeFocusOnTab: false
-                hoverEnabled: false // Unicode Character 'CHECK MARK'
+                hoverEnabled: true
                 visible: true
-                onClicked: PowerNodeModel.openVersionInfoMsg()       // 2024-01-28
+                // onClicked: PowerNodeModel.openVersionInfoMsg()       // 2024-01-28
                 opacity: 0
+
+                MouseArea {
+                    id: mouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    // Wichtig: Klicks an den Button darunter durchreichen
+                    // propagateComposedEvents: true
+                    // onPressed: mouse.accepted = false
+                }
+
+                ToolTip{
+                    // visible: parent.hovered
+                    // ToolTip anzeigen, wenn die Maus über der MouseArea ist
+                    visible: mouseArea.containsMouse
+                    delay: 500                                // Optional: waits 0.5s before showing
+                    text: PowerNodeModel.openVersionInfoMsg()
+                    width: 200
+                    padding: 20
+                    x: mouseArea.mouseX + 15
+                    y: mouseArea.mouseY + 15
+                }
             }
         }
+
         Button {    // Button auf den WR-Momentanwerten, startet PopUp MsgBox mit den Erträgen
             x: 216
             y: 6

@@ -120,13 +120,19 @@ Version 2.01 - "Aktive Phasen" Anzeige im Wallbox-Kasten bei EVCC nach links ger
                 und Texte angepasst: siehe PowerNodeModel.activeDataProvider == "EVCC" ?
 Version 2.02 - "Aktive Phasen" Anzeige im Wallbox-Kasten korrigiert (falsche Variable verwendet)
 Version 2.03 - Hintergrund hellrot einfärben, wenn evcc keine Daten mehr liefert oder der Server nicht läuft
-Version 2.04 - evcc-Variablen im Zusammenhang mit Ladeverteilung zwischen Hausakku und EV im Code eingeführt (bufferSoc, prioritySoc, batteryDischargeControl).
+Version 2.04 - evcc-Variablen im Zusammenhang mit Ladeverteilung zwischen Hausakku und EV im Code eingeführt
+                -> bufferSoc, prioritySoc, batteryDischargeControl.
                 (Diese Vorgaben werden _in der evcc-GUI_ über Menü-Hausbatterie eingestellt).
              - INI-File Überprüfung auf MajorVersion reduziert.
 Version 2.05 - Visualisierung der drei neuen Parameter bufferSoc, prioritySoc und batteryDischargeControl in Drawer4.
              - bufferSoc, prioritySoc und batteryDischargeControl können über die GUI im Drawer4 gesetzt werden.
-                Werden die Parameter in Pv_Anzeige geändert, werden meist ncohmal kurz die vorherigen Werte angezeigt, bevor der neue Wert
-                angezeigt wird. Evcc übernimmt die neuen Einstellungen sofort (Kontrolle über die evcc GUI).
+                Werden die Parameter in Pv_Anzeige geändert, werden meist ncohmal kurz die vorherigen Werte angezeigt, bevor der
+                neue Wert angezeigt wird. Evcc übernimmt die neuen Einstellungen sofort (Kontrolle über die evcc GUI).
+             - Aufräumen: Alle evcc settings werden über eine Subroutine "sendParamToEvcc(QString param)" an evcc gesendet
+             - JSON Parser und XML Parser professionalisiert (Gemini unterstützt), Struktur wird "flach geklopft", dann kann auf die Variablen
+                wahlfrei zugegriffen werden. Übersichtlicher, einfacher zu warten (zusätzliche Variablen auslesen) und kürzere Durchlaufzeiten.
+             - keine funktionalen Änderungen, daher weiterhin V2.05.
+             - Version Info als Tooltip bei MausHover über der Sonne realisiert (vermeidet Klick auf OK zum Schließen der Box).
 
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
@@ -289,7 +295,7 @@ public slots:
 
     void setChargerPhases(int);             // set Charger Phases to 0(automatic), 1, 3
 
-    void openVersionInfoMsg();              // Anzeige der Compiler- und Runtimeversion (V1.17)
+    QString openVersionInfoMsg();              // Anzeige der Compiler- und Runtimeversion (V1.17)
     void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt (V1.17)
 
 private:
@@ -404,7 +410,12 @@ public:
     QString m_chargeModeManual;             // MANUAL oder Min+PV für den Button im Drawer, je nach DataProvider
  //   int m_EVChargerPhases;                  // Rückmeldung von Wallbox, Anzahl Phasen beim Laden: 1 oder 3
     int m_EVconfiguredPhases;               // Rückmeldung von EVCC
+
+// Data provider global
     QString m_actDataProviderStr;           // Dataprovider (EVCC oder EDLD)
+
+// Messagebox with version info
+    QString m_VersionInfo = "";
 
 // Error Messages
     QString m_MBMDProblemText = "";
