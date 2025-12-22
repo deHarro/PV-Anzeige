@@ -3,7 +3,7 @@
 */
 
 #include <QtXml/QDomElement>// Library needed for processing XML documents
-#include <iostream>
+//#include <iostream>
 
 #include "SmartChargerXML.h"
 #include "Downloader.h"
@@ -18,6 +18,89 @@ extern QByteArray m_XMLfiledata;    // globally defined in main.cpp, loaded with
 // -----------------------------------------------------------
 SmartChargerXML::SmartChargerXML() {}
 
+void flattenXml(const QDomNode &node, const QString &prefix, QMap<QString, QString> &map) {
+    QDomNode child = node.firstChild();
+    while (!child.isNull()) {
+        if (child.isElement()) {
+            QDomElement el = child.toElement();
+            QString path = prefix.isEmpty() ? el.tagName() : prefix + "." + el.tagName();
+
+            // 1. Textinhalt speichern (falls vorhanden)
+            if (!el.text().isEmpty() && el.firstChild().isText()) {
+                map.insert(path, el.text());
+            }
+
+            // 2. Attribute speichern (z.B. <State id="3"> -> State.id = 3)
+            QDomNamedNodeMap attrs = el.attributes();
+            for (int i = 0; i < attrs.length(); ++i) {
+                QDomAttr attr = attrs.item(i).toAttr();
+                map.insert(path + "." + attr.name(), attr.value());
+            }
+
+            // 3. Rekursion: Tiefer gehen
+            flattenXml(child, path, map);
+        }
+        child = child.nextSibling();
+    }
+}
+
+void SmartChargerXML::ReadSmartChargerXML() {
+    QDomDocument xmldoc;
+    if (!xmldoc.setContent(m_XMLfiledata)) return;
+
+    // 1. XML in flache Map umwandeln
+    QMap<QString, QString> data;
+    flattenXml(xmldoc.documentElement(), "", data);
+
+    // 2. Settings Version Check (Beispiel für direkten Zugriff)
+    QString version = data.value("SettingsVersion");
+    if (version != "2.6.107" && version != "1.6" && version != "1.8") {
+        m_messageFlag |= VERSIONFlag;
+    }
+
+    // 3. SmartMeter Daten
+    m_SmartMeterActualPower = data.value("SmartMeter.ActualPower").toDouble();
+    m_SmartMeterConsumption = data.value("SmartMeter.MeterReadings.Consumption").toDouble();
+    m_SmartMeterSurplus     = data.value("SmartMeter.MeterReadings.Surplus").toDouble();
+
+    // 4. EV / Wallbox Logik
+    if (data.value("EV.Using").toInt() == 0) {
+        // Wallbox deselektiert -> graue Box / Default-Werte
+        m_EVChargingMode = "OFF";
+        m_EVMaxPhases = 1;
+        m_EVEvaluationPoints = 0;
+        m_EVState = 0;
+        m_EVPlug = 0;
+        m_EVSystemEnabled = 0;
+        m_EVOutput = 0;
+        m_EVActualPower = 0;
+        m_EVSessionEnergy = 0;
+        m_EVTotalEnergy = 0;
+    } else {
+        m_EVChargingMode     = data.value("EV.Charging.ChargingMode");
+        m_EVMaxPhases        = data.value("EV.Charging.MaxPhases").toDouble();
+        m_EVEvaluationPoints = data.value("EV.Charging.EvaluationPoints").toDouble();
+
+        // Attribute auslesen (id)
+        m_EVState            = data.value("EV.Wallbox.State.id").toInt();
+        m_EVPlug             = data.value("EV.Wallbox.Plug.id").toInt();
+
+        m_EVSystemEnabled    = data.value("EV.Wallbox.SystemEnabled").toDouble();
+        m_EVOutput           = data.value("EV.Wallbox.Output").toInt();
+        m_EVActualPower      = data.value("EV.Wallbox.ActualPower").toDouble();
+        m_EVSessionEnergy    = data.value("EV.Wallbox.SessionEnergy").toDouble();
+        m_EVTotalEnergy      = data.value("EV.Wallbox.TotalEnergy").toULong();
+    }
+
+    // 5. StorageSystem
+    m_StorageSystemSOC         = data.value("StorageSystem.Battery.SOC").toInt();
+    m_StorageSystemTemperature = data.value("StorageSystem.Battery.Temperature").toDouble();
+    m_StorageSystemActualPower = data.value("StorageSystem.AC.ActualPower").toDouble();
+
+    qDebug() << "XML Parsing erfolgreich beendet.";
+}
+
+/*
 void SmartChargerXML::ReadSmartChargerXML() {
 
     QDomElement docElem;
@@ -288,15 +371,16 @@ void SmartChargerXML::ReadSmartChargerXML() {
             node = node.firstChild();
 
             // 			Search node State
-/*
-           "State" = Current state of the charging station
-            0 : starting
-            1 : not ready for charging; e.g. unplugged, X1 or "ena" not enabled, RFID not enabled, ...
-            2 : ready for charging; waiting for EV charging request (S2)
-            3 : charging
-            4 : error
-            5 : authorization rejected
-*/
+////
+////         "State" = Current state of the charging station
+////          0 : starting
+////          1 : not ready for charging; e.g. unplugged, X1 or "ena" not enabled, RFID not enabled, ...
+////          2 : ready for charging; waiting for EV charging request (S2)
+////          3 : charging
+////          4 : error
+////          5 : authorization rejected
+////
+
             // loopcount = 0;
             while ((node.nodeName().compare("State") != 0) && (!node.isNull()))
             {
@@ -316,16 +400,16 @@ void SmartChargerXML::ReadSmartChargerXML() {
             }
 
             // 			Search node Plug
-/*
-           "Plug" = Current condition of the loading connection
-            0 unplugged
-            1 plugged on charging station
-            3 plugged on charging station plug locked
-            5 plugged on charging station plugged on EV
-            7 plugged on charging station plug locked plugged on EV
-
-            "Enable sys" = Enable state for charging (contains Enable input, RFID, UDP,..)
-*/
+//
+//         "Plug" = Current condition of the loading connection
+//          0 unplugged
+//          1 plugged on charging station
+//          3 plugged on charging station plug locked
+//          5 plugged on charging station plugged on EV
+//          7 plugged on charging station plug locked plugged on EV
+//
+//          "Enable sys" = Enable state for charging (contains Enable input, RFID, UDP,..)
+//
             node=node.nextSibling();
 
 #ifdef SHOWINTERMEDIATENODES
@@ -531,6 +615,7 @@ void SmartChargerXML::ReadSmartChargerXML() {
                     std::cout << "              ActualPower = " << m_StorageSystemActualPower << std::endl;
                 }
 }
+*/
 
 // Konstruktor
 SmartChargerXML::~SmartChargerXML()

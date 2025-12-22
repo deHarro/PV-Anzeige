@@ -7,7 +7,82 @@ extern QString m_JSONevccData;    // globally defined in main.cpp, loaded with d
 
 EvccJSON::EvccJSON() {}
 
+// Hilfsfunktion: Wandelt verschachteltes JSON in eine flache Map um
+// Beispiel: "pv" -> Array -> [0] -> "power" wird zu Key: "pv[0].power"
+void flattenJson(const QJsonValue &value, const QString &prefix, QMap<QString, QJsonValue> &map) {
+    if (value.isObject()) {
+        QJsonObject obj = value.toObject();
+        for (auto it = obj.begin(); it != obj.end(); ++it) {
+            flattenJson(it.value(), prefix.isEmpty() ? it.key() : prefix + "." + it.key(), map);
+        }
+    } else if (value.isArray()) {
+        QJsonArray arr = value.toArray();
+        for (int i = 0; i < arr.size(); ++i) {
+            flattenJson(arr[i], prefix + "[" + QString::number(i) + "]", map);
+        }
+    } else {
+        map.insert(prefix, value);
+    }
+}
+
 void EvccJSON::ReadEvccJSON() {
+    if (m_JSONevccData.isEmpty()) return;
+
+    QJsonDocument doc = QJsonDocument::fromJson(m_JSONevccData.toUtf8());
+    if (doc.isNull() || !doc.isObject()) return;
+
+    // 1. Alles flachklopfen
+    QMap<QString, QJsonValue> data;
+    flattenJson(doc.object(), "", data);
+
+    // 2. Werte einfach "picken" (Wahlfreier Zugriff)
+
+    // Einfache Werte (Wurzel)
+    m_totalPowerConsumption   = data.value("homePower").toInt();
+    m_generatorPowerTotal     = data.value("pvPower").toDouble();
+    m_PVGesamtErtrag          = data.value("pvEnergy").toDouble();
+    m_prioritySOC             = data.value("prioritySoc").toInt();
+    m_bufferSOC               = data.value("bufferSoc").toInt();
+    m_batteryDisChargeControl = data.value("batteryDischargeControl").toBool();
+
+    // Grid (Objekt-Pfad)
+    m_SmartMeterActualPower   = data.value("grid.power").toDouble();
+    m_SmartMeterConsumption   = data.value("grid.energy").toDouble();
+
+    // Akku (Array-Pfad)
+    m_StorageSystemSOC         = data.value("battery[0].soc").toDouble();
+    m_StorageSystemActualPower = data.value("battery[0].power").toDouble();
+
+    // Loadpoints (Wallbox)
+    QString lp = "loadpoints[0].";
+    m_EVActualPower      = data.value(lp + "chargePower").toDouble();
+    m_EVSessionEnergy    = data.value(lp + "sessionEnergy").toDouble();
+    m_EVTotalEnergy      = data.value(lp + "chargeTotalImport").toDouble();
+    m_EVChargerPhases    = data.value(lp + "phasesActive").toInt();
+    m_EVconfiguredPhases = data.value(lp + "phasesConfigured").toInt();
+
+    QString mode         = data.value(lp + "mode").toString();
+    m_EVChargingMode     = (mode == "off" ? "OFF" : mode == "pv" ? "SURPLUS" : mode == "now" ? "QUICK" : "Min+PV");
+
+    // Dynamische Suche für PV-Wechselrichter (nach Titel)
+    // Da wir nicht wissen, an welchem Index "Garage" steht, loopen wir kurz durch die Map
+    for (int i = 0; i < 10; ++i) { // Annahme: Max 10 PV-Einträge
+        QString base = QString("pv[%1].").arg(i);
+        if (!data.contains(base + "title")) break;
+
+        QString title = data.value(base + "title").toString();
+        double power = data.value(base + "power").toDouble();
+        double energy = data.value(base + "energy").toDouble();
+
+        if (title == "Garage") { m_PVGarageActualPower = power; m_PVGarageErtrag = energy; }
+        if (title == "Dach")   { m_PVDachSActualPower  = power; m_PVDachSErtrag  = energy; }
+        if (title == "Gaube")  { m_PVGaubeActualPower  = power; m_PVGaubeErtrag  = energy; }
+        if (title == "DachN")  { m_PVDachNActualPower  = power; m_PVDachNErtrag  = energy; }
+    }
+
+    qDebug() << "Parsing erfolgreich abgeschlossen.";
+}
+/*void EvccJSON::ReadEvccJSON() {
     QJsonDocument evccJSONdocument;
     QJsonArray jsonArray;
     QJsonValue value;
@@ -215,7 +290,7 @@ void EvccJSON::ReadEvccJSON() {
         }
     }
 }
-
+*/
 EvccJSON::~EvccJSON() {}
 
 // getter Funktionen
