@@ -61,6 +61,20 @@ void EvccJSON::ReadEvccJSON() {
     m_EVChargerPhases    = data.value(lp + "phasesActive").toInt();
     m_EVconfiguredPhases = data.value(lp + "phasesConfigured").toInt();
 
+    // EVCC hat 3 Booleans die den Zustand der Kombination EV-Wallbox beschreiben:
+    // connected, enabled, charging
+    bool connected      = data.value(lp + "connected").toBool();        //
+    bool charging       = data.value("charging").toBool();              //
+
+    // Daraus muss ein Schema abgeleitet werden, das die Abfragen zum Wallbox-Coloring ergibt
+    m_EVPlug = connected == true ? 5 : 0;           // Kabel ist verbunden (an Wallbox und EV)
+    if(charging == true)
+        if(m_EVActualPower > 0) m_EVState = 3;
+        else m_EVState = 2;
+    else m_EVState = 0;
+
+    // Lademodus: OFF, PV, MINPV, NOW (EDLD: Surplus, Quick, Manual, Off)
+    // Hier den Text für die GUI zusammenstellen
     QString mode         = data.value(lp + "mode").toString();
     m_EVChargingMode     = (mode == "off" ? "OFF" : mode == "pv" ? "SURPLUS" : mode == "now" ? "QUICK" : "Min+PV");
 
@@ -313,9 +327,9 @@ double  EvccJSON::getStorageSystemTemperature(void)  {return m_StorageSystemTemp
 double  EvccJSON::getStorageSystemActualPower(void)  {return m_StorageSystemActualPower; }
 
 double  EvccJSON::getEVEvaluationPoints(void)       {return m_EVEvaluationPoints;}
-double  EvccJSON::getEVState(void)                  {return m_EVState;}
+int     EvccJSON::getEVState(void)                  {return m_EVState;}
 double  EvccJSON::getEVMaxPhases(void)              {return m_EVMaxPhases;}
-double  EvccJSON::getEVPlug(void)                   {return m_EVPlug;}
+int     EvccJSON::getEVPlug(void)                   {return m_EVPlug;}
 double  EvccJSON::getEVSystemEnabled(void)          {return m_EVSystemEnabled;}
 int     EvccJSON::getEVOutput(void)                 {return m_EVOutput;}
 double  EvccJSON::getEVActualPower(void)            {return m_EVActualPower;}

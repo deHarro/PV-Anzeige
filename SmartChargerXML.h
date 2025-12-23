@@ -17,9 +17,9 @@ public:
     double  getSmartMeterSurplus(void);
 
     double  getEVEvaluationPoints(void);
-    double  getEVState(void);
+    int     getEVState(void);
     double  getEVMaxPhases(void);
-    double  getEVPlug(void);
+    int     getEVPlug(void);
     double  getEVSystemEnabled(void);
     int     getEVOutput(void);
     double  getEVActualPower(void);

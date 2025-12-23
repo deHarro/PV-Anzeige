@@ -133,14 +133,14 @@ Version 2.05 - Visualisierung der drei neuen Parameter bufferSoc, prioritySoc un
                 wahlfrei zugegriffen werden. Übersichtlicher, einfacher zu warten (zusätzliche Variablen auslesen) und kürzere Durchlaufzeiten.
              - keine funktionalen Änderungen, daher weiterhin V2.05.
              - Version Info als Tooltip bei MausHover über der Sonne realisiert (vermeidet Klick auf OK zum Schließen der Box).
-
+Version 2.06 - Herleitung der Wallbox-Farbe aus den Stati von evcc ging bei der Umsetzung der Parser-Optimierung verloren - fixed.
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */
 
 // program version for window title
 #define VERSIONMAJOR    "2"
-#define VERSIONMINOR    "05"
+#define VERSIONMINOR    "06"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 

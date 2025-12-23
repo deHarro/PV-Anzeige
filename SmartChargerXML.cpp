@@ -643,11 +643,11 @@ double SmartChargerXML::getEVEvaluationPoints(void)
 {
     return m_EVEvaluationPoints;
 }
-double SmartChargerXML::getEVState(void)
+int SmartChargerXML::getEVState(void)
 {
     return m_EVState;
 }
-double SmartChargerXML::getEVPlug(void)
+int SmartChargerXML::getEVPlug(void)
 {
     return m_EVPlug;
 }
