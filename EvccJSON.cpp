@@ -64,14 +64,14 @@ void EvccJSON::ReadEvccJSON() {
     // EVCC hat 3 Booleans die den Zustand der Kombination EV-Wallbox beschreiben:
     // connected, enabled, charging
     bool connected      = data.value(lp + "connected").toBool();        //
-    bool charging       = data.value(lp + "charging").toBool();         //
+    bool charging       = data.value("charging").toBool();              //
 
     // Daraus muss ein Schema abgeleitet werden, das die Abfragen zum Wallbox-Coloring ergibt
     m_EVPlug = connected == true ? 5 : 0;           // Kabel ist verbunden (an Wallbox und EV)
     if(charging == true)
-        if(m_EVActualPower > 0) m_EVState = 3;      // lädt
-        else m_EVState = 2;                         // lädt nicht (mehr)
-    else m_EVState = 0;                             // lädt nicht
+        if(m_EVActualPower > 0) m_EVState = 3;
+        else m_EVState = 2;
+    else m_EVState = 0;
 
     // Lademodus: OFF, PV, MINPV, NOW (EDLD: Surplus, Quick, Manual, Off)
     // Hier den Text für die GUI zusammenstellen
