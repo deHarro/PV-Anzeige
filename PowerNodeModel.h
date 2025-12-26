@@ -134,6 +134,7 @@ Version 2.05 - Visualisierung der drei neuen Parameter bufferSoc, prioritySoc un
              - keine funktionalen Änderungen, daher weiterhin V2.05.
              - Version Info als Tooltip bei MausHover über der Sonne realisiert (vermeidet Klick auf OK zum Schließen der Box).
 Version 2.06 - Herleitung der Wallbox-Farbe aus den Stati von evcc ging bei der Umsetzung der Parser-Optimierung verloren - fixed.
+             - Tooltip-Versioninfo korrigiert ("Version:" und V2.06 in einer Zeile)
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */

@@ -336,8 +336,9 @@ Window {
                     visible: mouseArea.containsMouse
                     delay: 500                                // Optional: waits 0.5s before showing
                     text: PowerNodeModel.openVersionInfoMsg()
-                    width: 200
+                    width: 160
                     padding: 20
+                    // topPadding: 0
                     x: mouseArea.mouseX + 15
                     y: mouseArea.mouseY + 15
                 }

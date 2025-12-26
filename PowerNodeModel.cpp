@@ -338,11 +338,9 @@ void PowerNodeModel::openPopUpMsg() {
 
 QString PowerNodeModel::openVersionInfoMsg() {
 
+    // die zwei Zeilen mit "&nbsp;" legen die Breite der MSG-Box fest. Versuche, das alternativ zu erreichen, gingen schief :(
     m_VersionInfo = QString("<b>Version Info</b><br><br>"
-                            "Version : V" VERSIONMAJOR "." VERSIONMINOR
-                            // die nachfolgenden zwei Zeilen legen die Breite der MSG-Box fest. Versuche, das alternativ zu erreichen, gingen schief :(
-                            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            "Version: V" VERSIONMAJOR"." VERSIONMINOR
                             "<br>Builddate: " + QString(IsoDate) +
                             "<br>Compiletime: " + QString(__TIME__) +
                             "<br>Compilerversion: " + QString::number(QT_VERSION, 16) +
@@ -965,7 +963,7 @@ void PowerNodeModel::shadeHandling(void)
         m_homeBotRedH = 0;
     }
 
-    // Anteil Akkubezug in GRÜN von unten kommend einblenden
+    // Anteil Akkubezug in GRÜN von oben kommend einblenden
     if(m_batteryPower < 0){                            // Batteriebezug
         m_homeTopGreenH = std::min((double)(abs(m_batteryPower) / (double)m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
