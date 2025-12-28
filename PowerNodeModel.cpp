@@ -447,11 +447,11 @@ void PowerNodeModel::generatorHandling(void)
                             +   m_generatorPowerGarage;
 
     // Werte für Anzeige berechnen und als QString ausgeben
-    m_genPowerTotal = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerTotal)/(double)1000))); // get rid of math in QML
-    m_genPowerDachS = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerDachS)/(double)1000))); // get rid of math in QML
-    m_genPowerDachN = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerDachN)/(double)1000))); // get rid of math in QML
-    m_genPowerGaube = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerGaube)/(double)1000))); // get rid of math in QML
-    m_genPowerGarage = QString().asprintf("%0.2f", (double)((double)(abs(m_generatorPowerGarage)/(double)1000))); // get rid of math in QML
+    m_genPowerTotal = QString().asprintf("%0.2f", (double)((double)(qAbs(m_generatorPowerTotal)/(double)1000))); // get rid of math in QML
+    m_genPowerDachS = QString().asprintf("%0.2f", (double)((double)(qAbs(m_generatorPowerDachS)/(double)1000))); // get rid of math in QML
+    m_genPowerDachN = QString().asprintf("%0.2f", (double)((double)(qAbs(m_generatorPowerDachN)/(double)1000))); // get rid of math in QML
+    m_genPowerGaube = QString().asprintf("%0.2f", (double)((double)(qAbs(m_generatorPowerGaube)/(double)1000))); // get rid of math in QML
+    m_genPowerGarage = QString().asprintf("%0.2f", (double)((double)(qAbs(m_generatorPowerGarage)/(double)1000))); // get rid of math in QML
 
     if(m_generatorPowerTotal <= 5) setSunColor(0);          // Grauer SonnenHintergrund
     else setSunColor(1);                                    // Grüner SonnenHintergrund
@@ -480,14 +480,14 @@ void PowerNodeModel::generatorHandling(void)
 
     // Ertragswerte der einzelnen Wechselrichter in Membervariablen speichern
     m_generatorDachSEnergy  = (wrJSON.getPVDachSErtrag());                          // [W] integer, no fraction
-    m_genEnergyDachS = QString().asprintf("%6.0f", abs(m_generatorDachSEnergy));    // get rid of math in QML
+    m_genEnergyDachS = QString().asprintf("%6.0f", qAbs(m_generatorDachSEnergy));    // get rid of math in QML
     m_generatorDachNEnergy  = (wrJSON.getPVDachNErtrag());                          // [W] integer, no fraction
-    m_genEnergyDachN = QString().asprintf("%6.0f", abs(m_generatorDachNEnergy));    // get rid of math in QML
+    m_genEnergyDachN = QString().asprintf("%6.0f", qAbs(m_generatorDachNEnergy));    // get rid of math in QML
     m_generatorGaubeEnergy  = (wrJSON.getPVGaubeErtrag());                          // [W] integer, no fraction
-    m_genEnergyGaube = QString().asprintf("%6.0f", abs(m_generatorGaubeEnergy));    // get rid of math in QML
+    m_genEnergyGaube = QString().asprintf("%6.0f", qAbs(m_generatorGaubeEnergy));    // get rid of math in QML
     m_generatorGarageEnergy = (wrJSON.getPVGarageErtrag());                         // [W] integer, no fraction
-    m_genEnergyGarage = QString().asprintf("%6.0f", abs(m_generatorGarageEnergy));  // get rid of math in QML
-    m_genEnergyTotal = QString().asprintf("%3.2f", abs(m_generatorTotalEnergy));    // get rid of math in QML
+    m_genEnergyGarage = QString().asprintf("%6.0f", qAbs(m_generatorGarageEnergy));  // get rid of math in QML
+    m_genEnergyTotal = QString().asprintf("%3.2f", qAbs(m_generatorTotalEnergy));    // get rid of math in QML
 }
 
 // battery handling ----------------------------------------------------------
@@ -507,7 +507,7 @@ void PowerNodeModel::batteryHandling(void)
     m_battPowerAnzeige = QString().asprintf("%0d", m_batteryPower);
 
     // Werte für Anzeige berechnen und als QString ausgeben
-    m_battPowerAnzeige = QString().asprintf("%0.2f", (double)((double)(abs(m_batteryPower)/(double)1000))); // get rid of math in QML
+    m_battPowerAnzeige = QString().asprintf("%0.2f", (double)((double)(qAbs(m_batteryPower)/(double)1000))); // get rid of math in QML
 
     // change text and color depending on power value
     if(m_batteryPower == 0) {
@@ -519,7 +519,7 @@ void PowerNodeModel::batteryHandling(void)
         m_batteryColor = LIMEGREEN;                     // Hellgrün
     }
     else {                                              // Batterie wird entladen
-//        m_batteryPower = abs(m_batteryPower);           // auch negative Werte (bei Entladung) werden positiv dargestellt...
+//        m_batteryPower = qAbs(m_batteryPower);           // auch negative Werte (bei Entladung) werden positiv dargestellt...
         m_batteryText = "Batterie-entladung";           // ... nur der Text ändert sich
         m_batteryColor = FORESTGREEN;                   // Dunkelgrün
     }
@@ -544,7 +544,7 @@ void PowerNodeModel::gridHandling(void)
 #endif
 
     // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
-    m_gridPowerAnzeige = QString().asprintf("%0.2f", (double)((double)(abs(m_gridPower)/(double)1000))); // get rid of math in QML
+    m_gridPowerAnzeige = QString().asprintf("%0.2f", (double)((double)(qAbs(m_gridPower)/(double)1000))); // get rid of math in QML
 
 //    qDebug() << "m_gridPower: " << m_gridPower;
 
@@ -745,9 +745,9 @@ void PowerNodeModel::wallboxHandling()
 
 
     // Werte für Anzeige berechnen und als QString ausgeben
-    m_charPower = QString().asprintf("%0.3f", (double)((double)(abs(m_chargingPower)/(double)1000))); // get rid of math in QML
-    m_charEnergy = QString().asprintf("%0.2f", (double)((double)(abs(m_chargedEnergy)/(double)1000))); // get rid of math in QML
-    m_sessEnergy = QString().asprintf("%0.3f", (double)((double)(abs(m_sessionEnergy)/(double)1000))); // get rid of math in QML
+    m_charPower = QString().asprintf("%0.3f", (double)((double)(qAbs(m_chargingPower)/(double)1000))); // get rid of math in QML
+    m_charEnergy = QString().asprintf("%0.2f", (double)((double)(qAbs(m_chargedEnergy)/(double)1000))); // get rid of math in QML
+    m_sessEnergy = QString().asprintf("%0.3f", (double)((double)(qAbs(m_sessionEnergy)/(double)1000))); // get rid of math in QML
 
     // derive attach state and charging state from wallbox states
     /*    // color selection
@@ -848,10 +848,10 @@ void PowerNodeModel::consumptionHandling(void)
                                                         + (m_chargingPower)
                                                         + (m_batteryPower) );
 
-    m_totalPowerConsumption = abs(m_totalPowerConsumption);  // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
+    m_totalPowerConsumption = qAbs(m_totalPowerConsumption);  // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
 
     // Werte für Anzeige berechnen und als QString ausgeben
-    m_totPowerConsumption = QString().asprintf("%0.2f", (double)((double)(abs(m_totalPowerConsumption)/(double)1000))); // get rid of math in QML
+    m_totPowerConsumption = QString().asprintf("%0.2f", (double)((double)(qAbs(m_totalPowerConsumption)/(double)1000))); // get rid of math in QML
 
 #endif
 
@@ -956,7 +956,7 @@ void PowerNodeModel::shadeHandling(void)
 {
     // Anteil Netzbezug in ROT von unten kommend einblenden
     if(m_gridPower <= -5){                                // Netzbezug   (-5 weil gerundet wird)
-        m_homeBotRedH = std::min((double)(abs(m_gridPower) / (double)m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
+        m_homeBotRedH = std::min((double)(qAbs(m_gridPower) / (double)m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
     {
@@ -965,7 +965,7 @@ void PowerNodeModel::shadeHandling(void)
 
     // Anteil Akkubezug in GRÜN von oben kommend einblenden
     if(m_batteryPower < 0){                            // Batteriebezug
-        m_homeTopGreenH = std::min((double)(abs(m_batteryPower) / (double)m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
+        m_homeTopGreenH = std::min((double)(qAbs(m_batteryPower) / (double)m_totalPowerConsumption), (double)1) * 270;    // Höhe Home rectangle = 270 (war (double).5)
     }
     else
     {
