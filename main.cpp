@@ -3,6 +3,10 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
+#ifdef Q_OS_WASM                                // wird für WebAssembly (WASM) übersetzt oder für Windows?
+    #include <emscripten/html5.h>
+#endif
+
 #include "PowerNodeModel.h"
 
 // globals ----------------------------------------
@@ -30,11 +34,20 @@ int m_ChargerPhases;                                // Befehl für remote contro
 
 int main(int argc, char *argv[])
 {
+// to make the App adapt to various screen sizes
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
-    // to make the App adapt to various screen sizes
+#ifdef Q_OS_WASM                                // wird für WebAssembly (WASM) übersetzt oder für Windows?
+    // ... in main() ...
+    // Ersetzt das alte Flag-Verhalten:
+    // 1. Argument: Die ID des Canvas im HTML (Standard ist "canvas")
+    // 2. Argument: Breite
+    // 3. Argument: Höhe
+    // 4. Argument: Soll die CSS-Größe ebenfalls angepasst werden? (1 = Ja)
+    emscripten_set_canvas_element_size("#canvas", 800, 600);    // to make the App adapt to various screen sizes
+#endif
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Ceil);
 
     //QGuiApplication app(argc, argv); // Für Messagebox muss QApplication verwendet werden

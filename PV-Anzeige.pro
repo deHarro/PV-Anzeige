@@ -48,3 +48,19 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 FORMS +=
 
+# Wir nutzen für WebAssembly die QMAKE_LFLAGS direkt
+wasm {
+# Wichtig: Der Wert muss ein Vielfaches von 64 KB (65536) sein.
+    QMAKE_LFLAGS += -s TOTAL_MEMORY=268435456
+    # Erlaube dem Speicher zu wachsen, falls 256 MB nicht reichen
+    QMAKE_LFLAGS += -s ALLOW_MEMORY_GROWTH=1
+
+# Wir nutzen nur, was deine Version sicher versteht:
+    # -g3: Erzeugt Debug-Infos
+    # --profiling-funcs: Erhält die Funktionsnamen (die du im Notepad gesehen hast)
+    # --no-optimize: Verhindert, dass Symbole beim Linken gelöscht werden
+    QMAKE_LFLAGS += -g3 -O0 --no-optimize --profiling-funcs -s DEMANGLE_SUPPORT=1
+    QMAKE_LFLAGS += -s TOTAL_MEMORY=268435456 -s ALLOW_MEMORY_GROWTH=1
+
+    QMAKE_CXXFLAGS += -g3 -O0
+}

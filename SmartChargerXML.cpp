@@ -2,6 +2,8 @@
  * Liest die XML-Ausgabe des SmartCharger von dessen REST Interface und füllt die Werte in Variablen
 */
 
+#include <QDebug>
+
 #include <QtXml/QDomElement>// Library needed for processing XML documents
 //#include <iostream>
 

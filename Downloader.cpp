@@ -7,6 +7,9 @@
 #include "qjsonobject.h"
 #include "EvccJSON.h"
 
+#include <QSettings>
+#include <QFile>
+#include <QDebug>
 
 // globally defined in main.cpp
 extern QString m_setChargeModeString;
@@ -365,12 +368,28 @@ void Downloader::replyFinishedEVCCJSON(QNetworkReply *reply)
 // get access parameter to reach the Raspberry Pi
 void Downloader::getRPiParameter()
 {
+
+QFile file;
+
+#ifdef Q_OS_WASM                                // wird für WebAssembly (WASM) übersetzt oder für Windows?
+    // Prüfen, ob die Datei im virtuellen Filesystem existiert
+    if (QFile::exists("/config.ini")) {
+        QSettings settings("/config.ini", QSettings::IniFormat);
+        QString ip = settings.value("InverterIP", "127.0.0.1").toString();
+        qDebug() << "Konfiguration geladen. IP:" << ip;
+    } else {
+        qWarning() << "KRITISCH: /config.ini wurde im WASM-Paket nicht gefunden!";
+    }
+
+    // Im Browser liegt die Datei im virtuellen Root,
+    // weil wir sie oben als @/config.ini eingebettet haben
+    file.setFileName("/config.ini");
+#else
     // open PVconfig.ini
     QDir dir("./");
     //QDir dir = QCoreApplication::applicationDirPath();
     // to use/start from the current directory, we have to apply "./" as absoluteFilePath...
     QString filepath = dir.absoluteFilePath("./");              // path of PV-Anzeige.exe _at runtime_ (_not_ in Qt Creator!!)
-    QFile file;
 
     // ... but to remove the dot in the middle of the resulting path, this "./" has to be removed again, before adding "debug/release" below
     // this is not absolutely neccessary but it's cleaner ;)
@@ -378,12 +397,14 @@ void Downloader::getRPiParameter()
 
     // catch running in QT Creator
     if (filepath.contains("-Debug"))
-        file.setFileName(filepath + "PVconfig.ini");      // add filename to path
+        file.setFileName(filepath + "PVconfig.ini");            // add filename to path
     else if (filepath.contains("-Release"))
-        file.setFileName(filepath + "PVconfig.ini");    // add filename to path
+        file.setFileName(filepath + "PVconfig.ini");            // add filename to path
     else
+        // Unter Windows liegt sie einfach im gleichen Ordner wie die .exe
         file.setFileName(filepath + "PVconfig.ini");            // add filename to path
 
+#endif
     if(file.exists())                                           // check file access
     {
         if (!file.open(QIODevice::ReadOnly))
