@@ -14,3 +14,6 @@ Icons/electric-scooter_real_steckt_gruen_transparent.png
 Generated/*
 .qtc_clangd/compile_commands.json
 /.qtc_clangd
+build_wasm.bat
+wasm_build_wasm.bat
+wasm_run_webserver.bat
