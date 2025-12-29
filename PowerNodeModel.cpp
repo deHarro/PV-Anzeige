@@ -338,7 +338,6 @@ void PowerNodeModel::openPopUpMsg() {
 
 QString PowerNodeModel::openVersionInfoMsg() {
 
-    // die zwei Zeilen mit "&nbsp;" legen die Breite der MSG-Box fest. Versuche, das alternativ zu erreichen, gingen schief :(
     m_VersionInfo = QString("<b>Version Info</b><br><br>"
                             "Version: V" VERSIONMAJOR"." VERSIONMINOR
                             "<br>Builddate: " + QString(IsoDate) +
