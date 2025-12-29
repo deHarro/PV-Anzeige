@@ -38,6 +38,7 @@ void EvccJSON::ReadEvccJSON() {
     // 2. Werte einfach "picken" (Wahlfreier Zugriff)
 
     // Einfache Werte (Wurzel)
+    m_SmartMeterSurplus       = data.value("aux[0].energy").toDouble();
     m_totalPowerConsumption   = data.value("homePower").toInt();
     m_generatorPowerTotal     = data.value("pvPower").toDouble();
     m_PVGesamtErtrag          = data.value("pvEnergy").toDouble();
@@ -54,17 +55,17 @@ void EvccJSON::ReadEvccJSON() {
     m_StorageSystemActualPower = data.value("battery[0].power").toDouble();
 
     // Loadpoints (Wallbox)
-    QString lp = "loadpoints[0].";
-    m_EVActualPower      = data.value(lp + "chargePower").toDouble();
-    m_EVSessionEnergy    = data.value(lp + "sessionEnergy").toDouble();
-    m_EVTotalEnergy      = data.value(lp + "chargeTotalImport").toDouble();
-    m_EVChargerPhases    = data.value(lp + "phasesActive").toInt();
-    m_EVconfiguredPhases = data.value(lp + "phasesConfigured").toInt();
+    QString loadpoints = "loadpoints[0].";
+    m_EVActualPower      = data.value(loadpoints + "chargePower").toDouble();
+    m_EVSessionEnergy    = data.value(loadpoints + "sessionEnergy").toDouble();
+    m_EVTotalEnergy      = data.value(loadpoints + "chargeTotalImport").toDouble();
+    m_EVChargerPhases    = data.value(loadpoints + "phasesActive").toInt();
+    m_EVconfiguredPhases = data.value(loadpoints + "phasesConfigured").toInt();
 
     // EVCC hat 3 Booleans die den Zustand der Kombination EV-Wallbox beschreiben:
     // connected, enabled, charging
-    bool connected      = data.value(lp + "connected").toBool();        //
-    bool charging       = data.value(lp + "charging").toBool();              //
+    bool connected      = data.value(loadpoints + "connected").toBool();        //
+    bool charging       = data.value(loadpoints + "charging").toBool();              //
 
     // Daraus muss ein Schema abgeleitet werden, das die Abfragen zum Wallbox-Coloring ergibt
     m_EVPlug = connected == true ? 5 : 0;           // Kabel ist verbunden (an Wallbox und EV)
@@ -75,7 +76,7 @@ void EvccJSON::ReadEvccJSON() {
 
     // Lademodus: OFF, PV, MINPV, NOW (EDLD: Surplus, Quick, Manual, Off)
     // Hier den Text für die GUI zusammenstellen
-    QString mode         = data.value(lp + "mode").toString();
+    QString mode         = data.value(loadpoints + "mode").toString();
     m_EVChargingMode     = (mode == "off" ? "OFF" : mode == "pv" ? "SURPLUS" : mode == "now" ? "QUICK" : "Min+PV");
 
     // Dynamische Suche für PV-Wechselrichter (nach Titel)
