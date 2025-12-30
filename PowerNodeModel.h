@@ -138,6 +138,7 @@ Version 2.06 - Herleitung der Wallbox-Farbe aus den Stati von evcc ging bei der 
 Version 2.07 - Die Nachkommastellen der gesamten jemals in EVs geladenen Energie gingen irgendwie verloren -> fixed.
              - Erster Versuch, die App auch als WebAssembly im Browser darstellbar zu machen. Nicht abgeschlossen...
              - Grüne Stecker an den EV wenn Ladung abgeschlossen ist. Wird jetzt auch erkannt, wenn PV-Anzeige neu gestartet wurde.
+             - EVCC oder EDLD zur Laufzeit (beim Start der App) dynamisch setzen (in der Caption, in der Versioninfo und im Code).
 
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
@@ -335,8 +336,9 @@ public:
     QString getChargeModeString(void);
 
 // window title with version & build date
-#define WINDOWTITLE "PV-Anzeige - V" VERSIONMAJOR "." VERSIONMINOR " - EVCC"
-    QString m_windowTitle = WINDOWTITLE;
+#define WINDOWTITLE "PV-Anzeige - V" VERSIONMAJOR "." VERSIONMINOR
+    QString m_windowTitleBase = WINDOWTITLE;
+    QString m_windowTitle = "";
 
 // generators, PV-Paneele
     QString m_genPowerTotal = 0;            // Momentanleistung String gesamt [kW]

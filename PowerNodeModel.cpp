@@ -66,8 +66,8 @@ PowerNodeModel::PowerNodeModel() {
 
     getIconType();              // get type of EV icons
 
-    setWindowTitle();           // set window title with name and build date
-    emit displayWindowTitle();
+    // setWindowTitle();           // set window title with name and build date
+    // emit displayWindowTitle();
 }
 
 PowerNodeModel::~PowerNodeModel() {
@@ -124,6 +124,7 @@ void PowerNodeModel::onDataTimer() {
         emit setMBMDWarning();
         emit setWRWarning();
         emit setBackgroundColor();
+        emit displayWindowTitle();
     }
     else    // zyklisch die Sonne etwas drehen (wird jede 500 ms aufgerufen)
     {
@@ -137,6 +138,7 @@ void PowerNodeModel::onDataTimer() {
     {
         countDown();
         emit showComm();
+        setWindowTitle();
     }
 
 }
@@ -389,7 +391,8 @@ void PowerNodeModel::resetComm(void)
 // set window title
 void PowerNodeModel::setWindowTitle(void)
 {
-    //m_windowTitle =  m_windowTitle;
+    m_windowTitle =  m_windowTitleBase + " - " + m_actDataProviderStr;
+    emit displayWindowTitle();
 }
 
 // countDown handling

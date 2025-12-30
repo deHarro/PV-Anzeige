@@ -446,6 +446,8 @@ QFile file;
                     m_EvccPort = QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n'));
                 if (line.contains("[DATAPROVIDER]"))
                     m_DataProvider = QString(QString(file.readLine()).remove(QChar('\r'))).remove(QChar('\n'));
+                // qDebug() << "line" << line;
+                // qDebug() << "DataProvider" << m_DataProvider;
             }
         }
         file.close();
