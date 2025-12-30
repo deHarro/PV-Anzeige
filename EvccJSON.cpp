@@ -336,7 +336,7 @@ int     EvccJSON::getEVOutput(void)                 {return m_EVOutput;}
 double  EvccJSON::getEVActualPower(void)            {return m_EVActualPower;}
 double  EvccJSON::getEVSessionEnergy(void)          {return m_EVSessionEnergy;}
 QString EvccJSON::getEVChargeMode(void)             {return m_EVChargingMode;}
-ulong   EvccJSON::getEVTotalEnergy(void)            {return m_EVTotalEnergy*1000;}
+double   EvccJSON::getEVTotalEnergy(void)            {return m_EVTotalEnergy * 1000.0;}
 int     EvccJSON::getEVconfiguredPhases(void)       {return m_EVconfiguredPhases;}
 // int     EvccJSON::getEVallowedPhases(void)          {return m_EVallowedPhases;}
 int     EvccJSON::getEVactivePhases(void)           {return m_EVChargerPhases;}

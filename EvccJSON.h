@@ -58,7 +58,7 @@ public:
     double  getEVActualPower(void);
     double  getEVSessionEnergy(void);
     QString getEVChargeMode(void);
-    ulong   getEVTotalEnergy(void);
+    double   getEVTotalEnergy(void);
     int     getEVconfiguredPhases();
     // int     getEVallowedPhases();
     int     getEVactivePhases();
@@ -90,7 +90,7 @@ private:
     int     m_EVOutput                  = 0;        // Ausgang für Phasenumschaltrelais (0 -> 1 Phase, 1 -> 1 -> 3 Phasen)
     double  m_EVActualPower             = 0.0;      // aktuell ans EV abgegebene Leistung
     double  m_EVSessionEnergy           = 0.0;      // zuletzt ins EV geladene Energie
-    ulong   m_EVTotalEnergy             = 0;        // gesamte jemals in ein EV eingeladene Energie
+    double   m_EVTotalEnergy             = 0;        // gesamte jemals in ein EV eingeladene Energie
     int     m_EVChargerPhases;                      // Rückmeldung der aktiven Anzahl Phasen beim Laden: 1 oder 3
     double  m_EVEvaluationPoints = 0.0;
     int     m_EVState = 0;
