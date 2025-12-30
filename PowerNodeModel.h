@@ -135,13 +135,17 @@ Version 2.05 - Visualisierung der drei neuen Parameter bufferSoc, prioritySoc un
              - Version Info als Tooltip bei MausHover über der Sonne realisiert (vermeidet Klick auf OK zum Schließen der Box).
 Version 2.06 - Herleitung der Wallbox-Farbe aus den Stati von evcc ging bei der Umsetzung der Parser-Optimierung verloren - fixed.
              - Tooltip-Versioninfo korrigiert ("Version:" und V2.06 in einer Zeile)
+Version 2.07 - Die Nachkommastellen der gesamten jemals in EVs geladenen Energie gingen irgendwie verloren -> fixed.
+             - Erster Versuch, die App auch als WebAssembly im Browser darstellbar zu machen. Nicht abgeschlossen...
+             - Grüne Stecker an den EV wenn Ladung abgeschlossen ist. Wird jetzt auch erkannt, wenn PV-Anzeige neu gestartet wurde.
+
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
 */
 
 // program version for window title
 #define VERSIONMAJOR    "2"
-#define VERSIONMINOR    "06"
+#define VERSIONMINOR    "07"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 

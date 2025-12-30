@@ -66,13 +66,16 @@ void EvccJSON::ReadEvccJSON() {
     // connected, enabled, charging
     bool connected      = data.value(loadpoints + "connected").toBool();        //
     bool charging       = data.value(loadpoints + "charging").toBool();              //
+    bool enabled       = data.value(loadpoints + "enabled").toBool();              //
 
     // Daraus muss ein Schema abgeleitet werden, das die Abfragen zum Wallbox-Coloring ergibt
     m_EVPlug = connected == true ? 5 : 0;           // Kabel ist verbunden (an Wallbox und EV)
     if(charging == true)
         if(m_EVActualPower > 0) m_EVState = 3;      // lädt
         else m_EVState = 2;                         // lädt nicht (mehr)
-    else m_EVState = 0;                             // lädt nicht
+    else if(enabled == true)
+        m_EVState = 2;                              // könnte laden, lädt aber nicht mehr -> Akku ist voll oder Ladestand ereicht -> Stecker GRÜN
+        else m_EVState = 0;                         // lädt nicht
 
     // Lademodus: OFF, PV, MINPV, NOW (EDLD: Surplus, Quick, Manual, Off)
     // Hier den Text für die GUI zusammenstellen
