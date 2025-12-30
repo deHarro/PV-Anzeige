@@ -318,25 +318,20 @@ Window {
                 activeFocusOnTab: false
                 hoverEnabled: true
                 visible: true
-                // onClicked: PowerNodeModel.openVersionInfoMsg()       // 2024-01-28
                 opacity: 0
 
                 MouseArea {
                     id: mouseArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    // Wichtig: Klicks an den Button darunter durchreichen
-                    // propagateComposedEvents: true
-                    // onPressed: mouse.accepted = false
                 }
 
                 ToolTip{
-                    // visible: parent.hovered
                     // ToolTip anzeigen, wenn die Maus über der MouseArea ist
                     visible: mouseArea.containsMouse
                     delay: 500                                // Optional: waits 0.5s before showing
                     text: PowerNodeModel.openVersionInfoMsg()
-                    width: 160
+                    width: 180
                     padding: 20
                     // topPadding: 0
                     x: mouseArea.mouseX + 15
@@ -1365,12 +1360,6 @@ Window {
                 text: qsTr("")
                 checked: PowerNodeModel.evBattDcControl
 
-                // contentItem: Text {
-                //     text: control.text
-                //     font: control.font
-                //     color: "white"
-                //     verticalAlignment: Text.AlignVCenter
-                // }
                 indicator: Rectangle {                  // Hintergrund des Switch
                     implicitWidth: 48
                     implicitHeight: controlHeight
