@@ -47,13 +47,13 @@ private slots:
     void replyFinishedEVCCJSON(QNetworkReply *reply);
 
     // Diese Zeilen müssen exakt so im Header stehen:
-    void replyFinishedSetMode(QNetworkReply *reply);
-    void replyFinishedSetManualCurrent(QNetworkReply *reply);
-    void replyFinishedSetChargerPhases(QNetworkReply *reply);
+    // void replyFinishedSetMode(QNetworkReply *reply);
+    // void replyFinishedSetManualCurrent(QNetworkReply *reply);
+    // void replyFinishedSetChargerPhases(QNetworkReply *reply);
 
     // Und falls diese auch noch fehlen:
-    void replyFinishedXML(QNetworkReply *reply);
-    void replyFinishedJSON(QNetworkReply *reply);
+    // void replyFinishedXML(QNetworkReply *reply);
+    // void replyFinishedJSON(QNetworkReply *reply);
 
 private:
     void getRPiParameter(void);
@@ -66,9 +66,11 @@ private:
     QString m_DataProvider;
     QString m_iniVersion;
 
+    QString m_lastStatus;
+
     // Benenne den Manager wieder so, wie er gestern hieß (vermutlich jsonManager oder jsonEVCCManager)
-    QNetworkAccessManager *jsonManager; // Oder der Name, den du gestern genutzt hast
-    QNetworkAccessManager *xmlManager;  // Falls MainWindow ihn noch sucht, lass ihn als Leiche drin
+    //QNetworkAccessManager *jsonManager; // Oder der Name, den du gestern genutzt hast
+    //QNetworkAccessManager *xmlManager;  // Falls MainWindow ihn noch sucht, lass ihn als Leiche drin
     QNetworkAccessManager *jsonEVCCManager;
 
 

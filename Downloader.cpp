@@ -53,8 +53,8 @@ Downloader::Downloader(QObject *parent) :
     // holt IP und Port aus der Ini-Datei
     getRPiParameter();
     // Alle Manager initialisieren, damit keine Null-Pointer entstehen
-    jsonManager = new QNetworkAccessManager(this);
-    xmlManager = new QNetworkAccessManager(this);
+    //jsonManager = new QNetworkAccessManager(this);
+    //xmlManager = new QNetworkAccessManager(this);
     jsonEVCCManager = new QNetworkAccessManager(this);
 
     // Die Verbindung wird auch nur EINMAL hergestellt
@@ -92,32 +92,30 @@ void Downloader::doSetPrioritySoc(int input)
 // send parameters to evcc
 void Downloader::sendParamToEvcc(QString param)
 {
-    QUrl EvccAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/" + param;  // PowerNodeModel.getChargeModeString();
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
+    QUrl EvccAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/" + param;
+    QNetworkRequest request(EvccAddr);
 
-    // URL für die Anfrage festlegen
-    QUrl url(EvccAddr);
+    // Wir schicken den POST-Befehl ab
+    QNetworkReply *reply = jsonEVCCManager->post(request, QByteArray()); // Leerer Body für API-Calls oft okay
 
-    // QNetworkRequest erstellen
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setRawHeader("Accept", "application/json");
+    // DAS LAMBDA (Der "Post-it" Zettel)
+    // [reply, param, this] bedeutet: Wir nehmen diese Infos mit in den Zettel
+    connect(reply, &QNetworkReply::finished, [reply, param, this]() {
 
-    // Leere JSON-Daten (falls nötig, ersetze dies durch tatsächliche Daten)
-    QJsonObject json;
-    QByteArray jsonData = QJsonDocument(json).toJson();
-
-    // POST-Anfrage senden
-    QNetworkReply *reply = manager->post(request, jsonData);
-
-    // Optional: Verbindung zu signalen, um auf die Antwort zu reagieren
-    QObject::connect(reply, &QNetworkReply::finished, [reply]() {
         if (reply->error() == QNetworkReply::NoError) {
-            QByteArray response = reply->readAll();
-            // Verarbeite die Antwort hier
+            this->m_lastStatus = "OK: " + param; // Hier wird 'this' gebraucht!
+
+            // ERFOLG: Wir sehen im Output genau, welcher Parameter geklappt hat
+            qDebug() << "EVCC-Update ERFOLGREICH für:" << param;
+
+            // Hier könntest du sogar direkt Flags setzen, z.B.:
+            // m_messageFlag |= EVCCFlag;
         } else {
-            // Fehlerverarbeitung
+            // FEHLER:
+            qDebug() << "EVCC-Update FEHLER bei:" << param << " Grund:" << reply->errorString();
         }
+
+        // WICHTIG: Den Brief jetzt vernichten (Speicher freigeben)
         reply->deleteLater();
     });
 }
@@ -134,44 +132,8 @@ void Downloader::sendParamToEvcc(QString param)
 
 void Downloader::doSetChargeMode(void)
 {
-    if(m_DataProvider.toUpper() == "EVCC")
-    {
-        QString parameter = "loadpoints/1/mode/" + m_setChargeModeString;
-        sendParamToEvcc(parameter);
-    }
-    else
-    {
-        xmlManager = new QNetworkAccessManager(this);
-        xmlManager->setTransferTimeout(TRANSFERTIMEOUT);
-
-        connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(replyFinishedSetMode(QNetworkReply*)));
-
-            QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?mode=" + m_setChargeModeString;  // PowerNodeModel.getChargeModeString();
-            xmlManager->get(QNetworkRequest(SmartChargerAddr));
-    }
-}
-
-void Downloader::replyFinishedSetMode (QNetworkReply *reply)
-{
-    if(reply->error())
-    {
-        qDebug() << "ERROR with SmartCharger";
-        qDebug() << reply->errorString();
-        m_messageFlag |= SETMODEFlag;                           // Fehler bei der Verarbeitung des SetMode Befehls
-    }
-    else
-    {
-//       extern QByteArray m_XMLfiledata;                         // globally defined in main.cpp
-
-//        m_XMLfiledata.clear();
-//        m_XMLfiledata.append(reply->readAll());
-//        m_messageFlag &= !EDLDFlag;                             // EDL Daemon ist ok -> ausblenden
-    }
-
-    reply->deleteLater();
-    xmlManager->deleteLater();
-    xmlManager = Q_NULLPTR ;
+    QString parameter = "loadpoints/1/mode/" + m_setChargeModeString;
+    sendParamToEvcc(parameter);
 }
 
 // \set charging mode of SmartCharger ----------------------------------------
@@ -188,61 +150,18 @@ void Downloader::doSetManualCurrent(void)
 {
     manualCurrentTmp = QString::number(m_ManualSetCurrent);
 
-    if(m_DataProvider.toUpper() == "EVCC")
-    {
-        QString parameter = "loadpoints/1/maxcurrent/" + QString::number(m_ManualSetCurrent / 1000);
-        sendParamToEvcc(parameter);
-    }
-    else
-    {
-        xmlManager = new QNetworkAccessManager(this);
-        xmlManager->setTransferTimeout(TRANSFERTIMEOUT);
-
-
-        connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(replyFinishedSetMode(QNetworkReply*)));
-
-        QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?manualcurrent=" + manualCurrentTmp;
-        xmlManager->get(QNetworkRequest(SmartChargerAddr));
-    }
-}
-
-void Downloader::replyFinishedSetManualCurrent (QNetworkReply *reply)
-{
-    if(reply->error())
-    {
-        qDebug() << "ERROR with SmartCharger";
-        qDebug() << reply->errorString();
-        m_messageFlag |= SETCURRENTFlag;                 // Fehler bei der Verarbeitung des SetManualCurrent Befehls
-    }
-
-    reply->deleteLater();
-    xmlManager->deleteLater();
-    xmlManager = Q_NULLPTR ;
+    QString parameter = "loadpoints/1/maxcurrent/" + QString::number(m_ManualSetCurrent / 1000);
+    sendParamToEvcc(parameter);
 }
 // \set manual current of SmartCharger ----------------------------------------
 
 // set number of phases to use for SmartCharger ----------------------------------------
 void Downloader::doSetChargerPhases(void)
 {
-    if(m_DataProvider.toUpper() == "EVCC")
-    {
-        QString parameter = "loadpoints/1/phases/" + QString::number(m_ChargerPhases);
-        sendParamToEvcc(parameter);
-    }
-    else
-    {
-        xmlManager = new QNetworkAccessManager(this);
-        xmlManager->setTransferTimeout(TRANSFERTIMEOUT);
-
-
-        connect(xmlManager, SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(replyFinishedSetMode(QNetworkReply*)));
-
-        QUrl SmartChargerAddr = "http://" + m_smartChargerIP + ":" + m_smartChargerPort + "/remote?carmaxphases=" + QString::number(m_ChargerPhases);
-        xmlManager->get(QNetworkRequest(SmartChargerAddr));
-    }
+    QString parameter = "loadpoints/1/phases/" + QString::number(m_ChargerPhases);
+    sendParamToEvcc(parameter);
 }
+// \set number of phases to use for SmartCharger ----------------------------------------
 
 // Wer liefert die Anzeigedaten
 QString Downloader::getDataProvider(void)
@@ -256,21 +175,7 @@ QString Downloader::getiniVersion(void)
     return m_iniVersion;                                // String mit der version der INI-Datei
 }
 
-void Downloader::replyFinishedSetChargerPhases (QNetworkReply *reply)
-{
-    if(reply->error())
-    {
-        qDebug() << "ERROR with SmartCharger";
-        qDebug() << reply->errorString();
-        m_messageFlag |= SETPHASESFlag;                  // Fehler bei der Verarbeitung des setPhases Befehls
-    }
-
-    reply->deleteLater();
-    xmlManager->deleteLater();
-    xmlManager = Q_NULLPTR ;
-}
-// \set number of phases to use for SmartCharger ----------------------------------------
-
+/*
 // download XML data from SmartCharger ----------------------------------------
 void Downloader::doDownloadXML(void)
 {
@@ -303,20 +208,21 @@ void Downloader::replyFinishedXML (QNetworkReply *reply)
     reply->deleteLater();
     xmlManager->deleteLater();
     xmlManager = Q_NULLPTR ;
-}
+} */
 // \download XML data from SmartCharger ----------------------------------------
 
+/*
 // download JSON data from MBMD PV-WR-reader ----------------------------------
 void Downloader::doDownloadJSON(void)
 {
-    jsonManager = new QNetworkAccessManager(this);
-    jsonManager->setTransferTimeout(TRANSFERTIMEOUT);
+    jsonEVCCManager = new QNetworkAccessManager(this);
+    jsonEVCCManager->setTransferTimeout(TRANSFERTIMEOUT);
 
-    connect(jsonManager, SIGNAL(finished(QNetworkReply*)),
+    connect(jsonEVCCManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinishedJSON(QNetworkReply*)));
 
     QUrl ModbusDaemonAddr = "http://" + m_smartChargerIP + ":" + m_mbmdPort + "/api/last";
-    jsonManager->get(QNetworkRequest(ModbusDaemonAddr));
+    jsonEVCCManager->get(QNetworkRequest(ModbusDaemonAddr));
 }
 
 void Downloader::replyFinishedJSON(QNetworkReply *reply)
@@ -336,9 +242,9 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
 
     reply->deleteLater();
 
-    jsonManager->deleteLater();                                 // delete manager -> prevent handle leaking
-    jsonManager = Q_NULLPTR ;                                      // invalidate manager
-}
+    jsonEVCCManager->deleteLater();                                 // delete manager -> prevent handle leaking
+    jsonEVCCManager = Q_NULLPTR ;                                      // invalidate manager
+} */
 // \download JSON data from MBMD PV-WR-reader ----------------------------------
 
 // download JSON data from EVCC ----------------------------------
@@ -349,7 +255,7 @@ void Downloader::doDownloadEVCCJSON(void)
 
     // Einfach abschicken. Der Manager weiß durch den connect im Konstruktor
     // schon ganz genau, wo er die Antwort abgeben muss.
-    jsonManager->get(QNetworkRequest(EVCCapiAddr));
+    jsonEVCCManager->get(QNetworkRequest(EVCCapiAddr));
 }
 
 void Downloader::replyFinishedEVCCJSON(QNetworkReply *reply)
@@ -418,6 +324,7 @@ QFile file;
         file.setFileName(filepath + "PVconfig.ini");            // add filename to path
 
 #endif
+
     if(file.exists())                                           // check file access
     {
         if (!file.open(QIODevice::ReadOnly))
