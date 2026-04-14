@@ -4,6 +4,8 @@
 #include <QColor>
 #include <QMessageBox>
 #include <EvccJSON.h>
+#include "Downloader.h"
+#include "EvccJSON.h"
 
 /*
 Hinweis
@@ -139,6 +141,11 @@ Version 2.07 - Die Nachkommastellen der gesamten jemals in EVs geladenen Energie
              - Erster Versuch, die App auch als WebAssembly im Browser darstellbar zu machen. Nicht abgeschlossen...
              - Grüne Stecker an den EV wenn Ladung abgeschlossen ist. Wird jetzt auch erkannt, wenn PV-Anzeige neu gestartet wurde.
              - EVCC oder EDLD zur Laufzeit (beim Start der App) dynamisch setzen (in der Caption, in der Versioninfo und im Code).
+Version 2.08 - Strukturänderung am Api/State Interface bricht Hausakku-Werte -> fixed.
+Version 2.09 - Berechnung der Manual Current Werte im Drawer korrigiert (war immer für 3 Phasen berechnet) -> fixed.
+             - Korrektur und Komplettierung der beiden Countdown Timer.
+             - Entfernen des "üblen Tricks" für die Umstellung auf evcc anstelle SmartCharger -> fixed
+             - evcc-Abfragen korrigiert -> NetworkManager nur noch einmalig im Konstruktor erzeugen und laufen lassen -> Stabilität!
 
 
   ---> Hinweis: Code läuft _nicht_ stabil mit Qt V6.x. Nach zufälligen Zeiten crasht die App auf dem Tablet ohne Meldung weg (ab V1.17 - 2025-06-21) <---
@@ -146,7 +153,7 @@ Version 2.07 - Die Nachkommastellen der gesamten jemals in EVs geladenen Energie
 
 // program version for window title
 #define VERSIONMAJOR    "2"
-#define VERSIONMINOR    "07"
+#define VERSIONMINOR    "09"
 
 //#define DEMOMODE              // generate random power values for checking coloring and arrows
 
@@ -169,6 +176,8 @@ class StringData;
 class PowerNodeModel : public QObject {
     Q_OBJECT
 
+ private:               // Nur für die Lesbarkeit
+    Downloader downler; // Das ersetzt die globale 'downler'
     EvccJSON evcc;
 
 public:
@@ -236,6 +245,10 @@ public:
     Q_PROPERTY(QString chargeModeManual     MEMBER m_chargeModeManual   NOTIFY chargingDataChanged)       // currently used charge mode (String)
     Q_PROPERTY(int configuredPhases         MEMBER m_EVconfiguredPhases NOTIFY chargingDataChanged)       // ab 6 startet PV Ladevorgang (nur EDLD)
     Q_PROPERTY(QString activeDataProvider   MEMBER m_actDataProviderStr NOTIFY chargingDataChanged)       // bestimmte Anzeigen in der GUI ein/ausblenden/ändern
+    Q_PROPERTY(bool visibleSun              MEMBER m_visibleSun         NOTIFY chargingDataChanged)       // kleine auf/untergehende Sonne für evcc Countdown
+    Q_PROPERTY(unsigned char delayCountdown MEMBER m_PnmCDdelay         NOTIFY chargingDataChanged)       // Countdown Wert (Startwert 180 oder 60, rückwärts zählend)
+    //Q_PROPERTY(unsigned char delayCountdown MEMBER m_EVdelayCountdown   NOTIFY chargingDataChanged)       // Countdown Wert (180 oder 60, rückwärts zählend)
+    Q_PROPERTY(bool CountdownRunning        MEMBER m_PnmCDrunning       NOTIFY chargingDataChanged)       // Countdown läuft -> Sonne und Sekunden anzeigen
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
     Q_PROPERTY(QString EDLDfigures  MEMBER  m_EDLDfigures  NOTIFY setBackgroundColor)
@@ -301,8 +314,8 @@ public slots:
 
     void setChargerPhases(int);             // set Charger Phases to 0(automatic), 1, 3
 
-    QString openVersionInfoMsg();              // Anzeige der Compiler- und Runtimeversion (V1.17)
-    void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt (V1.17)
+    QString openVersionInfoMsg();           // Anzeige der Compiler- und Runtimeversion (ab V1.17)
+    void openPopUpMsg();                    // Anzeige der Erträge aller WR und Gesamt (ab V1.17)
 
 private:
     void getXMLdata(void);
@@ -328,9 +341,11 @@ private:
     void resetComm(void);
     void setWindowTitle(void);
     void countDown(void);
-    void setEvPrioritySOC(void);
-    void setEvBufferSOC(void);
-    void setEvBattDischargeControl(void);
+    void setEvPrioritySOC(void);            // wie voll muss der Hausakku sein, bevor das EV priorisiert geladen wird?
+    void setEvBufferSOC(void);              // ab wieviel Prozent darf das EV auch aus dem Hausakku geladen werden?
+    void setEvBattDischargeControl(void);   // Hausakku bei Quick nicht leeren, nur Sonne oder Netzstrom verwenden
+    void displaySunCountdown(void);         // Countdown Wert (180 oder 60, rückwärts zählend)
+    void decSunCountdown(void);             // Countdown Wert rückwärts zählen
 
 public:
     QString getChargeModeString(void);
@@ -405,6 +420,7 @@ public:
     QString m_wallboxCar =      "Icons/electric-car-icon_weiss_transparent.png";            // default mit Stecker in der Luft
     QString m_wallboxScoot =    "Icons/electric-scooter_icon_weiss_transparent_rad.png";    // default mit Stecker in der Luft
     bool m_visibleComm = false;             // WLAN marker shown if RPi is interrogated
+    bool m_visibleSun = false;              // kleine auf/untergehende Sonne für evcc Countdown
     bool m_realPics = false;                // no real pictures of EVs
     char m_evalCountDown = 60;              // count down 1 minute
     QString m_EVChargingMode;               // ChargeMode (OFF, SURPLUS, QUICK, MANUAL)
@@ -417,6 +433,9 @@ public:
     QString m_chargeModeManual;             // MANUAL oder Min+PV für den Button im Drawer, je nach DataProvider
  //   int m_EVChargerPhases;                  // Rückmeldung von Wallbox, Anzahl Phasen beim Laden: 1 oder 3
     int m_EVconfiguredPhases;               // Rückmeldung von EVCC
+    unsigned char m_EVdelayCountdown = 1;   // Countdown Wert (180 oder 60, rückwärts zählend)                          ...nur einer von beiden!
+    unsigned char m_PnmCDdelay = 53;        // Countdown für die Anzeige in der GUI, wird sekündlich verringert bis 0   ...nur einer von beiden!
+    bool m_PnmCDrunning = false;
 
 // Data provider global
     QString m_actDataProviderStr;           // Dataprovider (EVCC oder EDLD)

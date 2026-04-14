@@ -3,7 +3,7 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
 import QtGraphicalEffects 1.0                   // use this line when working with Qt 5
-// import Qt5Compat.GraphicalEffects               // use this line when working with Qt 6
+//  import Qt5Compat.GraphicalEffects               // use this line when working with Qt 6
 
 import PowerNodeModel 1.0                       // Pointer to the code model
 
@@ -568,6 +568,34 @@ Window {
             font.pixelSize: PowerNodeModel.activeDataProvider == "EVCC" ? 12 : 11 // bei EVCC 12 Pix hoch
             horizontalAlignment: Text.AlignHLeft
         }
+
+        // Countdown-Anzeige evcc Sonne da/weg          vvvvvvvvv
+        Text {          // Countdown (180s oder 60s)
+            id: text56a
+            x: 75
+            y: 8
+            width: 35
+            color: "#ffffff"
+            text: PowerNodeModel.delayCountdown +" s"
+            font.pixelSize: PowerNodeModel.activeDataProvider == "EVCC" ? 12 : 11 // bei EVCC 12 Pix hoch
+            horizontalAlignment: Text.AlignHCenter
+            visible: PowerNodeModel.CountdownRunning
+        }
+
+        Image {
+            id: image14a
+            x: 83
+            y: 24
+            width: 20
+            height: 20
+            source: PowerNodeModel.visibleSun ? "Icons/PV_rising_green_big.png" : "Icons/PV_falling_red_big.png"
+            visible: PowerNodeModel.CountdownRunning
+            fillMode: Image.PreserveAspectFit
+            //visible: PowerNodeModel.activeDataProvider == "EVCC" ? PowerNodeModel.CountdownRunning : false
+            //visible: PowerNodeModel.visibleSun
+            //visible: false
+        }
+        // Countdown-Anzeige evcc Sonne da/weg          ^^^^^^^^^^
 
         Text {
             id: text6

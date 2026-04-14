@@ -21,5 +21,7 @@
         <file>Icons/electric-car_real_steckt_gruen_transparent.png</file>
         <file>Icons/Sonne_invers_hellgrau.png</file>
         <file>Icons/Sonne_invers_gruen.png</file>
+        <file>Icons/PV_rising_green_big.png</file>
+        <file>Icons/PV_falling_red_big.png</file>
     </qresource>
 </RCC>

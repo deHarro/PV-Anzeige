@@ -18,18 +18,20 @@ public:
     void ReadEvccJSON(void);
 
     // getter functions
-    double getPVDachNActualPower  (void);
-    double getPVDachSActualPower  (void);
-    double getPVGaubeActualPower  (void);
-    double getPVGarageActualPower (void);
-    double getPVDachNErtrag       (void);
-    double getPVDachSErtrag       (void);
-    double getPVGaubeErtrag       (void);
-    double getPVGarageErtrag      (void);
-    double getPVGesamtErtrag      (void);
-    int    getEVprioritySOC       (void);
-    int    getEVbufferSOC         (void);
-    bool   getEVbattDcControl     (void);
+    double getPVDachNActualPower    (void);
+    double getPVDachSActualPower    (void);
+    double getPVGaubeActualPower    (void);
+    double getPVGarageActualPower   (void);
+    double getPVDachNErtrag         (void);
+    double getPVDachSErtrag         (void);
+    double getPVGaubeErtrag         (void);
+    double getPVGarageErtrag        (void);
+    double getPVGesamtErtrag        (void);
+    int    getEVprioritySOC         (void);
+    int    getEVbufferSOC           (void);
+    bool   getEVbattDcControl       (void);
+    unsigned char getEVdisableDelay (void);
+    unsigned char getEVenableDelay  (void);
 
     // nachfolgende Werte kamen vom SmartCharger (EDLD)
     double getSmartMeterActualPower (void);
@@ -106,6 +108,8 @@ private:
     bool    m_configuredPhases0;
     bool    m_configuredPhases1;
     bool    m_configuredPhases3;
+    int     m_EVdisableDelay;                       // Timeout 3 Minuten vor Abschalten/Phasenwechsel bei schwächer werdender Sonne
+    int     m_EVenableDelay;                        // Timeout 1 Minute vor Einschalten/Phasenwechsel bei stärker werdender Sonne
 
     // nachfolgender Wert wurde in PowerNodeModel.cpp berechnet
     int m_totalPowerConsumption         = 0;

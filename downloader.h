@@ -1,38 +1,37 @@
 #pragma once
 
+#include <QObject>
+#include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QDir>
+#include <QJsonDocument>
+#include <QJsonObject>
 
-// global flag memory for error messages
 extern quint8 m_messageFlag;
-// Flag: Bit 0 = 1 -> EDLD antwortet nicht korrekt
-// Flag: Bit 1 = 1 -> MBMD antwortet nicht korrekt
-// Flag: Bit 2 = 1 -> Version der EDLD XML Daten stimmt nicht -> muss geprüft werden!
-// Flag: Bit 3 = 1 -> Einer der WR liefert keine Daten -> muss rückgesetzt werden!
-// Flag: Bit 4 = 1 -> Fehler bei der Verarbeitung des SetMode Befehls im EDLD
-// Flag: Bit 5 = 1 -> Fehler bei der Verarbeitung des SetManualCurrent Befehls im EDLD
-// Flag: Bit 6 = 1 -> Fehler bei der Verarbeitung des SetChargerPhases Befehls im EDLD
-// Flag: Bit 7 = 1 -> EVCC antwortet nicht korrekt
 #define EDLDFlag 1
 #define MBMDFlag 2
 #define VERSIONFlag 4
 #define WRFlag 8
-#define SETMODEFlag 10
-#define SETCURRENTFlag 20
-#define SETPHASESFlag 40
-#define EVCCFlag 80
+#define SETMODEFlag 16     // Korrigiert auf Zweierpotenz (0x10)
+#define SETCURRENTFlag 32  // Korrigiert auf 0x20
+#define SETPHASESFlag 64   // Korrigiert auf 0x40
+#define EVCCFlag 128       // Korrigiert auf 0x80
 
 class Downloader : public QObject
 {
     Q_OBJECT
-public:
-    explicit Downloader(QObject *parent = 0);
 
+public:
+    explicit Downloader(QObject *parent = nullptr);
+
+    // Wir lassen die Funktionsnamen erst einmal stehen, damit die Aufrufe klappen
+    void doDownloadEVCCJSON(void);
+
+    // Die alten Methoden lassen wir als "leere Hüllen" stehen,
+    // falls sie noch von Timern oder anderen Klassen aufgerufen werden
     void doDownloadXML(void);
     void doDownloadJSON(void);
 
-    void doDownloadEVCCJSON(void);
-
+    // Die Steuer-Befehle (bleiben aktiv)
     void doSetChargeMode(void);
     void doSetManualCurrent(void);
     void doSetChargerPhases(void);
@@ -40,38 +39,41 @@ public:
     void doSetBufferSoc(int);
     void doSetPrioritySoc(int);
 
-    QString getDataProvider(void);          // liefert den DataProvider zur Entscheidung, welcher Parser Verwendung findet
-    QString getiniVersion(void);            // liefert die Version der INI-Datei zur Entscheidung, ob die INI zur Version passt
+    // Diese beiden hier müssen vermutlich auch wieder in den public Bereich:
+    QString getDataProvider(void);
+    QString getiniVersion(void);
 
-signals:
+private slots:
+    void replyFinishedEVCCJSON(QNetworkReply *reply);
 
-public slots:
-    void replyFinishedXML (QNetworkReply *reply);
-    void replyFinishedJSON (QNetworkReply *reply);
-
-    void replyFinishedEVCCJSON (QNetworkReply *reply);
-
+    // Diese Zeilen müssen exakt so im Header stehen:
     void replyFinishedSetMode(QNetworkReply *reply);
     void replyFinishedSetManualCurrent(QNetworkReply *reply);
     void replyFinishedSetChargerPhases(QNetworkReply *reply);
 
+    // Und falls diese auch noch fehlen:
+    void replyFinishedXML(QNetworkReply *reply);
+    void replyFinishedJSON(QNetworkReply *reply);
+
 private:
     void getRPiParameter(void);
+    void sendParamToEvcc(QString param);
 
-    void sendParamToEvcc(QString);
+    // Hier kommen die Vermissten zurück:
+    QString m_smartChargerIP;
+    QString m_smartChargerPort;
+    QString m_mbmdPort;
+    QString m_DataProvider;
+    QString m_iniVersion;
 
-    QNetworkAccessManager *jsonManager;
-    QNetworkAccessManager *xmlManager;
+    // Benenne den Manager wieder so, wie er gestern hieß (vermutlich jsonManager oder jsonEVCCManager)
+    QNetworkAccessManager *jsonManager; // Oder der Name, den du gestern genutzt hast
+    QNetworkAccessManager *xmlManager;  // Falls MainWindow ihn noch sucht, lass ihn als Leiche drin
     QNetworkAccessManager *jsonEVCCManager;
 
-    QString m_smartChargerIP;                                   // IP des RPi mit SmartCharger (EDLD)
-    QString m_smartChargerPort;                                 // Port SmartCharger (EDLD)
-    QString m_mbmdPort;                                         // Port MBMD (läuft auf demselben RPi)
-    QString m_EvccIP;                                           // IP des RPi mit EVCC
-    QString m_EvccPort;                                         // Port EVCC
-    QString m_DataProvider;                                     // Daten für PV-Anzeige kommen von "EVCC" oder "EDLD" (-> EDLD + MBMD)
-    QString m_iniVersion;                                       // Version der INI-Datei. Zusätzliche Werte ab Vx.xx
 
+    // Verbindungsparameter
+    QString m_EvccIP;
+    QString m_EvccPort;
     QString manualCurrentTmp;
 };
-

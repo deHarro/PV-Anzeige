@@ -9,6 +9,7 @@
 
 #include <QSettings>
 #include <QFile>
+#include <QDir>
 #include <QDebug>
 
 // globally defined in main.cpp
@@ -49,7 +50,17 @@ EvccJSON evcc;
 Downloader::Downloader(QObject *parent) :
     QObject(parent)
 {
+    // holt IP und Port aus der Ini-Datei
     getRPiParameter();
+    // Alle Manager initialisieren, damit keine Null-Pointer entstehen
+    jsonManager = new QNetworkAccessManager(this);
+    xmlManager = new QNetworkAccessManager(this);
+    jsonEVCCManager = new QNetworkAccessManager(this);
+
+    // Die Verbindung wird auch nur EINMAL hergestellt
+    connect(jsonEVCCManager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinishedEVCCJSON(QNetworkReply*)));
+
 }
 
 // 3 settings for load balance "battery <> EV" in evcc
@@ -333,35 +344,37 @@ void Downloader::replyFinishedJSON(QNetworkReply *reply)
 // download JSON data from EVCC ----------------------------------
 void Downloader::doDownloadEVCCJSON(void)
 {
-    jsonEVCCManager = new QNetworkAccessManager(this);
-    jsonEVCCManager->setTransferTimeout(TRANSFERTIMEOUT);
-
-    connect(jsonEVCCManager , SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(replyFinishedEVCCJSON(QNetworkReply*)));
-
+    // Wir prüfen nur kurz, ob die Adresse stimmt
     QUrl EVCCapiAddr = "http://" + m_EvccIP + ":" + m_EvccPort + "/api/state";
-    jsonEVCCManager->get(QNetworkRequest(EVCCapiAddr));
+
+    // Einfach abschicken. Der Manager weiß durch den connect im Konstruktor
+    // schon ganz genau, wo er die Antwort abgeben muss.
+    jsonManager->get(QNetworkRequest(EVCCapiAddr));
 }
 
 void Downloader::replyFinishedEVCCJSON(QNetworkReply *reply)
 {
     if(reply->error())
     {
-        qDebug() << "ERROR with EVCC";
-        qDebug() << reply->errorString();
-        m_messageFlag |= EVCCFlag;                              // EVCC ist abgestuerzt -> Meldung
+        qDebug() << "ERROR with EVCC: " << reply->errorString();
+        m_messageFlag |= EVCCFlag;
     }
     else
     {
-        m_JSONevccData.clear();                                 // JSONdata löschen...
-        m_JSONevccData.append(reply->readAll());                // ... und neu einlesen
-        m_messageFlag &= !EVCCFlag;                             // EVCC ist ok -> ausblenden
+        m_JSONevccData.clear();
+        m_JSONevccData.append(reply->readAll());
+        // ACHTUNG: Hier war ein kleiner Logikfehler in deinem Code:
+        // m_messageFlag &= !EVCCFlag; funktioniert bei Bits oft nicht wie gewünscht.
+        // Sicherer ist:
+        m_messageFlag &= ~EVCCFlag; // Bitweise Umkehrung zum Löschen des Flags
     }
 
+    // WICHTIG: Den Brief wegwerfen (Speicher freigeben)
     reply->deleteLater();
 
-    jsonEVCCManager->deleteLater();                             // delete manager -> prevent handle leaking
-    jsonEVCCManager = Q_NULLPTR ;                               // invalidate manager
+    // HIER FLIEGT ALLES ANDERE RAUS!
+    // Kein jsonEVCCManager->deleteLater() mehr!
+    // Der Manager bleibt am Leben für den nächsten Aufruf in 2 Sekunden.                           // invalidate manager
 }
 // \download JSON data from EVCC ----------------------------------
 

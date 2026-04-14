@@ -1,7 +1,10 @@
 #include "EvccJSON.h"
+#include "Downloader.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+
+Downloader downler; // Diese EINE Zeile muss bleiben, da sie global gebraucht wird
 
 extern QString m_JSONevccData;    // globally defined in main.cpp, loaded with data by Downloader.cpp
 
@@ -51,8 +54,8 @@ void EvccJSON::ReadEvccJSON() {
     m_SmartMeterConsumption   = data.value("grid.energy").toDouble();
 
     // Akku (Array-Pfad)
-    m_StorageSystemSOC         = data.value("battery[0].soc").toDouble();
-    m_StorageSystemActualPower = data.value("battery[0].power").toDouble();
+    m_StorageSystemSOC         = data.value("battery.soc").toDouble();
+    m_StorageSystemActualPower = data.value("battery.power").toDouble();
 
     // Loadpoints (Wallbox)
     QString loadpoints = "loadpoints[0].";
@@ -61,6 +64,8 @@ void EvccJSON::ReadEvccJSON() {
     m_EVTotalEnergy      = data.value(loadpoints + "chargeTotalImport").toDouble();
     m_EVChargerPhases    = data.value(loadpoints + "phasesActive").toInt();
     m_EVconfiguredPhases = data.value(loadpoints + "phasesConfigured").toInt();
+    m_EVdisableDelay     = data.value(loadpoints + "disableDelay").toInt();
+    m_EVenableDelay      = data.value(loadpoints + "enableDelay").toInt();
 
     // EVCC hat 3 Booleans die den Zustand der Kombination EV-Wallbox beschreiben:
     // connected, enabled, charging
@@ -312,40 +317,43 @@ void EvccJSON::ReadEvccJSON() {
 EvccJSON::~EvccJSON() {}
 
 // getter Funktionen
-double  EvccJSON::getPVDachSActualPower(void)     {return m_PVDachSActualPower; }
-double  EvccJSON::getPVDachNActualPower(void)     {return m_PVDachNActualPower; }
-double  EvccJSON::getPVGaubeActualPower(void)     {return m_PVGaubeActualPower; }
-double  EvccJSON::getPVGarageActualPower(void)    {return m_PVGarageActualPower; }
-double  EvccJSON::getPVGesamtErtrag(void)         {return m_PVGesamtErtrag;}
-double  EvccJSON::getPVDachNErtrag(void)          {return m_PVDachNErtrag; }
-double  EvccJSON::getPVDachSErtrag(void)          {return m_PVDachSErtrag; }
-double  EvccJSON::getPVGaubeErtrag(void)          {return m_PVGaubeErtrag; }
-double  EvccJSON::getPVGarageErtrag(void)         {return m_PVGarageErtrag; }
+double          EvccJSON::getPVDachSActualPower(void)       {return m_PVDachSActualPower; }
+double          EvccJSON::getPVDachNActualPower(void)       {return m_PVDachNActualPower; }
+double          EvccJSON::getPVGaubeActualPower(void)       {return m_PVGaubeActualPower; }
+double          EvccJSON::getPVGarageActualPower(void)      {return m_PVGarageActualPower; }
+double          EvccJSON::getPVGesamtErtrag(void)           {return m_PVGesamtErtrag;}
+double          EvccJSON::getPVDachNErtrag(void)            {return m_PVDachNErtrag; }
+double          EvccJSON::getPVDachSErtrag(void)            {return m_PVDachSErtrag; }
+double          EvccJSON::getPVGaubeErtrag(void)            {return m_PVGaubeErtrag; }
+double          EvccJSON::getPVGarageErtrag(void)           {return m_PVGarageErtrag; }
 
-double  EvccJSON::getSmartMeterActualPower(void)  {return m_SmartMeterActualPower; }
-double  EvccJSON::getSmartMeterConsumption(void)  {return m_SmartMeterConsumption; }
-double  EvccJSON::getSmartMeterSurplus(void)      {return m_SmartMeterSurplus; }
+double          EvccJSON::getSmartMeterActualPower(void)    {return m_SmartMeterActualPower; }
+double          EvccJSON::getSmartMeterConsumption(void)    {return m_SmartMeterConsumption; }
+double          EvccJSON::getSmartMeterSurplus(void)        {return m_SmartMeterSurplus; }
 
-int     EvccJSON::getStorageSystemSOC(void)          {return m_StorageSystemSOC; }
-double  EvccJSON::getStorageSystemTemperature(void)  {return m_StorageSystemTemperature; }
-double  EvccJSON::getStorageSystemActualPower(void)  {return m_StorageSystemActualPower; }
+int             EvccJSON::getStorageSystemSOC(void)         {return m_StorageSystemSOC; }
+double          EvccJSON::getStorageSystemTemperature(void) {return m_StorageSystemTemperature; }
+double          EvccJSON::getStorageSystemActualPower(void) {return m_StorageSystemActualPower; }
 
-double  EvccJSON::getEVEvaluationPoints(void)       {return m_EVEvaluationPoints;}
-int     EvccJSON::getEVState(void)                  {return m_EVState;}
-double  EvccJSON::getEVMaxPhases(void)              {return m_EVMaxPhases;}
-int     EvccJSON::getEVPlug(void)                   {return m_EVPlug;}
-double  EvccJSON::getEVSystemEnabled(void)          {return m_EVSystemEnabled;}
-int     EvccJSON::getEVOutput(void)                 {return m_EVOutput;}
-double  EvccJSON::getEVActualPower(void)            {return m_EVActualPower;}
-double  EvccJSON::getEVSessionEnergy(void)          {return m_EVSessionEnergy;}
-QString EvccJSON::getEVChargeMode(void)             {return m_EVChargingMode;}
-double   EvccJSON::getEVTotalEnergy(void)            {return m_EVTotalEnergy * 1000.0;}
-int     EvccJSON::getEVconfiguredPhases(void)       {return m_EVconfiguredPhases;}
-// int     EvccJSON::getEVallowedPhases(void)          {return m_EVallowedPhases;}
-int     EvccJSON::getEVactivePhases(void)           {return m_EVChargerPhases;}
-int     EvccJSON::getEVprioritySOC(void)            {return m_prioritySOC;}
-int     EvccJSON::getEVbufferSOC(void)              {return m_bufferSOC;}
-bool    EvccJSON::getEVbattDcControl(void)          {return m_batteryDisChargeControl;}
+double          EvccJSON::getEVEvaluationPoints(void)       {return m_EVEvaluationPoints;}
+int             EvccJSON::getEVState(void)                  {return m_EVState;}
+double          EvccJSON::getEVMaxPhases(void)              {return m_EVMaxPhases;}
+int             EvccJSON::getEVPlug(void)                   {return m_EVPlug;}
+double          EvccJSON::getEVSystemEnabled(void)          {return m_EVSystemEnabled;}
+//int             EvccJSON::getEVOutput(void)                 {return m_EVOutput;}
+int             EvccJSON::getEVOutput(void)                 {return m_EVconfiguredPhases;}
+double          EvccJSON::getEVActualPower(void)            {return m_EVActualPower;}
+double          EvccJSON::getEVSessionEnergy(void)          {return m_EVSessionEnergy;}
+QString         EvccJSON::getEVChargeMode(void)             {return m_EVChargingMode;}
+double          EvccJSON::getEVTotalEnergy(void)            {return m_EVTotalEnergy * 1000.0;}
+int             EvccJSON::getEVconfiguredPhases(void)       {return m_EVconfiguredPhases;}
+// int             EvccJSON::getEVallowedPhases(void)          {return m_EVallowedPhases;}
+int             EvccJSON::getEVactivePhases(void)           {return m_EVChargerPhases;}
+int             EvccJSON::getEVprioritySOC(void)            {return m_prioritySOC;}
+int             EvccJSON::getEVbufferSOC(void)              {return m_bufferSOC;}
+bool            EvccJSON::getEVbattDcControl(void)          {return m_batteryDisChargeControl;}
+unsigned char   EvccJSON::getEVdisableDelay (void)          {return m_EVdisableDelay;}
+unsigned char   EvccJSON::getEVenableDelay (void)           {return m_EVenableDelay;}
 
 
 

@@ -2,9 +2,9 @@
 
 #include "PowerNodeModel.h"
 #include "Downloader.h"
-#include "SmartChargerXML.h"
-#include "WechselrichterJSON.h"
 #include "EvccJSON.h"
+#include <QFile>
+#include <QDir>
 
 // BUILDDATE	wird automatisch erzeugt:
 // Build Datum der Form "Mar 9 2021" aus __DATE__ ummodeln in ISO Darstellung "2021-03-09"
@@ -38,23 +38,17 @@ constexpr char IsoDate[] =
 // \BUILDDATE
 
 
-Downloader downler;
-SmartChargerXML smchaXML;
-WechselrichterJSON wrJSON;
-EvccJSON evccJSON;
-
-extern SmartChargerXML smchaXML;
-extern Downloader downler;
-extern WechselrichterJSON wrJSON;
-//extern EvccJSON evccJSON;
-
 extern QString m_setChargeModeString;
 extern int m_ManualSetCurrent;
 extern QString m_EVChargingModeS;
 extern int m_ChargerPhases;
 
-//QString activeDataProviderString = downler.getDataProvider();
-QString iniVersion = downler.getiniVersion();
+QString iniVersion;
+
+// Einmalige Umleitung für die gesamte Datei:
+#define smchaXML evcc
+#define wrJSON   evcc
+#define evccJSON evcc
 
 using namespace std::chrono_literals;
 
@@ -65,12 +59,10 @@ PowerNodeModel::PowerNodeModel() {
     m_dataTimer.start(500);     // 1/2 s timer for smooth display of rotating sun
 
     getIconType();              // get type of EV icons
-
-    // setWindowTitle();           // set window title with name and build date
-    // emit displayWindowTitle();
 }
 
 PowerNodeModel::~PowerNodeModel() {
+    m_dataTimer.stop();
 }
 
 // cyclically retrieve data from converters and wallbox
@@ -78,14 +70,17 @@ void PowerNodeModel::onDataTimer() {
 
     static int timerCounter = 0;
 
+    if (timerCounter % 4 == 0) {
+        getEvccJSONdata(); // API laden
+        displaySunCountdown(); // Prüfen, ob Countdown gestartet wurde
+    }
+
     if ((timerCounter++ % 10) == 0)  // alle 5 Sekunden den RPi abfragen (10 * 500 ms)
     {
     // Update the different values in C++
         setComm();                      // switch on communication visu
         setSunAngle();                  // slowly rotate sun icon
         setSunColor(SUNWHITE);          // change sun icon color
-        //getXMLdata();                   // extract values from XML string, read from RPi EDL Daemon
-        //getJSONdata();                  // extract values from JSON string, read from RPi MBMD Daemon
         getEvccJSONdata();              // extract values from JSON string, read from RPi evcc
         generatorHandling();            // PV generator handling
         batteryHandling();              // battery handling
@@ -139,34 +134,44 @@ void PowerNodeModel::onDataTimer() {
         countDown();
         emit showComm();
         setWindowTitle();
+        decSunCountdown();
     }
-
 }
 
 
 // handling routines
+
+void PowerNodeModel::setEDLDText() {
+    // Leer lassen - wird für Kompatibilität benötigt
+}
+
+void PowerNodeModel::setWRText() {
+    // Leer lassen
+}
+
+void PowerNodeModel::setMBMDText() {
+    // Leer lassen
+}
+
 void PowerNodeModel::getXMLdata(void)
 {
     // download XML data from SmartCharger XML page into **global**  m_XMLfiledata
-    downler.doDownloadXML();
+    //downler.doDownloadXML();
 
     // decode XML data from m_XMLfiledata into member variables of SmartChargerXML
-    smchaXML.ReadSmartChargerXML();
+    //smchaXML.ReadSmartChargerXML();
+    getEvccJSONdata();
 }
 
 void PowerNodeModel::getJSONdata(void)
 {
     // download JSON data from mbmd JSON page into **global**  m_JSONfiledata
-    downler.doDownloadJSON();
+    // downler.doDownloadJSON();
 
     // decode JSON data from m_JSONfiledata into member variables of SmartChargerJSON
-    wrJSON.ReadWechselrichterJSON();
+    //wrJSON.ReadWechselrichterJSON();
+    getEvccJSONdata();
 }
-
-// übler Trick um die Verdoppelung aller Zuweisungsroutinen zu vermeiden ---------------------------------
-#define smchaXML evccJSON           // Umleitung der smchaXML-Zugriffe von SmartCharger auf evccJSON-Zugriffe
-#define wrJSON evccJSON             // Umleitung der wrJSON-Zugriffe von MBMD auf evccJSON-Zugriffe
-// \übler Trick um die Verdoppelung aller Zuweisungsroutinen zu vermeiden --------------------------------
 
 void PowerNodeModel::getEvccJSONdata(void)
 {
@@ -174,49 +179,7 @@ void PowerNodeModel::getEvccJSONdata(void)
     downler.doDownloadEVCCJSON();
 
     // decode JSON data from m_JSONfiledata into member variables of SmartChargerJSON
-    evccJSON.ReadEvccJSON();
-}
-
-void PowerNodeModel::setMBMDText(void)              // Fehlermeldung wenn MBMD Daemon Probleme hat
-{
-    // check downloaded XML data for correct version
-    // Ich verwende den MBMD-Text mit, damit die Meldung auf der linken Seite erscheint (wird nur gesetzt, nie gelöscht)
-    if (m_messageFlag & VERSIONFlag)
-    {
-        m_MBMDProblemText = "EDLD - XML Version überprüfen!";
-    }
-    else if (m_messageFlag & MBMDFlag)
-    {
-        m_MBMDProblemText = "MBMD hat Probleme!";
-    }
-    else
-    {
-        m_MBMDProblemText = "";
-    }
-}
-
-void PowerNodeModel::setEDLDText(void)              // Fehlermeldung wenn EDLD Daemon Probleme hat
-{
-    if (m_messageFlag & EDLDFlag)
-    {
-        m_EDLDProblemText = "EDLD hat Probleme!";
-    }
-    else
-    {
-        m_EDLDProblemText = "";
-    }
-}
-
-void PowerNodeModel::setWRText(void)                // Fehlermeldung wenn einer der Wechslrichter Probleme hat
-{
-    if (m_messageFlag & WRFlag)
-    {
-        m_WRProblemText = "Mindestens einer der Wechselrichter liefert keine Daten!";
-    }
-    else
-    {
-        m_WRProblemText = "";
-    }
+    evcc.ReadEvccJSON();
 }
 
 void PowerNodeModel::setEvccText(void)                // Fehlermeldung wenn evcc Probleme hat
@@ -233,7 +196,7 @@ void PowerNodeModel::setEvccText(void)                // Fehlermeldung wenn evcc
 
 void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern wenn auf dem RPi Probleme auftreten
 {
-    if (m_messageFlag & (EDLDFlag | MBMDFlag | VERSIONFlag | WRFlag | EVCCFlag))      // EDLD oder MBMD oder falsche Version oder WR Fehler
+    if (m_messageFlag & (EVCCFlag))      // EDLD oder MBMD oder falsche Version oder WR Fehler
     {
         m_backgroundColor = LIGHTRED;              // sehr helles Rot
     }
@@ -243,7 +206,7 @@ void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern 
     }
 
     // zusätzlich Zahlen in Rot darstellen, wenn sie als ungültig zu betrachten sind
-    if (m_messageFlag & EDLDFlag)                   // EDLD gesteuerte Werte
+    if (0)                   // EDLD gesteuerte Werte
     {
           m_EDLDfigures = "red";
     }
@@ -252,7 +215,7 @@ void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern 
           m_EDLDfigures = "white";
     }
 
-    if (m_messageFlag & MBMDFlag)                   // MBMD gesteuerte Werte
+    if (0)                   // MBMD gesteuerte Werte
     {
         m_MBMDfigures  = "red";
     }
@@ -262,7 +225,7 @@ void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern 
     }
 
     // consumptionPower hängt an EDLD _und_ MBMD, 2022-05-26
-    if (m_messageFlag & (EDLDFlag | MBMDFlag))      // EDLD oder MBMD gesteuerte Werte
+    if (0)      // EDLD oder MBMD gesteuerte Werte
     {
         m_consumptionPowerfigures = "red";
     }
@@ -309,6 +272,49 @@ void PowerNodeModel::setEvBattDischargeControl(void)
     m_evBattDcControl = evccJSON.getEVbattDcControl();
 }
 
+void PowerNodeModel::displaySunCountdown(void)
+{
+    // Werte frisch aus evccJSON holen
+    int disableDelay = evccJSON.getEVdisableDelay(); // API-Wert (180 oder fallend)
+    int enableDelay = evccJSON.getEVenableDelay();   // API-Wert (60 oder fallend)
+
+    // Logik: Läuft bereits ein Countdown?
+    if (m_PnmCDrunning) {
+        // Falls API wieder Standardwerte liefert -> Countdown wurde von evcc abgebrochen/beendet
+        if (disableDelay >= 180 && enableDelay >= 60) {
+            m_PnmCDrunning = false;
+            m_PnmCDdelay = 0;
+            return;
+        }
+
+        // Synchronisation: Nur wenn die Abweichung zu groß ist (> 5 Sek), korrigieren wir
+        int apiTarget = (disableDelay < 180) ? disableDelay : enableDelay;
+        if (qAbs(m_PnmCDdelay - apiTarget) > 5) {
+            m_PnmCDdelay = apiTarget;
+        }
+    }
+    else {
+        // Countdown-Start erkennen
+        if (disableDelay < 180) {
+            m_PnmCDdelay = disableDelay;
+            m_PnmCDrunning = true;
+            m_visibleSun = false; // Du könntest hier Icons umschalten: false = Sonne geht
+        } else if (enableDelay < 60) {
+            m_PnmCDdelay = enableDelay;
+            m_PnmCDrunning = true;
+            m_visibleSun = true; // true = Sonne kommt
+        }
+    }
+}
+
+void PowerNodeModel::decSunCountdown()
+{
+    if (m_PnmCDrunning && m_PnmCDdelay > 0)
+    {
+        m_PnmCDdelay--;
+    }
+}
+
 void PowerNodeModel::openPopUpMsg() {
     // Messagebox mit Ertragswerten der WR aufpoppen.
     // Schließen mit OK
@@ -346,7 +352,7 @@ QString PowerNodeModel::openVersionInfoMsg() {
                             "<br>Compiletime: " + QString(__TIME__) +
                             "<br>Compilerversion: " + QString::number(QT_VERSION, 16) +
                             "<br>Runtimeversion: " + qVersion() +
-                            "<br>Data Provider: " + downler.getDataProvider());
+                            "<br>Data Provider: evcc");
     return m_VersionInfo;
 
     /*
@@ -430,6 +436,8 @@ void PowerNodeModel::countDown(void)
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
 {
+    //EvccJSON &wrJSON = evcc;        // Umleitung auf die korrekte Klasse
+
 #if defined DEMOMODE
     m_generatorPowerDachS = rand() % 9000;
     m_generatorPowerDachN = rand() % 9000;
@@ -495,6 +503,8 @@ void PowerNodeModel::generatorHandling(void)
 // battery handling ----------------------------------------------------------
 void PowerNodeModel::batteryHandling(void)
 {
+    //EvccJSON &smchaXML = evcc;        // Umleitung auf die korrekte Klasse
+
 #if defined DEMOMODE
     m_batteryPower = (rand() % 10000) - 5000;
     //    m_batteryPower = 0;               // test
@@ -533,6 +543,8 @@ void PowerNodeModel::batteryHandling(void)
 // grid handling -------------------------------------------------------------
 void PowerNodeModel::gridHandling(void)
 {
+    //EvccJSON &smchaXML = evcc;        // Umleitung auf die korrekte Klasse
+
 #if defined DEMOMODE
     m_gridEnergyImport += (10 + (rand() % 100));    // Verbrauchszähler Richtung Netz
     m_gridEnergyExport += (100 + (rand() % 100));   // Einspeisezähler Richtung Netz
@@ -616,7 +628,7 @@ void PowerNodeModel::showChargeMode()
 // setting Manual Current handling
 void PowerNodeModel::switchManualCurrent()
 {
-    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000 * (m_Output == 0 ? 1 : 3)) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000 * (m_EVconfiguredPhases )) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     emit chargingDataChanged();                         // refresh GUI
 
     m_ManualSetCurrent = m_EVManualCurrent;
@@ -632,7 +644,7 @@ void PowerNodeModel::setManualCurrent(int number)
 // show manual current handling
 void PowerNodeModel::showManualCurrent()
 {
-    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 * 230 / 1000 * (m_Output == 0 ? 1 : 3)) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
+    m_EVManualCurrentS = QString::number(m_EVManualCurrent / 1000 / 1000 * 230 * (m_EVconfiguredPhases )) + " kW max.";   // Leistung berechnen (Strom[mA] * Spannung[V] / 1000) ergibt [kW])
     emit chargingDataChanged();                         // refresh GUI
 }
 // \show manual current handling
@@ -702,6 +714,8 @@ void PowerNodeModel::setPrioritySoc(int number)
 // wallbox handling ----------------------------------------------------------
 void PowerNodeModel::wallboxHandling()
 {
+    //EvccJSON &smchaXML = evcc;           // Umleitung auf die korrekte Klasse
+
 #if defined DEMOMODE
     m_chargingPower = rand() % 4000;
     m_chargedEnergy += rand() % 100000;
