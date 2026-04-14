@@ -93,11 +93,11 @@ private:
     double  m_EVActualPower             = 0.0;      // aktuell ans EV abgegebene Leistung
     double  m_EVSessionEnergy           = 0.0;      // zuletzt ins EV geladene Energie
     double   m_EVTotalEnergy             = 0;        // gesamte jemals in ein EV eingeladene Energie
-    int     m_EVChargerPhases;                      // Rückmeldung der aktiven Anzahl Phasen beim Laden: 1 oder 3
+    int     m_EVChargerPhases;                      // Vorgabe zu nutzender Phasen an evcc
     double  m_EVEvaluationPoints = 0.0;
     int     m_EVState = 0;
     int     m_EVPlug = 0;
-    int     m_EVconfiguredPhases;
+    int     m_EVconfiguredPhases;                   // Rückmeldung der aktiven Anzahl Phasen beim Laden: 1 oder 3
     int     m_EVallowedPhases;                      // Vorgabe an EVCC
     int     m_StorageSystemSOC          = 0;        // aktuelle prozentuale Ladung des Hausakku
     double  m_StorageSystemTemperature  = 0.0;      // aktuelle Temperatur des Hausakku/des Wechselrichters (?)

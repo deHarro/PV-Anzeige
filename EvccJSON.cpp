@@ -347,8 +347,8 @@ double          EvccJSON::getEVSessionEnergy(void)          {return m_EVSessionE
 QString         EvccJSON::getEVChargeMode(void)             {return m_EVChargingMode;}
 double          EvccJSON::getEVTotalEnergy(void)            {return m_EVTotalEnergy * 1000.0;}
 int             EvccJSON::getEVconfiguredPhases(void)       {return m_EVconfiguredPhases;}
-// int             EvccJSON::getEVallowedPhases(void)          {return m_EVallowedPhases;}
-int             EvccJSON::getEVactivePhases(void)           {return m_EVChargerPhases;}
+// int             EvccJSON::getEVactivePhases(void)           {return m_EVChargerPhases;}
+int             EvccJSON::getEVactivePhases(void)           {return m_EVconfiguredPhases;}
 int             EvccJSON::getEVprioritySOC(void)            {return m_prioritySOC;}
 int             EvccJSON::getEVbufferSOC(void)              {return m_bufferSOC;}
 bool            EvccJSON::getEVbattDcControl(void)          {return m_batteryDisChargeControl;}

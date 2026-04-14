@@ -652,15 +652,8 @@ void PowerNodeModel::showManualCurrent()
 // show used phases handling
 void PowerNodeModel::showUsedPhases()                   // zeigt die Rückmeldung von der Wallbox (Ausgang X1 aktiv/nicht aktiv)
 {
-    if(downler.getDataProvider() == "EVCC")
-    {
-        m_EVusedPhasesS = (evccJSON.getEVactivePhases() == 1 ? "1 Phase" : evccJSON.getEVactivePhases() == 3 ? "3 Phasen" : "-- Phasen");
-        //m_EVusedPhasesS = QString(m_EVChargerPhases).toInt();
-    }
-    else
-    {
-        m_EVusedPhasesS = QString::number(m_Output == 0 ? 1 : 3) + "P";   // (m_Output = 0..1 -> 0: 1 Phase, 1: 3 Phasen)
-    }
+    m_EVusedPhasesS = (evccJSON.getEVactivePhases() == 1 ? "1 Phase" : evccJSON.getEVactivePhases() == 3 ? "3 Phasen" : "-- Phasen");
+    //m_EVusedPhasesS = QString(m_EVChargerPhases).toInt();
     emit chargingDataChanged();                         // refresh GUI
 }
 // \show used phases handling

@@ -247,7 +247,6 @@ public:
     Q_PROPERTY(QString activeDataProvider   MEMBER m_actDataProviderStr NOTIFY chargingDataChanged)       // bestimmte Anzeigen in der GUI ein/ausblenden/ändern
     Q_PROPERTY(bool visibleSun              MEMBER m_visibleSun         NOTIFY chargingDataChanged)       // kleine auf/untergehende Sonne für evcc Countdown
     Q_PROPERTY(unsigned char delayCountdown MEMBER m_PnmCDdelay         NOTIFY chargingDataChanged)       // Countdown Wert (Startwert 180 oder 60, rückwärts zählend)
-    //Q_PROPERTY(unsigned char delayCountdown MEMBER m_EVdelayCountdown   NOTIFY chargingDataChanged)       // Countdown Wert (180 oder 60, rückwärts zählend)
     Q_PROPERTY(bool CountdownRunning        MEMBER m_PnmCDrunning       NOTIFY chargingDataChanged)       // Countdown läuft -> Sonne und Sekunden anzeigen
 
     // color of power values (red/white if no/connection to SmartCharger on RasPi)
@@ -429,10 +428,10 @@ public:
     double m_EVManualCurrent = 18000.0;     // set ManualCurrent der Wallbox via SmartCharger (default 18 A = 4140 W)
     QString m_EVManualCurrentS;             // String für Anzeige in der GUI
     int m_Output = 0;                       // Phasen-Relais-Ausgang geschaltet (0: AUS - 1: EIN)
-    QString m_EVusedPhasesS;                // String für Anzeige in der GUI
     QString m_chargeModeManual;             // MANUAL oder Min+PV für den Button im Drawer, je nach DataProvider
  //   int m_EVChargerPhases;                  // Rückmeldung von Wallbox, Anzahl Phasen beim Laden: 1 oder 3
     int m_EVconfiguredPhases;               // Rückmeldung von EVCC
+    QString m_EVusedPhasesS;                // String für Anzeige in der GUI
     unsigned char m_EVdelayCountdown = 1;   // Countdown Wert (180 oder 60, rückwärts zählend)                          ...nur einer von beiden!
     unsigned char m_PnmCDdelay = 53;        // Countdown für die Anzeige in der GUI, wird sekündlich verringert bis 0   ...nur einer von beiden!
     bool m_PnmCDrunning = false;
