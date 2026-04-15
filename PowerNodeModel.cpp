@@ -2,7 +2,7 @@
 
 #include "PowerNodeModel.h"
 #include "Downloader.h"
-#include "EvccJSON.h"
+#include <EvccJSON.h>
 #include <QFile>
 #include <QDir>
 
@@ -40,15 +40,7 @@ constexpr char IsoDate[] =
 
 extern QString m_setChargeModeString;
 extern int m_ManualSetCurrent;
-extern QString m_EVChargingModeS;
 extern int m_ChargerPhases;
-
-QString iniVersion;
-
-// Einmalige Umleitung für die gesamte Datei:
-#define smchaXML evcc
-#define wrJSON   evcc
-#define evccJSON evcc
 
 using namespace std::chrono_literals;
 
@@ -155,21 +147,11 @@ void PowerNodeModel::setMBMDText() {
 
 void PowerNodeModel::getXMLdata(void)
 {
-    // download XML data from SmartCharger XML page into **global**  m_XMLfiledata
-    //downler.doDownloadXML();
-
-    // decode XML data from m_XMLfiledata into member variables of SmartChargerXML
-    //smchaXML.ReadSmartChargerXML();
     getEvccJSONdata();
 }
 
 void PowerNodeModel::getJSONdata(void)
 {
-    // download JSON data from mbmd JSON page into **global**  m_JSONfiledata
-    // downler.doDownloadJSON();
-
-    // decode JSON data from m_JSONfiledata into member variables of SmartChargerJSON
-    //wrJSON.ReadWechselrichterJSON();
     getEvccJSONdata();
 }
 
@@ -196,43 +178,19 @@ void PowerNodeModel::setEvccText(void)                // Fehlermeldung wenn evcc
 
 void PowerNodeModel::setBGColor(void)               // Hintergrundfarbe ändern wenn auf dem RPi Probleme auftreten
 {
-    if (m_messageFlag & (EVCCFlag))      // EDLD oder MBMD oder falsche Version oder WR Fehler
+    if (m_messageFlag & (EVCCFlag))                 // EDLD oder MBMD oder falsche Version oder WR Fehler
     {
-        m_backgroundColor = LIGHTRED;              // sehr helles Rot
+        m_backgroundColor = LIGHTRED;               // sehr helles Rot
     }
     else
     {
         m_backgroundColor = "whitesmoke";           // sehr helles Grau
     }
 
-    // zusätzlich Zahlen in Rot darstellen, wenn sie als ungültig zu betrachten sind
-    if (0)                   // EDLD gesteuerte Werte
-    {
-          m_EDLDfigures = "red";
-    }
-    else
-    {
-          m_EDLDfigures = "white";
-    }
-
-    if (0)                   // MBMD gesteuerte Werte
-    {
-        m_MBMDfigures  = "red";
-    }
-    else
-    {
-        m_MBMDfigures  = "white";
-    }
-
-    // consumptionPower hängt an EDLD _und_ MBMD, 2022-05-26
-    if (0)      // EDLD oder MBMD gesteuerte Werte
-    {
-        m_consumptionPowerfigures = "red";
-    }
-    else
-    {
-        m_consumptionPowerfigures = "white";
-    }
+    // alle Zahlen werden Weiß dargestellt
+    m_EDLDfigures = "white";
+    m_MBMDfigures  = "white";
+    m_consumptionPowerfigures = "white";
 }
 
 // rotate sun icon
@@ -257,26 +215,26 @@ void PowerNodeModel::setSunColor(int8_t newColor)
 // set EvPrioritySOC in Drawer4
 void PowerNodeModel::setEvPrioritySOC(void)
 {
-    m_evPrioritySOC = evccJSON.getEVprioritySOC();
+    m_evPrioritySOC = evcc.getEVprioritySOC();
 }
 
 // set EvPrioritySOC in Drawer4
 void PowerNodeModel::setEvBufferSOC(void)
 {
-    m_evBufferSOC = evccJSON.getEVbufferSOC();
+    m_evBufferSOC = evcc.getEVbufferSOC();
 }
 
 // set EvPrioritySOC in Drawer4
 void PowerNodeModel::setEvBattDischargeControl(void)
 {
-    m_evBattDcControl = evccJSON.getEVbattDcControl();
+    m_evBattDcControl = evcc.getEVbattDcControl();
 }
 
 void PowerNodeModel::displaySunCountdown(void)
 {
     // Werte frisch aus evccJSON holen
-    int disableDelay = evccJSON.getEVdisableDelay(); // API-Wert (180 oder fallend)
-    int enableDelay = evccJSON.getEVenableDelay();   // API-Wert (60 oder fallend)
+    int disableDelay = evcc.getEVdisableDelay(); // API-Wert (180 oder fallend)
+    int enableDelay = evcc.getEVenableDelay();   // API-Wert (60 oder fallend)
 
     // Logik: Läuft bereits ein Countdown?
     if (m_PnmCDrunning) {
@@ -354,34 +312,6 @@ QString PowerNodeModel::openVersionInfoMsg() {
                             "<br>Runtimeversion: " + qVersion() +
                             "<br>Data Provider: evcc");
     return m_VersionInfo;
-
-    /*
-    // Messagebox mit VersionInfo aufpoppen.
-    // Schließen mit OK
-
-    QString qtCompilerversionString = QString::number(QT_VERSION, 16);      // get compiler version
-    QString qtRuntimeversionString = qVersion();                            // get runtime version
-    m_actDataProviderStr = downler.getDataProvider();                   // get Dataprovider (EVCC oder EDLD/MBMD)
-
-    QMessageBox msgBox;
-    msgBox.setTextFormat(Qt::RichText);
-    msgBox.setText("<b>Version Info</b><br><br>"
-        "Version : V" VERSIONMAJOR "." VERSIONMINOR
-        // die nachfolgenden zwei Zeilen legen die Breite der MSG-Box fest. Versuche, das alternativ zu erreichen, gingen schief :(
-        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-        "<br>Builddate: " + QString(IsoDate) +
-        "<br>Compiletime: " + QString(__TIME__) +
-        "<br>Compilerversion: " + qtCompilerversionString +
-        "<br>Runtimeversion: " + qtRuntimeversionString +
-        "<br>Data Provider: " + m_actDataProviderStr);
-
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    msgBox.setDefaultButton(QMessageBox::Ok);
-    msgBox.setIcon(QMessageBox::Information);
-
-    msgBox.exec();
-*/
 }
 
 // visualize interrogation of RPi for new values
@@ -436,8 +366,6 @@ void PowerNodeModel::countDown(void)
 // PV generator handling -----------------------------------------------------
 void PowerNodeModel::generatorHandling(void)
 {
-    //EvccJSON &wrJSON = evcc;        // Umleitung auf die korrekte Klasse
-
 #if defined DEMOMODE
     m_generatorPowerDachS = rand() % 9000;
     m_generatorPowerDachN = rand() % 9000;
@@ -446,10 +374,10 @@ void PowerNodeModel::generatorHandling(void)
     m_generatorTotalEnergy = (rand() % 66000) + 30000;  // im Bereich ab 66 MWh
 #endif
 
-    m_generatorPowerDachS =  (wrJSON.getPVDachSActualPower());        // [W] integer, no fraction
-    m_generatorPowerDachN =  (wrJSON.getPVDachNActualPower());        // [W] integer, no fraction
-    m_generatorPowerGarage = (wrJSON.getPVGarageActualPower());      // [W] integer, no fraction
-    m_generatorPowerGaube =  (wrJSON.getPVGaubeActualPower());        // [W] integer, no fraction
+    m_generatorPowerDachS =  (evcc.getPVDachSActualPower());        // [W] integer, no fraction
+    m_generatorPowerDachN =  (evcc.getPVDachNActualPower());        // [W] integer, no fraction
+    m_generatorPowerGarage = (evcc.getPVGarageActualPower());      // [W] integer, no fraction
+    m_generatorPowerGaube =  (evcc.getPVGaubeActualPower());        // [W] integer, no fraction
 
     m_generatorPowerTotal   =   m_generatorPowerDachS                // [W] integer, no fraction
                             +   m_generatorPowerDachN
@@ -476,7 +404,7 @@ void PowerNodeModel::generatorHandling(void)
     m_SunBGColor.setBlue(255 - (blueVal));                  // Weißanteil verringern -> Sättigung erhöhen
 //    std::cout << "m_generatorPowerTotal  = " << m_generatorPowerTotal << std::endl;    // Display total Power
 
-    m_generatorTotalEnergy = (wrJSON.getPVGesamtErtrag());       // [W] integer, no fraction
+    m_generatorTotalEnergy = (evcc.getPVGesamtErtrag());       // [W] integer, no fraction
 
     // Werte für Anzeige berechnen und als QString ausgeben
     m_generatorTotalEnergy = m_generatorTotalEnergy / 1000;
@@ -489,13 +417,13 @@ void PowerNodeModel::generatorHandling(void)
     }
 
     // Ertragswerte der einzelnen Wechselrichter in Membervariablen speichern
-    m_generatorDachSEnergy  = (wrJSON.getPVDachSErtrag());                          // [W] integer, no fraction
+    m_generatorDachSEnergy  = (evcc.getPVDachSErtrag());                          // [W] integer, no fraction
     m_genEnergyDachS = QString().asprintf("%6.0f", qAbs(m_generatorDachSEnergy));    // get rid of math in QML
-    m_generatorDachNEnergy  = (wrJSON.getPVDachNErtrag());                          // [W] integer, no fraction
+    m_generatorDachNEnergy  = (evcc.getPVDachNErtrag());                          // [W] integer, no fraction
     m_genEnergyDachN = QString().asprintf("%6.0f", qAbs(m_generatorDachNEnergy));    // get rid of math in QML
-    m_generatorGaubeEnergy  = (wrJSON.getPVGaubeErtrag());                          // [W] integer, no fraction
+    m_generatorGaubeEnergy  = (evcc.getPVGaubeErtrag());                          // [W] integer, no fraction
     m_genEnergyGaube = QString().asprintf("%6.0f", qAbs(m_generatorGaubeEnergy));    // get rid of math in QML
-    m_generatorGarageEnergy = (wrJSON.getPVGarageErtrag());                         // [W] integer, no fraction
+    m_generatorGarageEnergy = (evcc.getPVGarageErtrag());                         // [W] integer, no fraction
     m_genEnergyGarage = QString().asprintf("%6.0f", qAbs(m_generatorGarageEnergy));  // get rid of math in QML
     m_genEnergyTotal = QString().asprintf("%3.2f", qAbs(m_generatorTotalEnergy));    // get rid of math in QML
 }
@@ -503,17 +431,15 @@ void PowerNodeModel::generatorHandling(void)
 // battery handling ----------------------------------------------------------
 void PowerNodeModel::batteryHandling(void)
 {
-    //EvccJSON &smchaXML = evcc;        // Umleitung auf die korrekte Klasse
-
 #if defined DEMOMODE
     m_batteryPower = (rand() % 10000) - 5000;
     //    m_batteryPower = 0;               // test
     m_batteryPercentage = rand() % 100;
     m_battTemp = 30.0 + (rand() % 30) - 15;
 #else
-    m_batteryPower = -(smchaXML.getStorageSystemActualPower());  // [W] integer, no fraction
-    m_batteryPercentage = smchaXML.getStorageSystemSOC();        // [%] integer, no fraction
-    m_battTemp = smchaXML.getStorageSystemTemperature();         // [°] double, fraction (27.1)
+    m_batteryPower = -(evcc.getStorageSystemActualPower());  // [W] integer, no fraction
+    m_batteryPercentage = evcc.getStorageSystemSOC();        // [%] integer, no fraction
+    m_battTemp = evcc.getStorageSystemTemperature();         // [°] double, fraction (27.1)
 #endif
 
     m_battPowerAnzeige = QString().asprintf("%0d", m_batteryPower);
@@ -543,8 +469,6 @@ void PowerNodeModel::batteryHandling(void)
 // grid handling -------------------------------------------------------------
 void PowerNodeModel::gridHandling(void)
 {
-    //EvccJSON &smchaXML = evcc;        // Umleitung auf die korrekte Klasse
-
 #if defined DEMOMODE
     m_gridEnergyImport += (10 + (rand() % 100));    // Verbrauchszähler Richtung Netz
     m_gridEnergyExport += (100 + (rand() % 100));   // Einspeisezähler Richtung Netz
@@ -552,9 +476,9 @@ void PowerNodeModel::gridHandling(void)
     m_gridPower = (rand() % 10000) - 5000;
 //    m_gridPower = 0;
 #else
-    m_gridEnergyImport = smchaXML.getSmartMeterConsumption();   // [kW] double, fraction (7322.8)
-    m_gridEnergyExport = smchaXML.getSmartMeterSurplus();       // [kW] double, fraction (43852.6)
-    m_gridPower = -(smchaXML.getSmartMeterActualPower());       // [W] integer, no fraction
+    m_gridEnergyImport = evcc.getSmartMeterConsumption();   // [kW] double, fraction (7322.8)
+    m_gridEnergyExport = evcc.getSmartMeterSurplus();       // [kW] double, fraction (43852.6)
+    m_gridPower = -(evcc.getSmartMeterActualPower());       // [W] integer, no fraction
 #endif
 
     // Werte nur positiv anzeigen, Richtung kommt über die Farbe und die Pfeile
@@ -596,7 +520,7 @@ QString PowerNodeModel::chargeModeButtonTxt()
 // setting ChargeMode handling
 void PowerNodeModel::switchChargeMode(QString value)
 {
-    if      (value == "OFF")                                                //  EVCC      EDLD
+    if      (value == "OFF")                                            //  EVCC      EDLD
         m_setChargeModeString = (m_actDataProviderStr.toUpper() == "EVCC" ? "off"   : "off"     );
     else if (value == "QUICK")
         m_setChargeModeString = (m_actDataProviderStr.toUpper() == "EVCC" ? "now"   : "quick"   );
@@ -652,7 +576,7 @@ void PowerNodeModel::showManualCurrent()
 // show used phases handling
 void PowerNodeModel::showUsedPhases()                   // zeigt die Rückmeldung von der Wallbox (Ausgang X1 aktiv/nicht aktiv)
 {
-    m_EVusedPhasesS = (evccJSON.getEVactivePhases() == 1 ? "1 Phase" : evccJSON.getEVactivePhases() == 3 ? "3 Phasen" : "-- Phasen");
+    m_EVusedPhasesS = (evcc.getEVactivePhases() == 1 ? "1 Phase" : evcc.getEVactivePhases() == 3 ? "3 Phasen" : "-- Phasen");
     //m_EVusedPhasesS = QString(m_EVChargerPhases).toInt();
     emit chargingDataChanged();                         // refresh GUI
 }
@@ -743,13 +667,13 @@ void PowerNodeModel::wallboxHandling()
         m_wallboxColor =VLIGHTGRAY ;                // helles Hellgrau, keine QML Basic/SVG color
     }
 #else
-    m_evalPoints = smchaXML.getEVEvaluationPoints();            // [] integer, no fraction
-    m_chargingPower = smchaXML.getEVActualPower();              // [W] integer, no fraction
-    m_chargedEnergy = smchaXML.getEVTotalEnergy();              // [W] integer, no fraction
-    m_sessionEnergy = smchaXML.getEVSessionEnergy();            // [W] integer, no fraction
-    m_EVChargingMode = smchaXML.getEVChargeMode();              // QString
-    m_Output = smchaXML.getEVOutput();                          // [] integer, no fraction
-    m_EVconfiguredPhases = smchaXML.getEVconfiguredPhases();    // [] integer, no fraction
+    m_evalPoints = evcc.getEVEvaluationPoints();            // [] integer, no fraction
+    m_chargingPower = evcc.getEVActualPower();              // [W] integer, no fraction
+    m_chargedEnergy = evcc.getEVTotalEnergy();              // [W] integer, no fraction
+    m_sessionEnergy = evcc.getEVSessionEnergy();            // [W] integer, no fraction
+    m_EVChargingMode = evcc.getEVChargeMode();              // QString
+    m_Output = evcc.getEVOutput();                          // [] integer, no fraction
+    m_EVconfiguredPhases = evcc.getEVconfiguredPhases();    // [] integer, no fraction
     m_actDataProviderStr = downler.getDataProvider();
 
 
@@ -769,21 +693,21 @@ void PowerNodeModel::wallboxHandling()
         5 : authorization rejected
     */
 
-    if (((smchaXML.getEVState() == 2) || (smchaXML.getEVState() == 3))      // ready for or actually charging
+    if (((evcc.getEVState() == 2) || (evcc.getEVState() == 3))      // ready for or actually charging
       && (m_chargingPower == 0))                                            // state ready for charging (alles vorbereitet)
     {
         m_wallboxColor = DODGERBLUE;                                        // Ladung vorbereitet -> schickes mittleres Blau
     }
-    else if ((smchaXML.getEVState() == 3) && (m_chargingPower > 0))         // state=charging && power>0
+    else if ((evcc.getEVState() == 3) && (m_chargingPower > 0))         // state=charging && power>0
     {
         m_wallboxColor = DARKBLUE;                                          // Ladung startet oder läuft -> dunkles Blau
     }
-    else if (smchaXML.getEVState() == 4)                                    // Error oder rejected
+    else if (evcc.getEVState() == 4)                                    // Error oder rejected
     {
         m_wallboxColor = FIREBRICK ;                                        // -> dunkles Rot
     }
-    else if (((smchaXML.getEVState() <= 2) || (smchaXML.getEVState() == 5))
-         && ((smchaXML.getEVPlug() == 5) || (smchaXML.getEVPlug() == 7)))   // Stecker steckt aber Wallbox not ready
+    else if (((evcc.getEVState() <= 2) || (evcc.getEVState() == 5))
+         && ((evcc.getEVPlug() == 5) || (evcc.getEVPlug() == 7)))   // Stecker steckt aber Wallbox not ready
     {
         m_wallboxColor = LIGHTBLUE ;                                        // helles Blau
     }
@@ -801,7 +725,7 @@ void PowerNodeModel::wallboxHandling()
         "Enable sys" = Enable state for charging (contains Enable input, RFID, UDP,..)
     */
 
-    if (smchaXML.getEVPlug() >= 5)              // Stecker an EV und Wallbox sind eingesteckt
+    if (evcc.getEVPlug() >= 5)              // Stecker an EV und Wallbox sind eingesteckt
     {
         if(m_realPics == false)
         {
@@ -829,7 +753,7 @@ void PowerNodeModel::wallboxHandling()
     }
 
     // all conditions true for charging but no current flowing -> EV state is "fully charged"
-    if ((smchaXML.getEVPlug() >= 5) && (smchaXML.getEVState() == 2) && (m_chargingPower == 0))
+    if ((evcc.getEVPlug() >= 5) && (evcc.getEVState() == 2) && (m_chargingPower == 0))
     {
         if(m_realPics == false)
         {

@@ -7,14 +7,23 @@
 #include <QJsonObject>
 
 extern quint8 m_messageFlag;
-#define EDLDFlag 1
-#define MBMDFlag 2
-#define VERSIONFlag 4
-#define WRFlag 8
-#define SETMODEFlag 16     // Korrigiert auf Zweierpotenz (0x10)
-#define SETCURRENTFlag 32  // Korrigiert auf 0x20
-#define SETPHASESFlag 64   // Korrigiert auf 0x40
-#define EVCCFlag 128       // Korrigiert auf 0x80
+
+// Flag: Bit 0 = 1 -> EDLD antwortet nicht korrekt
+// Flag: Bit 1 = 1 -> MBMD antwortet nicht korrekt
+// Flag: Bit 2 = 1 -> Version der EDLD XML Daten stimmt nicht -> muss geprüft werden!
+// Flag: Bit 3 = 1 -> Einer der WR liefert keine Daten -> muss rückgesetzt werden!
+// Flag: Bit 4 = 1 -> Fehler bei der Verarbeitung des SetMode Befehls im EDLD
+// Flag: Bit 5 = 1 -> Fehler bei der Verarbeitung des SetManualCurrent Befehls im EDLD
+// Flag: Bit 6 = 1 -> Fehler bei der Verarbeitung des SetChargerPhases Befehls im EDLD
+// Flag: Bit 7 = 1 -> EVCC antwortet nicht korrekt
+#define EDLDFlag 1              // obsolet
+#define MBMDFlag 2              // obsolet
+#define VERSIONFlag 4           // obsolet
+#define WRFlag 8                // obsolet
+#define SETMODEFlag 16          // obsolet
+#define SETCURRENTFlag 32       // obsolet
+#define SETPHASESFlag 64        // obsolet
+#define EVCCFlag 128
 
 class Downloader : public QObject
 {
@@ -23,13 +32,7 @@ class Downloader : public QObject
 public:
     explicit Downloader(QObject *parent = nullptr);
 
-    // Wir lassen die Funktionsnamen erst einmal stehen, damit die Aufrufe klappen
     void doDownloadEVCCJSON(void);
-
-    // Die alten Methoden lassen wir als "leere Hüllen" stehen,
-    // falls sie noch von Timern oder anderen Klassen aufgerufen werden
-    void doDownloadXML(void);
-    void doDownloadJSON(void);
 
     // Die Steuer-Befehle (bleiben aktiv)
     void doSetChargeMode(void);
@@ -39,7 +42,6 @@ public:
     void doSetBufferSoc(int);
     void doSetPrioritySoc(int);
 
-    // Diese beiden hier müssen vermutlich auch wieder in den public Bereich:
     QString getDataProvider(void);
     QString getiniVersion(void);
 
@@ -60,9 +62,6 @@ private:
     void sendParamToEvcc(QString param);
 
     // Hier kommen die Vermissten zurück:
-    QString m_smartChargerIP;
-    QString m_smartChargerPort;
-    QString m_mbmdPort;
     QString m_DataProvider;
     QString m_iniVersion;
 

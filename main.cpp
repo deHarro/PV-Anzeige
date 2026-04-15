@@ -10,9 +10,6 @@
 #include "PowerNodeModel.h"
 
 // globals ----------------------------------------
-// global array for saving the XML content of SmartCharger app running on SmartCharger RasPi
-QByteArray m_XMLfiledata;
-
 // global array for saving the JSON content of mbmd app running on SmartCharger RasPi
 QString m_JSONfiledata;
 
@@ -24,10 +21,9 @@ QString m_JSONevccData;
 // Flag: Bit 1 = 1 -> MBMD antwortet nicht korrekt
 quint8 m_messageFlag = 0;
 
-// global value for changing the ChargeMode on SmartCharger RasPi
-QString m_setChargeModeString;                      // Befehl für remote control des SmartCharger (off, quick, surplus, manual);
-int m_ManualSetCurrent;                             // Befehl für remote control des SmartCharger (manual current 6, 12, 18, 32 A)
-QString m_EVChargingModeS;                          // Anzeige der manuell einzustellenden maximalen Ladeleistung
+// global values
+QString m_setChargeModeString;                      // Befehl für remote control von evcc (off, now, pv, minpv);
+int m_ManualSetCurrent;                             // Befehl für remote control von evcc (manual current 6, 12, 18, 32 A)
 int m_ChargerPhases;                                // Befehl für remote control des SmartCharger (number of phases 1, 3)
 // \globals ----------------------------------------
 

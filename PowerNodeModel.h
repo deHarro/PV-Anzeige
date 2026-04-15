@@ -5,7 +5,6 @@
 #include <QMessageBox>
 #include <EvccJSON.h>
 #include "Downloader.h"
-#include "EvccJSON.h"
 
 /*
 Hinweis

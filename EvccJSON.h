@@ -5,9 +5,6 @@
 // WR DachN in Verabrbeitung aufnehmen (raus nehmen durch auskommentieren)
 #define WRDACHN
 
-// global flag memory for error messages
-extern quint8 m_messageFlag;
-
 class EvccJSON : public QObject {
     Q_OBJECT
 
